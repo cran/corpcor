@@ -1,6 +1,6 @@
-### cov.shrink.R  (2005-06-07)
+### cov.shrink.R  (2005-09-28)
 ###
-###    Variance of the Covariance  Matrix
+###    Variance of the Entries of the Covariance Matrix
 ###
 ### Copyright 2005 Korbinian Strimmer
 ###
@@ -33,10 +33,7 @@ varcov <- function(x, type=c("unbiased", "ML"), verbose=TRUE)
     n <- dim(x)[1]
     p <- dim(x)[2]
  
-    if (verbose && p > 50)
-      cat("Computing empirical covariance matrix and its variance\n")
-       
-     
+            
     # weights for the "unbiased" and "ML" cases
     type <- match.arg(type)
     if (type=="unbiased")
@@ -65,7 +62,7 @@ varcov <- function(x, type=c("unbiased", "ML"), verbose=TRUE)
     if (p == 1) return(list(S=s, var.S=vs))
     
     if (verbose && p > 50)
-      cat(paste("Wait for", p, "points (50 per row):\n")) 
+      cat(paste("Computing ... wait for", p, "dots (50 per row):\n")) 
     
     # off-diagonal elements
     for (i in 1:(p-1))
