@@ -6,7 +6,7 @@
 \title{Shrinkage Estimates of Covariance and (Partial) Correlation}
 \description{
   The functions \code{cov.shrink}, \code{cor.shrink}, and \code{pcor.shrink} implement a shrinkage approach 
-  to estimate covariance and (partial) correlation matrices (cf. Schaefer and Strimmer 2005).
+  to estimate covariance and (partial) correlation matrices, as suggested in Schaefer and Strimmer (2005).
   
   The advantages of using this approach in comparison with the standard empirical estimates 
   (\code{\link{cov}} and \code{\link{cor}}) are that the shrinkage estimates 
@@ -42,17 +42,19 @@ pcor.shrink(x, lambda, verbose=TRUE)
   
    \deqn{\lambda^{*} = \sum_{i \neq j} Var(r_{ij}) / \sum_{i \neq j} r_{ij}^2  .}
  
-  Note that this is a special case of the analytic formula by Ledoit and Wolf (2003)
-  for the optimal shrinkage.
+  This is a special case of the analytic formula by Ledoit and Wolf (2003)
+  for the optimal shrinkage (note that in contrast to Ledoit-Wolf here it is applied
+  to the correlation rather than the covariance matrix).
 
-  On the basis of the shrunken correlation matrix  and the empirical variances
-  \code{cov.shrink} computes the corresponding full covariance matrix. 
+  \code{cov.shrink} computes the corresponding full covariance matrix
+  on the basis of the shrunken correlation matrix  and the empirical variances.
+  
    \code{pcor.shrink} computes partial correlations from \code{cor.shrink}
   via \code{\link{cor2pcor}}. 
   
       
   These shrinkage estimator are especially useful in a 'small n, large p' setting - this is often
-  encountered, e.g., in genomics. For a extensive discussion please see Schaefer and Strimmer (2005).
+  encountered, e.g., in genomics. For an extensive discussion please see Schaefer and Strimmer (2005).
   
 }
 \value{
@@ -74,7 +76,11 @@ pcor.shrink(x, lambda, verbose=TRUE)
   \emph{J. Emp. Finance} \bold{10}:503-621. 
 
   Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
-  covariance estimation and implications for functional genomics. Submitted to SAGMB. 
+  covariance estimation and implications for functional genomics. 
+  Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
+  (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
+  
+  
   
 }
 \seealso{\code{\link{cor2pcor}}}
