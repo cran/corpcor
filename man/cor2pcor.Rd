@@ -17,8 +17,8 @@ pcor2cor(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
   \item{tol}{tolerance - singular values larger than
              tol are considered non-zero (default value:
 	     \code{tol = max(dim(m))*max(D)*.Machine$double.eps}).
-	     This values is used both for  testing positive definiteness
-	     as well as for computing the pseudoonverse.
+	     The specified threshold is used both for  testing positive definiteness
+	     as well as for computing the pseudoinverse.
 	     }
 }
 \description{

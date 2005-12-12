@@ -3,7 +3,7 @@
 \alias{make.positive.definite}
 \alias{rank.condition}
 
-\title{Rank, Condition, and Positive Definiteness of a Matrix}
+\title{Positive Definiteness of a Matrix, Rank and Condition Number}
 \usage{
 is.positive.definite(m, tol, method=c("eigen", "chol"))
 make.positive.definite(m, tol)
@@ -35,11 +35,12 @@ rank.condition(m, tol)
    \code{rank.condition} estimates the rank and the condition
   of a matrix by 
   computing its singular values D[i] (using  \code{\link{svd}}).
-  The rank of the matrix is the number of singular values D[i] > tol)
+  The rank of the matrix is the number of singular values \code{D[i] > tol})
   and the condition is the ratio  of the largest and the smallest
-  singular value.
-
-     
+  singular value.   
+  
+  Note that the definition \code{tol= max(dim(m))*max(D)*.Machine$double.eps} ensures 
+  that the same results are obtained as in Octave or in Matlab.
 }
 
 \value{

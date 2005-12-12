@@ -1,4 +1,4 @@
-### condition.R  (2005-07-19)
+### condition.R  (2005-12-12)
 ###
 ###     Rank, condition, and positive definiteness of a matrix
 ###
@@ -31,7 +31,7 @@ is.positive.definite <- function (m, tol, method=c("eigen", "chol"))
 
     if (method=="eigen")
     {
-        eval <- eigen(m, symmetric=TRUE, only.values = TRUE)$values
+        eval <- eigen(m, only.values = TRUE)$values
 
         if( missing(tol) )
             tol <- max(dim(m))*max(abs(eval))*.Machine$double.eps
@@ -59,12 +59,10 @@ make.positive.definite <- function(m, tol)
 {
   if (!is.matrix(m)) m <- as.matrix(m)
 
-  if (dim(m)[1] != dim(m)[2]) stop("Input matrix is not symmetric")
-
-  # assumption: m is symmetric!
-  d <- dim(m)[1]
-  
-  es <- eigen(m, symmetric=TRUE)
+  d <- dim(m)[1] 
+  if ( dim(m)[2] != d ) stop("Input matrix is not square!")
+   
+  es <- eigen(m)
   esv <- es$values
   
   if (missing(tol))
