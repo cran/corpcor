@@ -11,6 +11,13 @@
 \alias{nsmall.svd}
 \alias{psmall.svd}
 
+\alias{pvt.scor}
+\alias{pvt.invscor}
+\alias{pvt.get.lambda}
+\alias{pvt.estimate.lambda}
+\alias{pvt.check.w}
+
+
 
 \title{Internal corpcor Functions}
 \description{

@@ -1,15 +1,16 @@
-\name{cor.shrink}
+\name{cov.shrink}
 \alias{cov.shrink}
 \alias{cor.shrink}
-\alias{pcor.shrink}
 
-\title{Shrinkage Estimates of Covariance and (Partial) Correlation}
+
+\title{Shrinkage Estimates of Covariance and Correlation}
 \description{
-  The functions \code{cov.shrink}, \code{cor.shrink}, and \code{pcor.shrink} implement a shrinkage approach 
-  to estimate covariance and (partial) correlation matrices, as suggested in Schaefer and Strimmer (2005).
-  
-  The advantages of using this approach in comparison with the standard empirical estimates 
-  (\code{\link{cov}} and \code{\link{cor}}) are that the shrinkage estimates 
+  The functions \code{cov.shrink} and \code{cor.shrink} compute shrinkage estimates of
+  covariance and correlation, as as suggested in Schaefer and Strimmer (2005).
+    
+  In comparison with the standard empirical estimates 
+  (\code{\link{cov}} and \code{\link{cor}}) the shrinkage estimates have a number
+  of advantages
   \enumerate{
     \item are always  positive definite,
     \item  well conditioned (so that the inverse always exists), and 
@@ -17,18 +18,25 @@
   Furthermore, they are inexpensive to compute and do not require any
   tuning parameters (the shrinkage intensity is analytically estimated from the data).
   
+  As an extra benefit, the shrinkage estimators have a form that can be *very* efficiently inverted
+  using the Woodbury matrix identity, even if the number of variables is large.  
+  This approach is implemented in the functions 
+  \\code{\link{invcov.shrink}} and \code{\link{invcor.shrink}} and is much faster than directly inverting
+  the matrix output by \code{cov.shrink} and \code{cor.shrink}, respectively.
 }
 \usage{
-cov.shrink(x, lambda, verbose=TRUE)
-cor.shrink(x, lambda, verbose=TRUE)
-pcor.shrink(x, lambda, verbose=TRUE)
+cov.shrink(x, lambda, w, verbose=TRUE)
+cor.shrink(x, lambda, w, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
   \item{lambda}{the shrinkage intensity (range 0-1). If \eqn{\lambda} is is not specified (the default)
         a suitable value is automatically chosen such that the resulting shrinkage estimate
-	 has minimal MSE (see below for details).}
-  \item{verbose}{report progress while computing (default: TRUE)}
+	 has minimal MSE (see below for details).  For \eqn{\lambda=0} not shrinkage occurs
+	 and the empirical estimates are computed.}
+  \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
+            (\code{w = rep(1/n, n)} with \code{n = dim(x)[1]}).}	 
+  \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{
    
@@ -48,24 +56,17 @@ pcor.shrink(x, lambda, verbose=TRUE)
 
   \code{cov.shrink} computes the corresponding full covariance matrix
   on the basis of the shrunken correlation matrix  and the empirical variances.
-  
-   \code{pcor.shrink} computes partial correlations from \code{cor.shrink}
-  via \code{\link{cor2pcor}}. 
-  
-      
+    
   These shrinkage estimator are especially useful in a 'small n, large p' setting - this is often
   encountered, e.g., in genomics. For an extensive discussion please see Schaefer and Strimmer (2005).
-  
 }
 \value{
   \code{cov.shrink} returns a covariance matrix.
   
   \code{cor.shrink} returns the corresponding correlation matrix. 
-  
-   \code{pcor.shrink} returns the partical correlation matrix. 
 }
 \author{
-  Juliane Schaefer (\url{http://www.statistik.lmu.de/~schaefer/}) 
+  Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}) 
   and Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
   
 }
@@ -83,7 +84,7 @@ pcor.shrink(x, lambda, verbose=TRUE)
   
   
 }
-\seealso{\code{\link{cor2pcor}}}
+\seealso{\code{\link{invcov.shrink}}, \code{\link{pcor.shrink}}, \code{\link{cor2pcor}}}
 
 \examples{
 # load corpcor library
@@ -111,9 +112,6 @@ s2 <- cov.shrink(X)
 sum((s1-sigma)^2)
 sum((s2-sigma)^2)
 
-# varcov produces the same results as cov
-vc <- varcov(X)
-sum(abs(vc$S-s1))
 
 # compare positive definiteness
 is.positive.definite(s1)

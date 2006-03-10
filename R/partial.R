@@ -1,10 +1,9 @@
-### cor2pcor.R  (2004-09-25)
+### partial.R  (2006-03-09)
 ###
-###    Partial Correlation computed by Inversion 
-###    of the Covariance or Correlation Matrix
+###    Partial Correlation and Partial Covariance
 ###    
 ###
-### Copyright 2003-04 Juliane Schaefer and Korbinian Strimmer
+### Copyright 2003-06 Juliane Schaefer and Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -29,7 +28,7 @@
 # input: covariance matrix or correlation matrix
 # ouput: partial correlation matrix
 #
-cor2pcor <- function(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
+cor2pcor <- function(m, exact.inversion=FALSE, check.eigenvalues=FALSE, tol)
 {
   if (check.eigenvalues)
   {
@@ -38,10 +37,7 @@ cor2pcor <- function(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
       stop("Input matrix is not positive definite!")
     }
   }
-  
-  # standardize
-  # m <- cov2cor(m)
-  
+    
   # invert, then negate off-diagonal entries
   if (exact.inversion)
   {
@@ -63,7 +59,7 @@ cor2pcor <- function(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
 #
 # input: partial correlation matrix
 # ouput: correlation matrix
-pcor2cor <- function(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
+pcor2cor <- function(m, exact.inversion=FALSE, check.eigenvalues=FALSE, tol)
 {
   if (check.eigenvalues)
   {
@@ -72,9 +68,6 @@ pcor2cor <- function(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
       stop("Input matrix is not positive definite!")
     }
   }
-
-  # standardize
-  # m <- cov2cor(m)
 
   # negate off-diagonal entries, then invert
   m <- -m
@@ -90,6 +83,43 @@ pcor2cor <- function(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
   
   # standardize and return 
   return(cov2cor(m))
+}
+
+
+cov2pcov <- function(m, tol)
+{
+  m <- -pseudoinverse(m, tol=tol)
+  diag(m) <- -diag(m)
+
+  return(m)
+}
+
+pcov2cov <- function(m, tol)
+{
+  # negate off-diagonal entries, then invert
+  m <- -m
+  diag(m) <- -diag(m)
+  m <- pseudoinverse(m, tol=tol)
+  
+  return(m)
+}
+
+
+pcor.shrink <- function(x, lambda, w, verbose=TRUE)
+{
+  pc <- -invcor.shrink(x, lambda, w, verbose)
+  diag(pc) <- -diag(pc)
+
+  # standardize and return  
+  return(cov2cor(pc))
+}
+
+pcov.shrink <- function(x, lambda, w, verbose=TRUE)
+{
+  pc <- -invcov.shrink(x, lambda, w, verbose)
+  diag(pc) <- -diag(pc)
+
+  return(pc)
 }
 
 

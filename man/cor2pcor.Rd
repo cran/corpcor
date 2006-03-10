@@ -1,16 +1,20 @@
 \name{cor2pcor}
 \alias{cor2pcor}
 \alias{pcor2cor}
+\alias{cov2pcov}
+\alias{pcov2cov}
 
 \title{Compute Partial Correlation from Correlation Matrix -- and Vice Versa}
 \usage{
-cor2pcor(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
-pcor2cor(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
+cor2pcor(m, exact.inversion=FALSE, check.eigenvalues=FALSE, tol)
+pcor2cor(m, exact.inversion=FALSE, check.eigenvalues=FALSE, tol)
+cov2pcov(m, tol)
+pcov2cov(m, tol)
 }
 \arguments{
   \item{m}{covariance matrix or (partial) correlation matrix}
   \item{check.eigenvalues}{if TRUE the input matrix is checked for positive definiteness
-        (i.e. whether all eigenvalues are strictly postive)}
+        (i.e. whether all eigenvalues are strictly positive)}
   \item{exact.inversion}{determines whether the inverse is computed
         exactly (using \code{\link{solve}}) or via \code{\link{pseudoinverse}}  }
    
@@ -26,24 +30,40 @@ pcor2cor(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
   \emph{partial} correlation coefficients from either a correlation 
   or a covariance matrix. 
 
-  \code{pcor2cor} takes a partial correlation matrix and computes
-  the corresponding correlation matrix.
-  
+  \code{pcor2cor} takes either a partial correlation matrix or 
+   a partial covariance matrix as input,
+   and computes from it the corresponding correlation matrix.
+   
+   \code{cov2pcov} transform a covariance matrix into a partial
+   covariance matrix, and  \code{pcov2cov} performs the corresponding
+   backtransform.
 }
 
 \details{
-  The partial correlations represent the direct
-  interactions between two variables, with the indirect effects of all
-  remaining variables removed.
+  The partial covariance is  the inverse of the covariance matrix,
+  with the signs of the off-diagonal elements reversed.  The partial
+  correlation is the standardized partial covariance matrix.
+
+  In graphical Gaussian models the partial correlations represent the 
+  direct interactions between two variables, conditioned on all
+  remaining variables.
   
-  For computing partial correlation coefficients from data use the
-  function \code{\link{pcor.shrink}}.
+  In all the above functions the \code{\link{pseudoinverse}} is employed
+  for inversion - hence even singular covariances (with some
+  zero eigenvalues) may be used.  However, a better option may be to
+  estimate a positive definite covariance matrix using 
+  \code{\link{cov.shrink}}.
+  
+  For efficient computation of partial correlation coefficients from data 
+  \code{x} it is recommend to employ  \code{pcor.shrink(x)}, and *not* 
+  \code{cor2pcor(cor.shrink(x))}.
 }
 
 \value{
   A matrix with the pairwise partial correlation coefficients
-  (\code{cor2pcor} and \code{pcor}) or with pairwise
-  correlations (\code{pcor2cor})
+  (\code{cor2pcor}), with pairwise
+  correlations (\code{pcor2cor}), with the partial covariances (\code{cov2pcor}),
+  or the covariances (\code{pcov2cov}).
 }
 
 
@@ -55,7 +75,7 @@ pcor2cor(m, exact.inversion=TRUE, check.eigenvalues=TRUE, tol)
    John Wiley, Chichester.
 }
 
-\seealso{\code{\link{cor}}, \code{\link{pseudoinverse}}.}
+\seealso{\code{\link{pcor.shrink}}, \code{\link{pseudoinverse}}.}
 
 \examples{
 # load corpcor library
@@ -70,6 +90,12 @@ m.cov <- rbind(
 )
 m.cov
 
+
+# partial covariance matrix
+m.pcov <- cov2pcov(m.cov)
+m.pcov
+
+
 # corresponding correlation matrix
 m.cor.1 <- cov2cor(m.cov)
 m.cor.1
@@ -81,6 +107,11 @@ m.pcor.1
 # compute partial correlations (from correlation matrix)
 m.pcor.2 <- cor2pcor(m.cor.1)
 m.pcor.2
+
+# compute partial correlations (from partial covariance matrix)
+m.pcor.3 <- cov2cor(m.pcov)
+m.pcor.3
+
 
 zapsmall( m.pcor.1 ) == zapsmall( m.pcor.2 )
 

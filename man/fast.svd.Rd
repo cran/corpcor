@@ -13,54 +13,56 @@ fast.svd(m, tol)
 	     }
 }
 \description{
-  Any rectangular real matrix M can be decomposed as
+  Any rectangular real matrix M can be decomposed into
 
                              \deqn{M = U D V^{'},}{M = U D V',}
 
-  where U and V are orthogonal, V' means V transposed, and 
-  D is a diagonal matrix with the singular values (see \code{\link{svd}}).
+  where \eqn{U} and \eqn{V} are orthogonal matrices with \eqn{U' U = I}
+  and \eqn{V' V = I}, and \eqn{D} is a diagonal matrix containing the 
+  singular values (see \code{\link{svd}}).
   
-  If the matrix M is either "fat" (small n, large p) or "thin" (large n,
-  small p) then then decomposition of M into the U, D, V matrices can be
-  greatly sped up by computing the SVD of either M M' (fat matrices) or
-  M' M (thin matrices), rather than that of M.
+  If the matrix \eqn{M} is either "fat" (small n, large p) or "thin" (large n,
+  small p) then the decomposition of \eqn{M} into the \eqn{U}, \eqn{D}, \eqn{V} 
+  matrices can be
+  greatly sped up by computing the SVD of either \eqn{M M'} (fat matrices) or
+  \eqn{M' M} (thin matrices), rather than that of \eqn{M}.
   
-  This is the trick that allows \code{fast.svd} to be substantially faster 
+  Using this simple trick allows \code{fast.svd} to be substantially faster 
   than the native \code{\link{svd}} for fat and thin matrices.  For
   near-square matrices \code{fast.svd} simply uses the standard \code{\link{svd}}
   function.
   
-  In contrast to the native \code{\link{svd}} function note that
-  \code{fast.svd} returns only *positive* singular values
-  (i.e. rank D equals rank M) and their associated singular vectors. 
-   Also note that the latter
-  may differ in sign from  \code{\link{svd}}. 
+  Note that unlike the native \code{\link{svd}} function 
+  \code{fast.svd} returns only the *positive* singular values
+  (i.e. the dimension of \eqn{D} equals the rank of \eqn{M}) and their 
+  associated singular vectors. Also note that the latter
+  may differ in sign from those computed by \code{\link{svd}}. 
 }
 
 \details{
-  For "fat" M (small n, large p) the SVD decomposition of M M' yields
+  For "fat" \eqn{M} (small n, large p) the SVD decomposition of \eqn{M M'} yields
   
             \deqn{M M^{'} = U D^2 U}{M M' = U D^2 U'}
 	     
-  As the matrix M M' has dimension n x n only, this is faster to compute
-  than SVD of M.  The V matrix is subsequently obtained by
+  As the matrix \eqn{M M'} has dimension n x n only, this is faster to compute
+  than SVD of \eqn{M}.  The \eqn{V} matrix is subsequently obtained by
   
              \deqn{V = M^{'} U D^{-1}}{V = M' U D^(-1)}  
 	            
-  Similarly, for "thin" M (large n, small p), the decomposition of M' M
+  Similarly, for "thin" \eqn{M} (large n, small p), the decomposition of \eqn{M' M}
   yields
   
              \deqn{M^{'} M = V D^2 V^{'}}{M' M = V D^2 V'}
 	    
-  which is also quick to compute as M' M has only dimension p x p.  The 
-  U matrix is then computed via
+  which is also quick to compute as \eqn{M' M} has only dimension p x p.  The 
+  \eqn{U} matrix is then computed via
   
              \deqn{U = M V D^{-1}}{U = M V D^(-1)}
 }
 
 \value{
   A list with the following components:
-  \item{d}{a vector containing the \emph{positive} singular values }
+  \item{d}{a vector containing the \emph{positive} singular values}
   \item{u}{a matrix with the corresponding left singular vectors}
   \item{v}{a matrix with the corresponding left singular vectors}
 }
