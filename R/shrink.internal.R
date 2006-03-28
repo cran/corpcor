@@ -1,4 +1,4 @@
-### shrink.internal.R  (2006-03-09)
+### shrink.internal.R  (2006-03-27)
 ###
 ###    Non-public functions used in the covariance shrinkage estimator 
 ###    
@@ -44,6 +44,27 @@ pvt.check.w <- function(w, n)
    return(w)
 }
 
+# function to compute shrinkage variance vector
+#  - wm: weighted moments of original x matrix
+#  - xc: *centered* data matrix, 
+#  - lambda.var = 0: don't shrink
+#    lambda.var > 0: shrink with given lambda
+#    lambda.var < 0: shrink with estimated lambda  
+#  - w:  data weights
+
+pvt.svar <- function(wm, xc, lambda.var, w, verbose=TRUE)
+{  
+  z <- pvt.get.lambda(xc, lambda.var, w, verbose=verbose, type="variance")
+        
+  # shrunken variances
+  sv <- z$lambda.var*mean(wm$var) + (1-z$lambda.var)*wm$var
+       
+  attr(sv, "lambda.var") <- z$lambda.var
+  attr(sv, "lambda.var.estimated") <- z$lambda.var.estimated
+  
+  return(sv)   
+}    
+
 
 
 # function to compute shrinkage correlation matrix 
@@ -55,7 +76,7 @@ pvt.check.w <- function(w, n)
 
 pvt.scor <- function(xs, lambda, w, verbose=TRUE)
 {  
-  z <- pvt.get.lambda(xs, lambda, w, verbose=verbose)
+  z <- pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation")
   if (z$lambda == 1)
   {
     p <- dim(xs)[2]
@@ -75,10 +96,12 @@ pvt.scor <- function(xs, lambda, w, verbose=TRUE)
     {
       # shrink off-diagonal elements
       r <- (1-z$lambda)*r
-      diag(r) <- 1
     }
+    
+    # set all diagonal entries to 1
+    diag(r) <- 1 
+    
   }  
-  attr(r, "overshrinkage") <- z$overshrinkage
   attr(r, "lambda") <- z$lambda
   attr(r, "lambda.estimated") <- z$lambda.estimated
  
@@ -91,7 +114,7 @@ pvt.scor <- function(xs, lambda, w, verbose=TRUE)
 # compute the inverse of the correlation shrinkage estimator
 # directly 
 
-pvt.invscor <- function(xs, lambda, w, verbose=TRUE)
+pvt.invscor <- function(wm, xs, lambda, w, verbose=TRUE, type="correlation")
 {
   z <- pvt.get.lambda(xs, lambda, w, verbose=verbose)
   p <- dim(xs)[2]
@@ -102,6 +125,9 @@ pvt.invscor <- function(xs, lambda, w, verbose=TRUE)
   }
   else
   {
+    # number of zero-variance variables
+    zeros <- (wm$var==0.0)
+    
     svdxs <- fast.svd(xs)
     m <- length(svdxs$d)  # rank of xs
            
@@ -117,8 +143,9 @@ pvt.invscor <- function(xs, lambda, w, verbose=TRUE)
      
     if (lambda==0.0) # use eigenvalue decomposition for inversion
     {
-      if (m < p) warning(paste("Estimated correlation matrix doesn't have full rank",
-      "- pseudoinverse used for inversion."), call. = FALSE)    
+      if (m < p-sum(zeros)) 
+        warning(paste("Estimated correlation matrix doesn't have full rank",
+          "- pseudoinverse used for inversion."), call. = FALSE)    
        
       invr <- svdxs$v %*% iC %*% t(svdxs$v)
     }
@@ -127,9 +154,12 @@ pvt.invscor <- function(xs, lambda, w, verbose=TRUE)
       F <- solve(z$lambda*iC + diag(m))
       invr <- (diag(p) - svdxs$v %*% F %*% t(svdxs$v))/z$lambda 
     }
+ 
+    # set all diagonal entries corresponding to zero-variance variables to 1
+    diag(invr)[zeros] <- 1
+ 
   }  
   
-  attr(invr, "overshrinkage") <- z$overshrinkage
   attr(invr, "lambda") <- z$lambda
   attr(invr, "lambda.estimated") <- z$lambda.estimated
   
@@ -139,88 +169,76 @@ pvt.invscor <- function(xs, lambda, w, verbose=TRUE)
 
 
 # returns lambda to be used for shrinkage
-pvt.get.lambda <- function(xs, lambda, w, verbose=TRUE)
+pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "variance"))
 {
   # if lambda = 0: don't shrink
   # if lambda > 0: shrink with given lambda
   # if lambda < 0: shrink with estimated lambda  (the default)
  
+  type <- match.arg(type)
+  
+  if (type == "correlation")
+  {
+     kind <- "correlation matrix"
+     func <- "C_corlambda"
+     
+     # note: x needs to be the *scaled* data matrix
+  }
+  
+  if (type == "variance")
+  {
+     kind <- "variance vector"
+     func <- "C_varlambda"
+     
+     # note: x needs to be the *centered* data matrix
+  }
+  
+    
   if (lambda < 0)
   { 
-    lambda <- pvt.estimate.lambda(xs, w)
+    if (verbose)
+    {
+      cat(paste("Determining optimal shrinkage intensity (", kind, ") ...\n", sep=""))     
+    }
+    
+    # estimate optimal shrinkage intensity 
+    # target: correlations/covariances -> 0  
+    lambda <- .C(func,
+            as.double(x),
+	    as.integer( dim(x)[1] ),
+	    as.integer( dim(x)[2] ),
+	    as.double(w),
+	    lambda=double(1), PACKAGE="corpcor", DUP=FALSE)$lambda
+
     lambda.estimated <- TRUE
       
     if (verbose)
     {
-      cat(paste("Estimated shrinkage intensity lambda: ", round(lambda, 4), "\n"))     
+      cat(paste("Estimated shrinkage intensity (", kind, "): ", round(lambda, 4), "\n", sep=""))     
     }
   }
   else
   {
+    if (lambda > 1) lambda <- 1
     lambda.estimated <- FALSE
+    
+    if (verbose)
+    {
+      cat(paste("Specified shrinkage intensity (", kind, "): ", round(lambda, 4), "\n", sep=""))     
+    }    
   }
   
-  if (lambda > 1)
-  {  
-    overshrinkage <- TRUE
-    warning(paste("Overshrinking: intensity lambda set to 1", 
-     "(allowed range: 0-1)"), call. = FALSE, immediate. = FALSE)
-    lambda <- 1
-  }
-  else
-    overshrinkage <- FALSE
-      
-  return (list(lambda=lambda, 
-               lambda.estimated=lambda.estimated,
-	       overshrinkage=overshrinkage
-	       ))
-}
-
-
-
-
-######################################################################
-# this internal function may profit from being rewritten in C ...
-######################################################################
-
-# input:  scaled data matrix  (standardization is NOT checked)
-#         weights of each data point
-#         estimated lambda 
-#
-# Note: this procedure does NOT store nor generate 
-#       the complete pxp correlation matrix
-pvt.estimate.lambda <- function(xs, w)
-{
-  # bias correction factors
-  h1 <- 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
-  h2 <- h1*h1*sum(w*w)   # for w=1/n this equals h2=n/(n-1)^2 
-  h3 <- h1*h2            # for w=1/n this equals h3=n^2/(n-1)^3 
- 
-  p <- dim(xs)[2]
-   
-  offdiagsum.rij.2 <- 0
-  offdiagsum.v.rij <- 0
-
-  for (i in 1:(p-1))
+  if (type == "correlation") 
   {
-    for (j in (i+1):p)
-    {
-       xsij <- xs[,i]*xs[,j]       
-       rr <- h1*sum(w*xsij)
-       xsijc <- xsij-rr
-       vr <- h3*sum(w*xsijc*xsijc)
-                      
-       #rr <- h1*weighted.mean(xsij, w)
-       #vr <- h2*weighted.var(xsij, w)
-		      		      
-       offdiagsum.v.rij <- offdiagsum.v.rij + vr
-       offdiagsum.rij.2 <- offdiagsum.rij.2 + rr*rr
-    }
+     return (list(lambda=lambda, lambda.estimated=lambda.estimated))
   }
 
-  lambda <- offdiagsum.v.rij/offdiagsum.rij.2
 
-  return (lambda)
+  if (type == "variance") 
+  {
+     return (list(lambda.var=lambda, lambda.var.estimated=lambda.estimated))
+  }
+	       
 }
 
 

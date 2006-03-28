@@ -57,18 +57,21 @@ weighted.moments <- function(x, w)
   m <- apply(x, 2, weighted.mean, w=w)
   v <- apply(x, 2, weighted.var, w=w)
   
+  # set small values of variance exactly to zero
+  v[v < .Machine$double.eps] <- 0
+  
   return( list(mean=m, var=v) )
 }
 
 
 # scale using the weights
-weighted.scale <- function(x, w, center=TRUE, scale=TRUE)
+weighted.scale <- function(x, w, center=TRUE, scale=TRUE, wm)
 {
   x <- as.matrix(x)
   w <- pvt.check.w(w, dim(x)[1])
   
   # compute column means and variances
-  wm <- weighted.moments(x, w)
+  if (missing(wm))  wm <- weighted.moments(x, w)
 
   if (center==TRUE)
   {
@@ -81,6 +84,15 @@ weighted.scale <- function(x, w, center=TRUE, scale=TRUE)
       sd <- sqrt(wm$var)
       x <- sweep(x, 2, sd, "/")
       attr(x, "scaled:scale") <- sd
+      
+      zeros <- (sd == 0.0)
+      x[,zeros] <- 0
+      
+      if (any(zeros))
+      {
+        warning(paste(sum(zeros), "instances of variables with zero variance detected!"),
+	 call. = FALSE)
+      }  
   } 
 
   return(x)

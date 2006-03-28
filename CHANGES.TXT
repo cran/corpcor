@@ -1,0 +1,66 @@
+           
+
+           REVISION HISTORY OF "corpcor" PACKAGE
+
+
+Version 1.3.0:
+
+- New function "var.shrink" to compute shrinkage estimates of 
+  variances (target: average empirical variances.
+- cov.shrink() and pcov.shrink() are now also based on shrunken 
+  variances.
+- Estimation of shrinkage intensities are now done in C.
+  This greatly decreases the computational costs.
+- Options "check.eigenvalues" and "exact.inversion" have been 
+  removed in cor2pcor() and pcor2cor()
+- Toutines have been modified so that data sets with zero-variance
+  variables may also be analysed (these will be in effect ignored 
+  in estimating correlation but taken into account when estimating 
+  variances).
+
+
+Version 1.2.0:
+
+- Greatly reduced memory and faster computations.
+- New code on fast inversion using Woodbury identity.
+- Consequently, pcor.shrink() is now much faster .
+- New functions for computation of weighted variances,
+  weighted moments, and weighted rescaling.
+- All covariance etc estimators now also have a "weights" argument.
+- varcov() function removed (not necessary any more).
+- Several parts of documentation updated.
+- Juliane's Web address updated.
+
+
+Version 1.1.2:
+
+- Minor typos in documentation corrected.
+- From this version is.positive.definite() works with
+  arbitrary matrix (previously it required symmetric matrix).
+
+  
+Version 1.1.1:
+
+- Reference to shrinkage covariance paper is updated.
+
+
+Version 1.1:
+
+- cor.shrink() is now the central estimator, and cov.shrink
+  is derived.
+
+
+Version 1.0:
+
+- First stand-alone release of the functions for 
+  computing (partial) correlation and covariance.
+  Prior to this versions these functions were part
+  of the GeneTS package.
+
+
+#################################################################
+Prior to 1.0.0:
+
+- In cor2pcor() and pcor2cor() input standardization removed.
+- LAPACK.svd function (with automatic choice of svd algorithm)
+- Now fast.svd, ggm.simulate.data, rank.condition uses LAPACK.svd 

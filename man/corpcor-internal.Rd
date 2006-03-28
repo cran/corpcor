@@ -13,8 +13,8 @@
 
 \alias{pvt.scor}
 \alias{pvt.invscor}
+\alias{pvt.svar}
 \alias{pvt.get.lambda}
-\alias{pvt.estimate.lambda}
 \alias{pvt.check.w}
 
 

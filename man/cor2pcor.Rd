@@ -6,23 +6,18 @@
 
 \title{Compute Partial Correlation from Correlation Matrix -- and Vice Versa}
 \usage{
-cor2pcor(m, exact.inversion=FALSE, check.eigenvalues=FALSE, tol)
-pcor2cor(m, exact.inversion=FALSE, check.eigenvalues=FALSE, tol)
+cor2pcor(m, tol)
+pcor2cor(m, tol)
 cov2pcov(m, tol)
 pcov2cov(m, tol)
 }
 \arguments{
-  \item{m}{covariance matrix or (partial) correlation matrix}
-  \item{check.eigenvalues}{if TRUE the input matrix is checked for positive definiteness
-        (i.e. whether all eigenvalues are strictly positive)}
-  \item{exact.inversion}{determines whether the inverse is computed
-        exactly (using \code{\link{solve}}) or via \code{\link{pseudoinverse}}  }
-   
+  \item{m}{covariance matrix or (partial) correlation matrix}   
   \item{tol}{tolerance - singular values larger than
              tol are considered non-zero (default value:
 	     \code{tol = max(dim(m))*max(D)*.Machine$double.eps}).
-	     The specified threshold is used both for  testing positive definiteness
-	     as well as for computing the pseudoinverse.
+	     This parameter is needed for  the singular
+	     value decomposition on which \code{\link{pseudoinverse}} is based.
 	     }
 }
 \description{
@@ -54,7 +49,7 @@ pcov2cov(m, tol)
   estimate a positive definite covariance matrix using 
   \code{\link{cov.shrink}}.
   
-  For efficient computation of partial correlation coefficients from data 
+  Note that for efficient computation of partial correlation coefficients from data 
   \code{x} it is recommend to employ  \code{pcor.shrink(x)}, and *not* 
   \code{cor2pcor(cor.shrink(x))}.
 }

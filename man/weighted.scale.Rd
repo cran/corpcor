@@ -19,7 +19,7 @@
 \usage{
   weighted.var(xvec, w) 
   weighted.moments(x, w)
-  weighted.scale(x, w, center=TRUE, scale=TRUE)
+  weighted.scale(x, w, center=TRUE, scale=TRUE, wm)
 }
 
 \arguments{
@@ -28,6 +28,8 @@
   \item{w}{data weights}
   \item{center}{logical value}
   \item{scale}{logical value}
+  \item{wm}{list with variances and means as returned by \code{weighted.moments}.
+            Will be computed from \code{x} if missing.}
 }
 
 

@@ -11,15 +11,21 @@
   and correlation (\code{\link{cor.shrink}}).
 }
 \usage{
-invcov.shrink(x, lambda, w, verbose=TRUE)
+invcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 invcor.shrink(x, lambda, w, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
-  \item{lambda}{the shrinkage intensity (range 0-1). If \eqn{\lambda} is is not specified (the default)
-        a suitable value is automatically chosen such that the resulting shrinkage estimate
-	 has minimal MSE (see below for details).  For \eqn{\lambda=0} not shrinkage occurs
-	 and the empirical estimates are computed.}
+  \item{lambda}{the correlation shrinkage intensity (range 0-1).
+                If \code{lambda} is not specified (the default) it is estimated
+		using an analytic formula from Schaefer and Strimmer (2005) 
+		- see \code{\link{cor.shrink}}.  
+		For \code{lambda=0} the empirical correlations are recovered.}
+  \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
+                If \code{lambda.var} is not specified (the default) it is estimated
+	        using an analytic formula from Schaefer and Strimmer (2005) 
+                - see \code{\link{var.shrink}}.  
+	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = dim(x)[1]}).}	 
   \item{verbose}{output status while computing (default: TRUE)}

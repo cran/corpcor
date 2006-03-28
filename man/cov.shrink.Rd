@@ -1,6 +1,7 @@
 \name{cov.shrink}
 \alias{cov.shrink}
 \alias{cor.shrink}
+\alias{var.shrink}
 
 
 \title{Shrinkage Estimates of Covariance and Correlation}
@@ -25,39 +26,47 @@
   the matrix output by \code{cov.shrink} and \code{cor.shrink}, respectively.
 }
 \usage{
-cov.shrink(x, lambda, w, verbose=TRUE)
+var.shrink(x, lambda.var, w, verbose=TRUE)
 cor.shrink(x, lambda, w, verbose=TRUE)
+cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
-  \item{lambda}{the shrinkage intensity (range 0-1). If \eqn{\lambda} is is not specified (the default)
-        a suitable value is automatically chosen such that the resulting shrinkage estimate
-	 has minimal MSE (see below for details).  For \eqn{\lambda=0} not shrinkage occurs
-	 and the empirical estimates are computed.}
+  \item{lambda}{the correlation shrinkage intensity (range 0-1).
+                If \code{lambda} is not specified (the default) it is estimated
+		using an analytic formula from Schaefer and Strimmer (2005) 
+		- see details below.  
+		For \code{lambda=0} the empirical correlations are recovered.}
+  \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
+                If \code{lambda.var} is not specified (the default) it is estimated
+	        using an analytic formula from Schaefer and Strimmer (2005) 
+                - see details below.  
+	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = dim(x)[1]}).}	 
-  \item{verbose}{output status while computing (default: TRUE)}
+  \item{verbose}{output some status messages while computing (default: TRUE)}
 }
 \details{
    
-  \code{cor.shrink} computes a shrinkage estimate \eqn{R^{*}} of the correlation matrix according to 
+   \code{var.shrink} computes the empirical variances of each variables, and shrinks them towards
+   the average of all variances.  The shrinkage intensity is estimated using Eq. 6 from 
+   Schaefer and Strimmer (2005), which leads to
+   
+   
+      \deqn{\lambda_{var}^{*} = ( (1-1/p) \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - \bar{s})^2  .}
+
+  Similarly   \code{cor.shrink} computes a shrinkage estimate of the correlation matrix by
+  shrinking the empirical correlations towards  the identity matrix.  
+  In this case the shrinkage intensity is
   
-  \deqn{R^{*} = \lambda T +  (1-\lambda) R }
   
-  where \eqn{R} is the usual empirical correlation matrix and the target \eqn{T} is the unit diagonal
-  matrix.  The shrinkage intensity \eqn{\lambda^{*}} for which the MSE of \eqn{R^{*}} is minimal
-  is estimated by
-  
-   \deqn{\lambda^{*} = \sum_{i \neq j} Var(r_{ij}) / \sum_{i \neq j} r_{ij}^2  .}
+      \deqn{\lambda^{*} = \sum_{k \neq k} Var(r_{kl}) / \sum_{k \neq l} r_{kl}^2  .}
  
-  This is a special case of the analytic formula by Ledoit and Wolf (2003)
-  for the optimal shrinkage (note that in contrast to Ledoit-Wolf here it is applied
-  to the correlation rather than the covariance matrix).
 
   \code{cov.shrink} computes the corresponding full covariance matrix
-  on the basis of the shrunken correlation matrix  and the empirical variances.
+  on the basis of the shrunken correlation matrix  and the shrunken variances.
     
-  These shrinkage estimator are especially useful in a 'small n, large p' setting - this is often
+  These shrinkage estimators are especially useful in a 'small n, large p' setting - this is often
   encountered, e.g., in genomics. For an extensive discussion please see Schaefer and Strimmer (2005).
 }
 \value{
@@ -72,17 +81,11 @@ cor.shrink(x, lambda, w, verbose=TRUE)
 }
 \references{
 
-  Ledoit, O., and Wolf. M. (2003).  Improved estimation of the covariance
-  matrix of stock returns with an application to portfolio selection.
-  \emph{J. Emp. Finance} \bold{10}:503-621. 
-
   Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
-  
-  
-  
+   
 }
 \seealso{\code{\link{invcov.shrink}}, \code{\link{pcor.shrink}}, \code{\link{cor2pcor}}}
 
