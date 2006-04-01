@@ -39,8 +39,8 @@ rank.condition(m, tol)
   and the condition is the ratio  of the largest and the smallest
   singular value.   
   
-  Note that the definition \code{tol= max(dim(m))*max(D)*.Machine$double.eps} ensures 
-  that the same results are obtained as in Octave or in Matlab.
+  Note that the definition \code{tol= max(dim(m))*max(D)*.Machine$double.eps} 
+  is exactly compatible with the conventions used in "Octave" or "Matlab".
 }
 
 \value{

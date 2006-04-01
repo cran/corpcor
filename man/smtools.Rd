@@ -25,9 +25,9 @@ vec2sm(vec, diag = FALSE, order = NULL)
   in the vector produced by \code{sm2vec}.
   
   \code{vec2sm} reverses the operation by  \code{sm2vec} and turns the
-  vector back in a symmetric matrix. Note that if \code{diag=FALSE} the
+  vector back in a symmetric matrix. If \code{diag=FALSE} the
   diagonal of the resulting matrix will consist of NAs.  If \code{order}
-  is given then the input vector \code{vec} is first sorted accordingly.
+  is supplied then the input vector \code{vec} will first be rearranged accordingly.
  }
 
 \value{

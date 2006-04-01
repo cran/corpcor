@@ -30,8 +30,8 @@ pcov2cov(m, tol)
    and computes from it the corresponding correlation matrix.
    
    \code{cov2pcov} transform a covariance matrix into a partial
-   covariance matrix, and  \code{pcov2cov} performs the corresponding
-   backtransform.
+   covariance matrix, and  \code{pcov2cov} is the corresponding
+   reciprocal operation.
 }
 
 \details{

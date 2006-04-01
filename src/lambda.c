@@ -1,5 +1,5 @@
 
-/* lambda.c  (2005-03-27)  
+/* lambda.c  (2005-03-31)  
  *
  * Copyright 2006 Korbinian Strimmer
  *
@@ -26,21 +26,17 @@
 
 /* estimate weighted mean and variance of mean from data vector z*/
 
-void C_meanvarmean(double* z, int n, double* w, double* h1, double* h3, 
-     double* m, double* v)
+void C_meanvarmean(double* z, int n, double* w, double* m, double* v)
 {
   int i;
   double zc, mean, varmean;
   
-
   /* weighted mean */
   mean = 0;
   for (i=0; i < n; i++)
   {
     mean += w[i]*z[i];
-  }
-  mean = (*h1)*mean;
-  
+  }  
    
   /* variance of mean */
   varmean = 0;
@@ -49,7 +45,6 @@ void C_meanvarmean(double* z, int n, double* w, double* h1, double* h3,
     zc = z[i]-mean;
     varmean += w[i]*zc*zc;
   }
-  varmean = (*h3)*varmean;
   
   /* return */
   *m = mean;
@@ -93,9 +88,6 @@ void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
   nn = *n;
   pp = *p;
 
-  C_biascorrectionfactor(w, nn, &h1, &h3);
-
-
   /* allocate vector - error handling is done by R */
   xsij = (double *) Calloc((size_t) nn, double);
 
@@ -121,13 +113,17 @@ void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
            xsij[i] = xs[kn+i] * xs[ln+i];       
        }
  
-       C_meanvarmean(xsij, nn, w, &h1, &h3,  &rr, &vr);
+       C_meanvarmean(xsij, nn, w, &rr, &vr);
         
        numerator += vr;
        denominator += rr*rr;
     }
   }
-
+  
+  C_biascorrectionfactor(w, nn, &h1, &h3);
+  numerator = numerator*h3;
+  denominator = denominator*h1*h1;
+  
   
   /* return estimated shrinkage intensity */
    
@@ -199,11 +195,11 @@ void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
            xc2[i] = xc[kn+i] * xc[kn+i];       
        }
  
-       C_meanvarmean(xc2, nn, w, &h1, &h3,  &vv, &varvv);
+       C_meanvarmean(xc2, nn, w,  &vv, &varvv);
               
-       varvec[k] = vv;
-       meanvv += vv;
-       numerator += varvv;
+       varvec[k] = h1*vv;
+       meanvv += varvec[k];
+       numerator += h3*varvv;
   }
   meanvv = meanvv/pp;
     

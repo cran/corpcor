@@ -6,7 +6,7 @@
 \title{Fast Computation of the Inverse of the Covariance and Correlation Matrix}
 \description{
   The functions \code{invcov.shrink} and \code{invcor.shrink} implement an
-  algrithm to *efficiently* compute 
+  algorithm to \emph{efficiently} compute 
   the inverses of shrinkage estimates of covariance (\code{\link{cov.shrink}}) 
   and correlation (\code{\link{cor.shrink}}).
 }
@@ -33,7 +33,11 @@ invcor.shrink(x, lambda, w, verbose=TRUE)
 \details{
   The trick that allows the fast computation of the inverses  
    of the shrinkage covariance and correlation matrices is the
-  Woodbury matrix identity (\url{http://en.wikipedia.org/wiki/Woodbury_matrix_identity}).
+  Woodbury matrix identity - see, e.g., \url{http://en.wikipedia.org/wiki/Woodbury_matrix_identity}.  The key insight from this identity 
+is that for inverting the covariance/correlation shrinkage estimator 
+obtained from a n x p matrix you only need to invert a matrix of
+the size of the rank of the data matrix (which in "small n, large p" setting
+may mean substantial savings in computions). 
 }
 \value{
   \code{invcov.shrink} returns the inverse of the output from \code{\link{cov.shrink}}. 

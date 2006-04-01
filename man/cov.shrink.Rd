@@ -6,30 +6,16 @@
 
 \title{Shrinkage Estimates of Covariance and Correlation}
 \description{
-  The functions \code{cov.shrink} and \code{cor.shrink} compute shrinkage estimates of
-  covariance and correlation, as as suggested in Schaefer and Strimmer (2005).
-    
-  In comparison with the standard empirical estimates 
-  (\code{\link{cov}} and \code{\link{cor}}) the shrinkage estimates have a number
-  of advantages
-  \enumerate{
-    \item are always  positive definite,
-    \item  well conditioned (so that the inverse always exists), and 
-    \item exhibit (sometimes dramatically) better mean squared error.}
-  Furthermore, they are inexpensive to compute and do not require any
-  tuning parameters (the shrinkage intensity is analytically estimated from the data).
-  
-  As an extra benefit, the shrinkage estimators have a form that can be *very* efficiently inverted
-  using the Woodbury matrix identity, even if the number of variables is large.  
-  This approach is implemented in the functions 
-  \\code{\link{invcov.shrink}} and \code{\link{invcor.shrink}} and is much faster than directly inverting
-  the matrix output by \code{cov.shrink} and \code{cor.shrink}, respectively.
+  The functions \code{var.shrink}, \code{cor.shrink}, and \code{cov.shrink} compute 
+  shrinkage estimates of variance, correlation, and covariance, respectively.
 }
+
 \usage{
 var.shrink(x, lambda.var, w, verbose=TRUE)
 cor.shrink(x, lambda, w, verbose=TRUE)
 cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 }
+
 \arguments{
   \item{x}{a data matrix}
   \item{lambda}{the correlation shrinkage intensity (range 0-1).
@@ -48,8 +34,8 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 }
 \details{
    
-   \code{var.shrink} computes the empirical variances of each variables, and shrinks them towards
-   the average of all variances.  The shrinkage intensity is estimated using Eq. 6 from 
+   \code{var.shrink} computes the empirical variance of each considered random variable, and shrinks 
+   them towards their common average.  The shrinkage intensity is estimated using Eq. 6 from 
    Schaefer and Strimmer (2005), which leads to
    
    
@@ -57,7 +43,7 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 
   Similarly   \code{cor.shrink} computes a shrinkage estimate of the correlation matrix by
   shrinking the empirical correlations towards  the identity matrix.  
-  In this case the shrinkage intensity is
+  In this case the shrinkage intensity is (Schaefer and Strimmer, 2005)
   
   
       \deqn{\lambda^{*} = \sum_{k \neq k} Var(r_{kl}) / \sum_{k \neq l} r_{kl}^2  .}
@@ -66,10 +52,34 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
   \code{cov.shrink} computes the corresponding full covariance matrix
   on the basis of the shrunken correlation matrix  and the shrunken variances.
     
-  These shrinkage estimators are especially useful in a 'small n, large p' setting - this is often
-  encountered, e.g., in genomics. For an extensive discussion please see Schaefer and Strimmer (2005).
+   In comparison with the standard empirical estimates 
+  (\code{\link{var}}, \code{\link{cov}}, and \code{\link{cor}}) the shrinkage estimates exhibit
+   a number of favorable properties.  For instance, 
+  \enumerate{
+    \item they are typically much more efficient, i.e. they show (sometimes dramatically) better 
+          mean squared error,
+    \item the estimated covariance and correlation matrices are always  positive definite
+          and well conditioned (so that there are no numerical problems when computing their inverse),
+    \item  they are inexpensive to compute, and
+    \item they are fully automatic and  do not require any
+          tuning parameters (as the shrinkage intensity is analytically estimated from the data), and
+    \item they assume nothing about the underlying distributions, except for the existence of
+          the first two moments.}
+  These properties also carry over to derived quantities, such as partial covariance and
+  partial correlation (\code{\link{pcov.shrink}} and  \code{\link{pcor.shrink}}).
+
+
+  
+  As an extra benefit, the shrinkage estimators have a form that can be \emph{very} efficiently inverted
+  using the Woodbury matrix identity, even if the number of variables is large.  
+  Note that this identity is employed in the functions 
+  \\code{\link{invcov.shrink}} and \code{\link{invcor.shrink}}. and is much faster than directly 
+  inverting the matrix output by \code{cov.shrink} and \code{cor.shrink}, respectively.
+  
 }
 \value{
+  \code{var.shrink} returns a vector with estimated variances.
+
   \code{cov.shrink} returns a covariance matrix.
   
   \code{cor.shrink} returns the corresponding correlation matrix. 

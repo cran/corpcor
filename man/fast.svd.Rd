@@ -2,6 +2,33 @@
 \alias{fast.svd}
 
 \title{Fast Singular Value Decomposition}
+
+\description{
+  \code{fast.svd} returns the singular value decomposition of
+  a rectangular real matrix 
+  
+                             \deqn{M = U D V^{'},}{M = U D V',}
+
+  where \eqn{U} and \eqn{V} are orthogonal matrices with \eqn{U' U = I}
+  and \eqn{V' V = I}, and \eqn{D} is a diagonal matrix containing the 
+  singular values (see \code{\link{svd}}).
+  
+  The main difference to the native version \code{\link{svd}} is that 
+  \code{fast.svd} is substantially faster for  "fat" (small n, large p)
+  and "thin" (large n, small p) matrices.
+  In this case the decomposition of \eqn{M} can be
+  greatly sped up by first computing the SVD of either \eqn{M M'} (fat matrices) or
+  \eqn{M' M} (thin matrices), rather than that of \eqn{M}.
+  
+  A second difference to \code{\link{svd}} is that \code{fast.svd} only
+  returns the \emph{positive} singular values (thus the dimension of \eqn{D}
+  always equals the rank of \eqn{M}).  Note that the singular
+  vectors computed by \code{fast.svd} may differ in sign from those computed 
+  by \code{\link{svd}}. 
+}
+
+
+
 \usage{
 fast.svd(m, tol)
 }
@@ -11,32 +38,6 @@ fast.svd(m, tol)
              tol are considered non-zero (default value:
 	     \code{tol = max(dim(m))*max(D)*.Machine$double.eps})
 	     }
-}
-\description{
-  Any rectangular real matrix M can be decomposed into
-
-                             \deqn{M = U D V^{'},}{M = U D V',}
-
-  where \eqn{U} and \eqn{V} are orthogonal matrices with \eqn{U' U = I}
-  and \eqn{V' V = I}, and \eqn{D} is a diagonal matrix containing the 
-  singular values (see \code{\link{svd}}).
-  
-  If the matrix \eqn{M} is either "fat" (small n, large p) or "thin" (large n,
-  small p) then the decomposition of \eqn{M} into the \eqn{U}, \eqn{D}, \eqn{V} 
-  matrices can be
-  greatly sped up by computing the SVD of either \eqn{M M'} (fat matrices) or
-  \eqn{M' M} (thin matrices), rather than that of \eqn{M}.
-  
-  Using this simple trick allows \code{fast.svd} to be substantially faster 
-  than the native \code{\link{svd}} for fat and thin matrices.  For
-  near-square matrices \code{fast.svd} simply uses the standard \code{\link{svd}}
-  function.
-  
-  Note that unlike the native \code{\link{svd}} function 
-  \code{fast.svd} returns only the *positive* singular values
-  (i.e. the dimension of \eqn{D} equals the rank of \eqn{M}) and their 
-  associated singular vectors. Also note that the latter
-  may differ in sign from those computed by \code{\link{svd}}. 
 }
 
 \details{

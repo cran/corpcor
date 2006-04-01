@@ -32,8 +32,7 @@ pcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
    the sign of the off-diagonal elements reversed.  The partial correlation matrix
    is the standardized partial covariance matrix.
   
-   Note that \code{pcor.shrink(x)} is numerically the same as \code{cor2pcor(cor.shrink(x))}.
-   However, \code{pcor.shrink} is computationally *much* faster.
+   Note that \code{pcor.shrink(x)} is numerically t\emph{much} faster.
    
    For details about the shrinkage procedure (from Schaefer and Strimmer (2005))
    please consult the help page of \code{\link{cov.shrink}}.
