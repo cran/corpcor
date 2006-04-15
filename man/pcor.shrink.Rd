@@ -24,7 +24,7 @@ pcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
                 - see \code{\link{var.shrink}}.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights
-            are assumed (\code{w = rep(1/n, n)} with \code{n = dim(x)[1]}).}	 
+            are assumed (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
   \item{verbose}{report progress while computing (default: TRUE)}
 }
 \details{
@@ -32,10 +32,11 @@ pcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
    the sign of the off-diagonal elements reversed.  The partial correlation matrix
    is the standardized partial covariance matrix.
   
-   Note that \code{pcor.shrink(x)} is numerically t\emph{much} faster.
+   Note that using \code{pcor.shrink(x)} \emph{much} faster than 
+   \code{cor2pcor(cor.shrink(x))}.
    
-   For details about the shrinkage procedure (from Schaefer and Strimmer (2005))
-   please consult the help page of \code{\link{cov.shrink}}.
+   For details about the shrinkage procedure consult Schaefer and Strimmer (2005)
+   and the help page of \code{\link{cov.shrink}}.
    
 }
 \value{

@@ -16,7 +16,9 @@
 \alias{pvt.svar}
 \alias{pvt.get.lambda}
 \alias{pvt.check.w}
+\alias{pvt.usr}
 
+\alias{print.shrinkage}
 
 
 \title{Internal corpcor Functions}

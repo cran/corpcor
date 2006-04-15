@@ -35,7 +35,7 @@
 
 \value{
   A rescaled matrix (\code{weighted.scale}), a list containing the column means and 
-  variances (\code{weighted.moments}), or simple number (\code{weighted.var})
+  variances (\code{weighted.moments}), or single number (\code{weighted.var})
 }
 
 

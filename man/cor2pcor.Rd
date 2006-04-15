@@ -49,8 +49,8 @@ pcov2cov(m, tol)
   estimate a positive definite covariance matrix using 
   \code{\link{cov.shrink}}.
   
-  Note that for efficient computation of partial correlation coefficients from data 
-  \code{x} it is recommend to employ  \code{pcor.shrink(x)}, and *not* 
+  Note that for efficient computation of partial correlation coefficients from some 
+  data  \code{x} use  \code{pcor.shrink(x)}  and \emph{not} 
   \code{cor2pcor(cor.shrink(x))}.
 }
 

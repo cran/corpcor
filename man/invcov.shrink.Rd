@@ -27,7 +27,7 @@ invcor.shrink(x, lambda, w, verbose=TRUE)
                 - see \code{\link{var.shrink}}.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
-            (\code{w = rep(1/n, n)} with \code{n = dim(x)[1]}).}	 
+            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
   \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{

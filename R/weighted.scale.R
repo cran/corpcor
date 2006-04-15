@@ -52,7 +52,7 @@ weighted.var <- function(xvec, w)
 weighted.moments <- function(x, w)
 {
   x <- as.matrix(x)
-  w <- pvt.check.w(w, dim(x)[1])
+  w <- pvt.check.w(w, nrow(x))
      
   m <- apply(x, 2, weighted.mean, w=w)
   v <- apply(x, 2, weighted.var, w=w)
@@ -68,7 +68,7 @@ weighted.moments <- function(x, w)
 weighted.scale <- function(x, w, center=TRUE, scale=TRUE, wm)
 {
   x <- as.matrix(x)
-  w <- pvt.check.w(w, dim(x)[1])
+  w <- pvt.check.w(w, nrow(x))
   
   # compute column means and variances
   if (missing(wm))  wm <- weighted.moments(x, w)

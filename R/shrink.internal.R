@@ -1,4 +1,4 @@
-### shrink.internal.R  (2006-03-27)
+### shrink.internal.R  (2006-04-15)
 ###
 ###    Non-public functions used in the covariance shrinkage estimator 
 ###    
@@ -44,6 +44,47 @@ pvt.check.w <- function(w, n)
    return(w)
 }
 
+# print function
+print.shrinkage <- function(x, ...)
+{
+  attr(x, "class") <- NULL
+  
+  lambda <- attr(x, "lambda")
+  lambda.estimated <- attr(x, "lambda.estimated")
+  attr(x, "lambda") <- NULL 
+  attr(x, "lambda.estimated") <- NULL 
+  
+  lambda.var <- attr(x, "lambda.var")
+  lambda.var.estimated <- attr(x, "lambda.var.estimated")
+  attr(x, "lambda.var") <- NULL 
+  attr(x, "lambda.var.estimated") <- NULL 
+
+  NextMethod("print", x, quote = FALSE, right = TRUE)
+    
+  cat("\n")
+  if (!is.null(lambda.estimated))  
+  {
+    if (lambda.estimated) 
+      le <- "(estimated)"
+    else
+      le <- "(specified)"  
+    cat(paste("Shrinkage intensity lambda (correlation matrix):", round(lambda,4), le, "\n"))
+  }
+  
+  if (!is.null(lambda.var.estimated))  
+  {
+    if (lambda.var.estimated)
+      lve <- "(estimated)"
+    else
+      lve <- "(specified)"  
+    cat(paste("Shrinkage intensity lambda.var (variance vector):", round(lambda.var, 4), lve, "\n"))
+  }
+}
+
+
+
+
+
 # function to compute shrinkage variance vector
 #  - wm: weighted moments of original x matrix
 #  - xc: *centered* data matrix, 
@@ -62,6 +103,8 @@ pvt.svar <- function(wm, xc, lambda.var, w, verbose=TRUE)
   attr(sv, "lambda.var") <- z$lambda.var
   attr(sv, "lambda.var.estimated") <- z$lambda.var.estimated
   
+  attr(sv, "class") <- "shrinkage"
+  
   return(sv)   
 }    
 
@@ -79,7 +122,7 @@ pvt.scor <- function(xs, lambda, w, verbose=TRUE)
   z <- pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation")
   if (z$lambda == 1)
   {
-    p <- dim(xs)[2]
+    p <- ncol(xs)
     r <- diag(p)
   }
   else
@@ -104,7 +147,9 @@ pvt.scor <- function(xs, lambda, w, verbose=TRUE)
   }  
   attr(r, "lambda") <- z$lambda
   attr(r, "lambda.estimated") <- z$lambda.estimated
- 
+
+  attr(r, "class") <- "shrinkage"
+
   return(r)   
 }    
 
@@ -114,10 +159,10 @@ pvt.scor <- function(xs, lambda, w, verbose=TRUE)
 # compute the inverse of the correlation shrinkage estimator
 # directly 
 
-pvt.invscor <- function(wm, xs, lambda, w, verbose=TRUE, type="correlation")
+pvt.invscor <- function(wm, xs, lambda, w, verbose=TRUE)
 {
-  z <- pvt.get.lambda(xs, lambda, w, verbose=verbose)
-  p <- dim(xs)[2]
+  z <- pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation")
+  p <- ncol(xs)
     
   if (z$lambda == 1)
   {
@@ -162,6 +207,11 @@ pvt.invscor <- function(wm, xs, lambda, w, verbose=TRUE, type="correlation")
   
   attr(invr, "lambda") <- z$lambda
   attr(invr, "lambda.estimated") <- z$lambda.estimated
+
+  attr(invr, "class") <- "shrinkage"
+  
+  rownames(invr) <- colnames(xs)
+  colnames(invr) <- colnames(xs)
   
   return( invr )
 }
@@ -179,7 +229,7 @@ pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "va
   
   if (type == "correlation")
   {
-     kind <- "correlation matrix"
+     kind <- "lambda (correlation matrix):"
      func <- "C_corlambda"
      
      # note: x needs to be the *scaled* data matrix
@@ -187,7 +237,7 @@ pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "va
   
   if (type == "variance")
   {
-     kind <- "variance vector"
+     kind <- "lambda.var (variance vector):"
      func <- "C_varlambda"
      
      # note: x needs to be the *centered* data matrix
@@ -198,15 +248,15 @@ pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "va
   { 
     if (verbose)
     {
-      cat(paste("Determining optimal shrinkage intensity (", kind, ") ...\n", sep=""))     
+      cat(paste("Estimating optimal shrinkage intensity", kind))     
     }
     
     # estimate optimal shrinkage intensity 
     # target: correlations/covariances -> 0  
     lambda <- .C(func,
             as.double(x),
-	    as.integer( dim(x)[1] ),
-	    as.integer( dim(x)[2] ),
+	    as.integer( nrow(x) ),
+	    as.integer( ncol(x) ),
 	    as.double(w),
 	    lambda=double(1), PACKAGE="corpcor", DUP=FALSE)$lambda
 
@@ -214,7 +264,7 @@ pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "va
       
     if (verbose)
     {
-      cat(paste("Estimated shrinkage intensity (", kind, "): ", round(lambda, 4), "\n", sep=""))     
+      cat(paste(" ", round(lambda, 4), "\n", sep=""))     
     }
   }
   else
@@ -224,7 +274,7 @@ pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "va
     
     if (verbose)
     {
-      cat(paste("Specified shrinkage intensity (", kind, "): ", round(lambda, 4), "\n", sep=""))     
+      cat(paste("Specified shrinkage intensity ", kind, round(lambda, 4), "\n"))     
     }    
   }
   

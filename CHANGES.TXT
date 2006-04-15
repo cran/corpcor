@@ -3,6 +3,15 @@
            REVISION HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.4.0:
+
+- New dunctions mvr.shrink() and mvr.predict() for multivariate
+  shrinkage regression.
+- All shrinkage estimate now carry the class attribute "shrinkage.
+  This allows for a more informative output via print.shrinkage()
+- Removed functions:  sm2vec(), vec2sm(), sm.indexes()
+
+
 Version 1.3.1:
 
 - This versions fixes a bug present in "corpcor" version 1.3.0 
@@ -71,6 +80,7 @@ Version 1.0:
 
 
 #################################################################
+
 Prior to 1.0.0:
 
 - In cor2pcor() and pcor2cor() input standardization removed.

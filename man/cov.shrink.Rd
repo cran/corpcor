@@ -25,25 +25,25 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
                 If \code{lambda.var} is not specified (the default) it is estimated
-	        using an analytic formula from Schaefer and Strimmer (2005) 
+	        using an analytic formula from Schaefer and Strimmer (2005)
                 - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
-            (\code{w = rep(1/n, n)} with \code{n = dim(x)[1]}).}	 
+            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
   \item{verbose}{output some status messages while computing (default: TRUE)}
 }
 \details{
    
    \code{var.shrink} computes the empirical variance of each considered random variable, and shrinks 
    them towards their common average.  The shrinkage intensity is estimated using Eq. 6 from 
-   Schaefer and Strimmer (2005), which leads to
+   Schaefer and Strimmer (2005), which leads to 
    
    
       \deqn{\lambda_{var}^{*} = ( (1-1/p) \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - \bar{s})^2  .}
 
   Similarly   \code{cor.shrink} computes a shrinkage estimate of the correlation matrix by
   shrinking the empirical correlations towards  the identity matrix.  
-  In this case the shrinkage intensity is (Schaefer and Strimmer, 2005)
+  In this case the shrinkage intensity is 
   
   
       \deqn{\lambda^{*} = \sum_{k \neq k} Var(r_{kl}) / \sum_{k \neq l} r_{kl}^2  .}
@@ -51,6 +51,7 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 
   \code{cov.shrink} computes the corresponding full covariance matrix
   on the basis of the shrunken correlation matrix  and the shrunken variances.
+  See also Opgen-Rhein and Strimmer (2006).
     
    In comparison with the standard empirical estimates 
   (\code{\link{var}}, \code{\link{cov}}, and \code{\link{cor}}) the shrinkage estimates exhibit
@@ -65,13 +66,14 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
           tuning parameters (as the shrinkage intensity is analytically estimated from the data), and
     \item they assume nothing about the underlying distributions, except for the existence of
           the first two moments.}
-  These properties also carry over to derived quantities, such as partial covariance and
-  partial correlation (\code{\link{pcov.shrink}} and  \code{\link{pcor.shrink}}).
+  These properties also carry over to derived quantities, such as partial covariances and
+  partial correlations (\code{\link{pcov.shrink}} and  \code{\link{pcor.shrink}}).
 
 
   
   As an extra benefit, the shrinkage estimators have a form that can be \emph{very} efficiently inverted
-  using the Woodbury matrix identity, even if the number of variables is large.  
+  using the Woodbury matrix identity, especially if the number of variables is large
+  and the sample size is small.  
   Note that this identity is employed in the functions 
   \\code{\link{invcov.shrink}} and \code{\link{invcor.shrink}}. and is much faster than directly 
   inverting the matrix output by \code{cov.shrink} and \code{cor.shrink}, respectively.
@@ -85,11 +87,16 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
   \code{cor.shrink} returns the corresponding correlation matrix. 
 }
 \author{
-  Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}) 
+  Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}),
+  Rainer Opgen-Rhein (\url{http://www.statistik.lmu.de/~opgen/}),
   and Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
   
 }
 \references{
+
+  Opgen-Rhein, R., and Strimmer, K. (2006).  Beyond Gauss-Markov and ridge:
+  an effective approach for high-dimensional regression and causal inference.
+  Submitted.
 
   Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
