@@ -1,8 +1,8 @@
-### fast.svd.R  (2005-07-19)
+### fast.svd.R  (2006-04-24)
 ###
 ###    Efficient Computation of the Singular Value Decomposition
 ###
-### Copyright 2003-05 Korbinian Strimmer
+### Copyright 2003-06 Korbinian Strimmer
 ###
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -23,66 +23,12 @@
 
 # private functions
 
-# this works just like svd, with the difference that only LAPACK
-# methods are used, and that there is an automatic fallback
-# to algorithm "dgesvd" if algorithm "dgesdd" throws an error.
-
-# note that LAPACK.svd returns "v" not "vt" as La.svd
 
 
-LAPACK.svd <- function(x, nu = min(n, p), nv = min(n, p))
-{
-    if (!is.numeric(x) && !is.complex(x))
-        stop("argument to 'LAPACK.svd' must be numeric or complex")
-    if (any(!is.finite(x)))
-        stop("infinite or missing values in 'x'")
-         
-    x <- as.matrix(x)
-    n <- nrow(x)
-    p <- ncol(x)
-    if (!n || !p)
-        stop("0 extent dimensions")
-
-
-    if( is.complex(x) ) # if complex we have to use the "dgesvd" algorithm
-    {
-        method = "dgesvd"
-        res <- La.svd(x, nu=nu, nv=nv, method=method) 
-	
-    }
-    else # but otherwise we try the "dgesdd" algorithm first (10x faster)
-    {
-        method = "dgesdd"
-        res <- try( La.svd(x, nu=nu, nv=nv, method=method), silent=TRUE )
-  
-        if ( class(res) == "try-error" || any(res$d < 0) ) 
-	# and use the "dgesvd" algorithm if there is an error,
-	# or if there are negative singular values (happens on AMD64/ATLAS!!)  
-        {
-            method = "dgesvd"
-            res <- La.svd(x, nu=nu, nv=nv, method=method)
-        }
-    }
-
-    if  (is.complex(x))
-    {
-         out <- list(d = res$d, u = if (nu) res$u, v = if (nv) Conj(t(res$vt)))
-    }
-    else
-    {
-         out <- list(d = res$d, u = if (nu) res$u, v = if (nv) t(res$vt))
-    }
-
-    attr(out, "svd.algorithm") <- method
-    return(out)
-}
-
-
-
-# standard svd returning only positive singular values
+# svd that retains only positive singular values 
 positive.svd <- function(m, tol)
 {
-  s <- LAPACK.svd(m)
+  s <- svd(m)
   
   if( missing(tol) ) 
       tol <- max(dim(m))*max(s$d)*.Machine$double.eps
@@ -100,7 +46,7 @@ positive.svd <- function(m, tol)
 nsmall.svd <- function(m, tol)
 {
    B <- m %*% t(m)     # nxn matrix
-   s <- LAPACK.svd(B,nv=0)    # of which svd is easy..
+   s <- svd(B,nv=0)    # of which svd is easy..
 
    # determine rank of B  (= rank of m)
    if( missing(tol) ) 
@@ -122,7 +68,7 @@ nsmall.svd <- function(m, tol)
 psmall.svd <- function(m, tol)
 {
    B <- crossprod(m)   # pxp matrix
-   s <- LAPACK.svd(B,nu=0)    # of which svd is easy..
+   s <- svd(B,nu=0)    # of which svd is easy..
 
    # determine rank of B  (= rank of m)
    if( missing(tol) ) 

@@ -1,5 +1,5 @@
 
-/* lambda.c  (2005-03-31)  
+/* lambda.c  (2006-04-24)  
  *
  * Copyright 2006 Korbinian Strimmer
  *
@@ -69,21 +69,42 @@ void C_biascorrectionfactor(double *w, int n, double* h1, double* h3)
 
 
 
+void C_compute_lambda(double numerator, double denominator, double* lambda) 
+{
+
+  if (denominator == 0.0)
+  {
+    /* in case of equality of target and unconstrained estimate
+       (= zero misspecification) set shrinkage intensity to 1 */
+    
+    *lambda = 1;
+  }
+  else
+  {
+    *lambda = numerator/denominator;
+    
+    /* don't overshrink */
+    if( (*lambda) > 1 ) *lambda = 1;
+  }
+}
+
 
 
 /* 
- * input:  xs      scaled matrix 
+ * input:  lr      limit risk of individual components
+ *         xs      scaled matrix 
  *         n       sample size (number of rows)
  *         p       number of variables (number of columns)
  *         w       data weights
  * output: lambda  shrinkage intensity (Target: correlations -> 0)  
  */
-void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
+void C_corlambda(int *lr, double* xs, int* n, int* p, double* w, double* lambda)
 {
   double h1, h3, rr, vr;
-  double numerator, denominator;
+  double a, b, suma, sumb;
   int i, k, l, nn, pp, kn, ln; 
   double* xsij;
+  double la, minla;
   
   nn = *n;
   pp = *p;
@@ -95,11 +116,15 @@ void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
   /* compute numerator and denominator for the optimal 
      shrinkage intensity using target: zero off-diagonal entries */
 
-  denominator = 0;
-  numerator = 0;
+  la = 0;     /* component-wise lambda */
+  minla = 1;  /* smallest component-wise lambda */
+  suma = 0;
+  sumb = 0;
   rr = 0;
   vr = 0;
-  
+
+  C_biascorrectionfactor(w, nn, &h1, &h3);
+ 
   for (k=0; k < pp-1; k++)
   {
     for (l=k+1; l < pp; l++)
@@ -115,33 +140,26 @@ void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
  
        C_meanvarmean(xsij, nn, w, &rr, &vr);
         
-       numerator += vr;
-       denominator += rr*rr;
+       a = vr*h3;
+       b = (rr*h1);
+       b = b*b;
+       suma += a;
+       sumb += b;
+
+       C_compute_lambda(a, b, &la);
+       if (la < minla) /* find smallest component lambda */
+         minla = la;
     }
   }
   
-  C_biascorrectionfactor(w, nn, &h1, &h3);
-  numerator = numerator*h3;
-  denominator = denominator*h1*h1;
+ 
+  /* optimal ensemble shrinkage intensity */
+  C_compute_lambda(suma, sumb, lambda);
   
-  
-  /* return estimated shrinkage intensity */
-   
-  if (denominator == 0.0)
-  {
-    /* in case of equality of target and unconstrained estimate
-       (= zero misspecification) set shrinkage intensity to 1 */
-    
-    *lambda = 1;
-  }
-  else
-  {
-    /* optimal shrinkage intensity for target with zero offdiagonal elements */
-    *lambda = numerator/denominator;
-    
-    /* don't overshrink */
-    if( (*lambda) > 1 ) *lambda = 1;
-  }
+  /* make sure that MSE of every individual component always decreases */
+  if (*lr == 1) /* limit.risk==TRUE */
+    if ( *lambda > 2*minla) *lambda = 2*minla;
+
   
   /* free vector */
   Free(xsij);  
@@ -151,19 +169,19 @@ void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
 
 
 /* 
- * input:  xc      centered matrix 
+ * input:  lr      limit risk of individual components
+ *         xc      centered matrix 
  *         n       sample size (number of rows)
  *         p       number of variables (number of columns)
  *         w       data weights
  * output: lambda  shrinkage intensity (Target: average empirical variance)  
  */
-void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
+void C_varlambda(int* lr, double* xc, int* n, int* p, double* w, double* lambda)
 {
-  double h1, h3, vv, varvv, meanvv, tmp;
-  double numerator, denominator;
+  double h1, h3, vv, varvv, fac;
+  double suma, sumb,meanb, la, minla;
   int i, k, nn, pp, kn; 
-  double* xc2;
-  double* varvec;
+  double* xc2, *avec, *bvec;
     
   nn = *n;
   pp = *p;
@@ -173,7 +191,8 @@ void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
 
   /* allocate vectors - error handling is done by R */
   xc2 = (double *) Calloc((size_t) nn, double);
-  varvec = (double *) Calloc((size_t) pp, double);
+  avec = (double *) Calloc((size_t) pp, double);
+  bvec = (double *) Calloc((size_t) pp, double);
  
     
   /* compute numerator and denominator for the optimal 
@@ -181,10 +200,8 @@ void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
  
   vv = 0;
   varvv = 0;
-  meanvv = 0;
-  numerator = 0;
-  denominator = 0;
-
+  meanb = 0;
+  fac = (1.0-1.0/((double)pp));
   for (k=0; k < pp; k++)
   {  
        kn = k*nn;
@@ -197,41 +214,39 @@ void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
  
        C_meanvarmean(xc2, nn, w,  &vv, &varvv);
               
-       varvec[k] = h1*vv;
-       meanvv += varvec[k];
-       numerator += h3*varvv;
+       avec[k] = fac*h3*varvv;
+       bvec[k] = h1*vv;
+       meanb += bvec[k];
   }
-  meanvv = meanvv/pp;
-    
-  numerator = (1.0-1.0/((double)pp))*numerator;
-  denominator = 0;   
+  meanb = meanb/pp;
+  
+  la = 0;     /* component-wise lambda */
+  minla = 1;  /* smallest component-wise lambda */
+  suma = 0;
+  sumb = 0;
   for (k=0; k < pp; k++)
   {  
-     tmp = varvec[k] - meanvv;
-     denominator += tmp*tmp;
-  }
-      
-  /* return estimated shrinkage intensity */
-   
-  if (denominator == 0.0)
-  {
-    /* in case of equality of target and unconstrained estimate
-       (= zero misspecification) set shrinkage intensity to 1 */
+    bvec[k] = bvec[k] - meanb;
+    bvec[k] = bvec[k]*bvec[k];
+  
+    suma += avec[k];
+    sumb += bvec[k];
     
-    *lambda = 1;
-  }
-  else
-  {
-    /* optimal shrinkage intensity */
-    *lambda = numerator/denominator;
-    
-    /* don't overshrink */
-    if( (*lambda) > 1 ) *lambda = 1;
+    C_compute_lambda(avec[k], bvec[k], &la);
+    if (la < minla) /* find smallest component lambda */
+      minla = la;
   }
   
+  /* optimal ensemble shrinkage intensity */
+  C_compute_lambda(suma, sumb, lambda);
   
+  /* make sure that MSE of every individual component always decreases */
+  if (*lr == 1) /* limit.risk==TRUE */
+    if ( *lambda > 2*minla) *lambda = 2*minla;
+  
+     
   /* free vectors */
   Free(xc2);
-  Free(varvec);
+  Free(avec);
+  Free(bvec);
 }
-

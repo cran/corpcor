@@ -1,4 +1,4 @@
-### cor.shrink.R  (2006-04-15)
+### cor.shrink.R  (2006-04-25)
 ###
 ###    Shrinkage Estimation of Variance Vector, Correlation Matrix,
 ###    and Covariance Matrix, and their inverses
@@ -33,7 +33,6 @@ cor.shrink <- function(x, lambda, w, verbose=TRUE)
    w <- pvt.check.w(w, n)
    
    # shrinkage correlation
-   x <- weighted.scale(x, w)
    r <- pvt.scor(x, lambda, w, verbose)
    if (verbose) cat("\n")
 
@@ -50,9 +49,7 @@ invcor.shrink <- function(x, lambda, w, verbose=TRUE)
    w <- pvt.check.w(w, n)
    
    # inverse shrinkage correlation
-   wm <- weighted.moments(x, w)
-   x <- weighted.scale(x, w, wm=wm)
-   invr <- pvt.invscor(wm, x, lambda, w, verbose)
+   invr <- pvt.invscor(x, lambda, w, verbose)
    if (verbose) cat("\n")
    
    return(invr)
@@ -62,18 +59,16 @@ invcor.shrink <- function(x, lambda, w, verbose=TRUE)
 # variances
 var.shrink <- function(x, lambda.var, w, verbose=TRUE)
 {
-   x <- as.matrix(x)
-   n <- nrow(x)  
-   if (missing(lambda.var)) lambda.var <- -1  # estimate variance shrinkage parameter
-   w <- pvt.check.w(w, n)
-   
-   # shrinkage variance
-   wm <- weighted.moments(x, w)
-   x  <- weighted.scale(x, w, center=TRUE, scale=FALSE, wm=wm) # center data matrix
-   sv <- pvt.svar(wm, x, lambda.var, w, verbose)
-   if (verbose) cat("\n")
-   
-   return(sv)
+  x <- as.matrix(x)
+  n <- nrow(x)  
+  if (missing(lambda.var)) lambda.var <- -1  # estimate variance shrinkage parameter
+  w <- pvt.check.w(w, n)
+  
+  # shrinkage variance 
+  sv <- pvt.svar(x, lambda.var, w, verbose=verbose)
+  if (verbose) cat("\n")
+  
+  return(sv)
 }
 
 
@@ -87,12 +82,9 @@ cov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
    w <- pvt.check.w(w, n)
    
    # shrinkage scale factors
-   wm <- weighted.moments(x, w)
-   x  <- weighted.scale(x, w, center=TRUE, scale=FALSE, wm=wm) # center data matrix
-   sc <- sqrt( pvt.svar(wm, x, lambda.var, w, verbose) )
+   sc <- sqrt( pvt.svar(x, lambda.var, w, verbose) )
 
    # shrinkage correlation
-   x <- weighted.scale(x, w, center=FALSE, scale=TRUE, wm=wm) # then standardize data matrix
    c <- pvt.scor(x, lambda, w, verbose)
    
    # shrinkage covariance 
@@ -115,13 +107,10 @@ invcov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
    w <- pvt.check.w(w, n)
 
    # shrinkage scale factors
-   wm <- weighted.moments(x, w)
-   x  <- weighted.scale(x, w, center=TRUE, scale=FALSE, wm=wm) # center data matrix
-   sc <- sqrt( pvt.svar(wm, x, lambda.var, w, verbose) )
+   sc <- sqrt( pvt.svar(x, lambda.var, w, verbose) )
         
    # inverse shrinkage correlation
-   x <- weighted.scale(x, w, center=FALSE, scale=TRUE, wm=wm) # then standardize data matrix
-   invc <- pvt.invscor(wm, x, lambda, w, verbose)
+   invc <- pvt.invscor(x, lambda, w, verbose)
    
    # inverse shrinkage covariance 
    invc <- sweep(sweep(invc, 1, 1/sc, "*"), 2, 1/sc, "*")

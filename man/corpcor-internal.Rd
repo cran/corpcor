@@ -6,7 +6,6 @@
 \alias{pcor.pseudo}
 \alias{psinv.cor}
 
-\alias{LAPACK.svd}
 \alias{positive.svd}
 \alias{nsmall.svd}
 \alias{psmall.svd}

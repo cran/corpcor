@@ -1,9 +1,9 @@
-### weighted.scale.R  (2006-03-09)
+### wt.scale.R  (2006-04-25)
 ###
 ###    Weighted Expectations and Variances
 ###    
 ###
-### Copyright 2006 Rainer Opgen-Rhein and Korbinian Strimmer
+### Copyright 2006 Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -35,7 +35,7 @@
 #  return( sum(w*xvec) )
 #}
 
-weighted.var <- function(xvec, w) 
+wt.var <- function(xvec, w) 
 {
   w <- pvt.check.w(w, length(xvec))
 
@@ -49,13 +49,13 @@ weighted.var <- function(xvec, w)
 }
 
 
-weighted.moments <- function(x, w)
+wt.moments <- function(x, w)
 {
   x <- as.matrix(x)
   w <- pvt.check.w(w, nrow(x))
      
   m <- apply(x, 2, weighted.mean, w=w)
-  v <- apply(x, 2, weighted.var, w=w)
+  v <- apply(x, 2, wt.var, w=w)
   
   # set small values of variance exactly to zero
   v[v < .Machine$double.eps] <- 0
@@ -65,13 +65,13 @@ weighted.moments <- function(x, w)
 
 
 # scale using the weights
-weighted.scale <- function(x, w, center=TRUE, scale=TRUE, wm)
+wt.scale <- function(x, w, center=TRUE, scale=TRUE, scale.by=c("sd", "mean"))
 {
   x <- as.matrix(x)
   w <- pvt.check.w(w, nrow(x))
   
   # compute column means and variances
-  if (missing(wm))  wm <- weighted.moments(x, w)
+  wm <- wt.moments(x, w)
 
   if (center==TRUE)
   {
@@ -81,16 +81,19 @@ weighted.scale <- function(x, w, center=TRUE, scale=TRUE, wm)
   
   if (scale==TRUE)
   {
-      sd <- sqrt(wm$var)
-      x <- sweep(x, 2, sd, "/")
-      attr(x, "scaled:scale") <- sd
+      scale.by<- match.arg(scale.by) 
+      if (scale.by=="sd") sc <- sqrt(wm$var)
+      if (scale.by=="mean") sc <- wm$mean
+         
+      x <- sweep(x, 2, sc, "/")
+      attr(x, "scaled:scale") <- sc
       
-      zeros <- (sd == 0.0)
+      zeros <- (sc == 0.0)
       x[,zeros] <- 0
       
       if (any(zeros))
       {
-        warning(paste(sum(zeros), "instances of variables with zero variance detected!"),
+        warning(paste(sum(zeros), "instances of variables with zero scale detected!"),
 	 call. = FALSE)
       }  
   } 

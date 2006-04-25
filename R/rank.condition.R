@@ -1,8 +1,8 @@
-### condition.R  (2005-12-12)
+### condition.R  (2006-4-24)
 ###
 ###     Rank, condition, and positive definiteness of a matrix
 ###
-### Copyright 2003-05 Korbinian Strimmer
+### Copyright 2003-06 Korbinian Strimmer
 ###
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -85,7 +85,7 @@ make.positive.definite <- function(m, tol)
 # rank and condition of a matrix 
 rank.condition <- function (m, tol)
 {
-    d <- LAPACK.svd(m, nv=0, nu=0)$d # compute only singular values
+    d <- svd(m, nv=0, nu=0)$d # compute only singular values
     
     max.d <- d[1]
     min.d <- d[length(d)]

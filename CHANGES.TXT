@@ -3,9 +3,19 @@
            REVISION HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.4.1:
+
+- fast.svd() now doesn't use any more the LAPACK routines DGESVD
+  to compute the singular value decomposition (this routine is depricated
+  from R version 2.3.0)
+  
+- weighted.var(), weighted.moments(), weighted.scale() are
+  now called wt.var(), wt.moments(), wt.scale() 
+
+
 Version 1.4.0:
 
-- New dunctions mvr.shrink() and mvr.predict() for multivariate
+- New functions mvr.shrink() and mvr.predict() for multivariate
   shrinkage regression.
 - All shrinkage estimate now carry the class attribute "shrinkage.
   This allows for a more informative output via print.shrinkage()

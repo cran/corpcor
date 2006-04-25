@@ -1,4 +1,4 @@
-### mvr.shrink.R  (2005-04-15)
+### mvr.shrink.R  (2005-04-25)
 ###
 ###    Fit multivariate linear regression model by shrinkage
 ###
@@ -51,7 +51,7 @@ mvr.shrink <- function(x, y, lambda, lambda.var, w, verbose=TRUE)
   
   # mean and partical covariance of combined data
   yx <- cbind(y, x) 
-  mu <- weighted.moments(yx, w)$mean
+  mu <- wt.moments(yx, w)$mean
   pcov <- pcov.shrink(yx, lambda=lambda, lambda.var=lambda.var, w=w, verbose=verbose) 
   
   # estimate regression coefficients

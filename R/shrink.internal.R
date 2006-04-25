@@ -86,39 +86,46 @@ print.shrinkage <- function(x, ...)
 
 
 # function to compute shrinkage variance vector
-#  - wm: weighted moments of original x matrix
-#  - xc: *centered* data matrix, 
+#  - x: data matrix, 
 #  - lambda.var = 0: don't shrink
 #    lambda.var > 0: shrink with given lambda
 #    lambda.var < 0: shrink with estimated lambda  
 #  - w:  data weights
 
-pvt.svar <- function(wm, xc, lambda.var, w, verbose=TRUE)
+pvt.svar <- function(x, lambda.var, w, verbose=TRUE)
 {  
-  z <- pvt.get.lambda(xc, lambda.var, w, verbose=verbose, type="variance")
+  # center input matrix
+  xs <- wt.scale(x, w, center=TRUE, scale=FALSE) 
+  
+  # compute variances 
+  v <- wt.moments(xs, w)$var
         
-  # shrunken variances
-  sv <- z$lambda.var*mean(wm$var) + (1-z$lambda.var)*wm$var
-       
-  attr(sv, "lambda.var") <- z$lambda.var
-  attr(sv, "lambda.var.estimated") <- z$lambda.var.estimated
+  # shrinkage estimate of cv
+  z <- pvt.get.lambda(xs, lambda.var, w, verbose=verbose, type="variance")
+  vs <- z$lambda.var*mean(v) + (1-z$lambda.var)*v
   
-  attr(sv, "class") <- "shrinkage"
+         
+  attr(vs, "lambda.var") <- z$lambda.var
+  attr(vs, "lambda.var.estimated") <- z$lambda.var.estimated
+  attr(vs, "class") <- "shrinkage"
   
-  return(sv)   
+  return(vs)   
 }    
 
 
 
 # function to compute shrinkage correlation matrix 
-#  - xs: scaled data matrix, 
+#  - x: data matrix, 
 #  - lambda = 0: don't shrink
 #    lambda > 0: shrink with given lambda
 #    lambda < 0: shrink with estimated lambda  
 #  - w:  data weights
 
-pvt.scor <- function(xs, lambda, w, verbose=TRUE)
+pvt.scor <- function(x, lambda, w, verbose=TRUE)
 {  
+  # standardize input matrix by standard deviations
+  xs <- wt.scale(x, w, center=TRUE, scale=TRUE, scale.by="sd") 
+ 
   z <- pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation")
   if (z$lambda == 1)
   {
@@ -159,8 +166,11 @@ pvt.scor <- function(xs, lambda, w, verbose=TRUE)
 # compute the inverse of the correlation shrinkage estimator
 # directly 
 
-pvt.invscor <- function(wm, xs, lambda, w, verbose=TRUE)
+pvt.invscor <- function(x, lambda, w, verbose=TRUE)
 {
+  # standardize input matrix by standard deviations
+  xs <- wt.scale(x, w, center=TRUE, scale=TRUE, scale.by="sd") # standardize data matrix
+
   z <- pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation")
   p <- ncol(xs)
     
@@ -171,7 +181,7 @@ pvt.invscor <- function(wm, xs, lambda, w, verbose=TRUE)
   else
   {
     # number of zero-variance variables
-    zeros <- (wm$var==0.0)
+    zeros <- (attr(xs, "scaled:scale")==0.0)
     
     svdxs <- fast.svd(xs)
     m <- length(svdxs$d)  # rank of xs
@@ -219,7 +229,7 @@ pvt.invscor <- function(wm, xs, lambda, w, verbose=TRUE)
 
 
 # returns lambda to be used for shrinkage
-pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "variance"))
+pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "variance"), limit.risk=FALSE)
 {
   # if lambda = 0: don't shrink
   # if lambda > 0: shrink with given lambda
@@ -254,6 +264,7 @@ pvt.get.lambda <- function(x, lambda, w, verbose=TRUE, type=c("correlation", "va
     # estimate optimal shrinkage intensity 
     # target: correlations/covariances -> 0  
     lambda <- .C(func,
+            as.integer(limit.risk), # FALSE: 0, TRUE: 1
             as.double(x),
 	    as.integer( nrow(x) ),
 	    as.integer( ncol(x) ),
