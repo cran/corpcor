@@ -1,5 +1,5 @@
 
-/* lambda.c  (2006-04-24)  
+/* lambda.c  (2006-06-03)  
  *
  * Copyright 2006 Korbinian Strimmer
  *
@@ -24,7 +24,7 @@
 #include <R.h>
           
 
-/* estimate weighted mean and variance of mean from data vector z*/
+/* estimate weighted mean and weighted variance from data vector z*/
 
 void C_meanvarmean(double* z, int n, double* w, double* m, double* v)
 {
@@ -38,7 +38,7 @@ void C_meanvarmean(double* z, int n, double* w, double* m, double* v)
     mean += w[i]*z[i];
   }  
    
-  /* variance of mean */
+  /* weighted variance */
   varmean = 0;
   for (i=0; i < n; i++)
   {
@@ -55,16 +55,15 @@ void C_meanvarmean(double* z, int n, double* w, double* m, double* v)
 void C_biascorrectionfactor(double *w, int n, double* h1, double* h3)
 {
   int i;
-  double h2, sw2;
+  double sw2;
   
   /* bias correction factors */
   sw2 = 0;
   for (i=0; i < n; i++)
     sw2 += w[i]*w[i];
   
-  *h1 = 1/(1-sw2);           /* for w=1/n this equals the usual h1=n/(n-1) */
-   h2 = (*h1) * (*h1)*sw2;   /* for w=1/n this equals h2=n/(n-1)^2         */
-  *h3 = (*h1) * h2;          /* for w=1/n this equals h3=n^2/(n-1)^3       */ 
+  *h1 = 1/(1-sw2);              /* for w=1/n this equals  n/(n-1)        */ 
+  *h3 = (*h1)*(*h1)*(*h1) *sw2; /* for w=1/n this equals  n^2/(n-1)^3    */ 
 }
 
 
@@ -91,20 +90,18 @@ void C_compute_lambda(double numerator, double denominator, double* lambda)
 
 
 /* 
- * input:  lr      limit risk of individual components
- *         xs      scaled matrix 
+ * input:  xs      scaled matrix 
  *         n       sample size (number of rows)
  *         p       number of variables (number of columns)
  *         w       data weights
  * output: lambda  shrinkage intensity (Target: correlations -> 0)  
  */
-void C_corlambda(int *lr, double* xs, int* n, int* p, double* w, double* lambda)
+void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
 {
   double h1, h3, rr, vr;
   double a, b, suma, sumb;
   int i, k, l, nn, pp, kn, ln; 
   double* xsij;
-  double la, minla;
   
   nn = *n;
   pp = *p;
@@ -116,8 +113,6 @@ void C_corlambda(int *lr, double* xs, int* n, int* p, double* w, double* lambda)
   /* compute numerator and denominator for the optimal 
      shrinkage intensity using target: zero off-diagonal entries */
 
-  la = 0;     /* component-wise lambda */
-  minla = 1;  /* smallest component-wise lambda */
   suma = 0;
   sumb = 0;
   rr = 0;
@@ -145,10 +140,6 @@ void C_corlambda(int *lr, double* xs, int* n, int* p, double* w, double* lambda)
        b = b*b;
        suma += a;
        sumb += b;
-
-       C_compute_lambda(a, b, &la);
-       if (la < minla) /* find smallest component lambda */
-         minla = la;
     }
   }
   
@@ -156,10 +147,6 @@ void C_corlambda(int *lr, double* xs, int* n, int* p, double* w, double* lambda)
   /* optimal ensemble shrinkage intensity */
   C_compute_lambda(suma, sumb, lambda);
   
-  /* make sure that MSE of every individual component always decreases */
-  if (*lr == 1) /* limit.risk==TRUE */
-    if ( *lambda > 2*minla) *lambda = 2*minla;
-
   
   /* free vector */
   Free(xsij);  
@@ -169,17 +156,16 @@ void C_corlambda(int *lr, double* xs, int* n, int* p, double* w, double* lambda)
 
 
 /* 
- * input:  lr      limit risk of individual components
- *         xc      centered matrix 
+ * input:  xc      centered matrix 
  *         n       sample size (number of rows)
  *         p       number of variables (number of columns)
  *         w       data weights
  * output: lambda  shrinkage intensity (Target: average empirical variance)  
  */
-void C_varlambda(int* lr, double* xc, int* n, int* p, double* w, double* lambda)
+void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
 {
   double h1, h3, vv, varvv, fac;
-  double suma, sumb,meanb, la, minla;
+  double suma, sumb,meanb;
   int i, k, nn, pp, kn; 
   double* xc2, *avec, *bvec;
     
@@ -220,8 +206,6 @@ void C_varlambda(int* lr, double* xc, int* n, int* p, double* w, double* lambda)
   }
   meanb = meanb/pp;
   
-  la = 0;     /* component-wise lambda */
-  minla = 1;  /* smallest component-wise lambda */
   suma = 0;
   sumb = 0;
   for (k=0; k < pp; k++)
@@ -231,18 +215,10 @@ void C_varlambda(int* lr, double* xc, int* n, int* p, double* w, double* lambda)
   
     suma += avec[k];
     sumb += bvec[k];
-    
-    C_compute_lambda(avec[k], bvec[k], &la);
-    if (la < minla) /* find smallest component lambda */
-      minla = la;
   }
   
   /* optimal ensemble shrinkage intensity */
   C_compute_lambda(suma, sumb, lambda);
-  
-  /* make sure that MSE of every individual component always decreases */
-  if (*lr == 1) /* limit.risk==TRUE */
-    if ( *lambda > 2*minla) *lambda = 2*minla;
   
      
   /* free vectors */

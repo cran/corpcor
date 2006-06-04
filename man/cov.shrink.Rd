@@ -12,8 +12,8 @@
 
 \usage{
 var.shrink(x, lambda.var, w, verbose=TRUE)
-cor.shrink(x, lambda, w, verbose=TRUE)
-cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
+cor.shrink(x, lambda, w, protect=0.01, verbose=TRUE)
+cov.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 }
 
 \arguments{
@@ -29,7 +29,9 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
                 - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
-            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
+            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	
+  \item{protect}{the fraction of correlation components protected against excessive individual 
+                 component risk (default: 0.01)}	     
   \item{verbose}{output some status messages while computing (default: TRUE)}
 }
 \details{
@@ -51,8 +53,7 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 
   \code{cov.shrink} computes the corresponding full covariance matrix
   on the basis of the shrunken correlation matrix  and the shrunken variances.
-  See also Opgen-Rhein and Strimmer (2006).
-    
+      
    In comparison with the standard empirical estimates 
   (\code{\link{var}}, \code{\link{cov}}, and \code{\link{cor}}) the shrinkage estimates exhibit
    a number of favorable properties.  For instance, 
@@ -66,8 +67,8 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
           tuning parameters (as the shrinkage intensity is analytically estimated from the data), and
     \item they assume nothing about the underlying distributions, except for the existence of
           the first two moments.}
-  These properties also carry over to derived quantities, such as partial covariances and
-  partial correlations (\code{\link{pcov.shrink}} and  \code{\link{pcor.shrink}}).
+  These properties also carry over to derived quantities, such as partial variances and
+  partial correlations (\code{\link{pvar.shrink}} and  \code{\link{pcor.shrink}}).
 
 
   
@@ -88,15 +89,12 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 }
 \author{
   Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}),
-  Rainer Opgen-Rhein (\url{http://www.statistik.lmu.de/~opgen/}),
-  and Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
+  Rainer Opgen-Rhein (\url{http://opgen-rhein.de}),
+  and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
 \references{
 
-  Opgen-Rhein, R., and Strimmer, K. (2006).  Beyond Gauss-Markov and ridge:
-  an effective approach for high-dimensional regression and causal inference.
-  Submitted.
 
   Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
@@ -126,34 +124,42 @@ X <- matrix(rnorm(n * ncol(sigma)), nrow = n) \%*\% Y
 
 # estimate covariance matrix
 s1 <- cov(X)
-s2 <- cov.shrink(X)
+s2 <- cov.shrink(X, protect=0)
+s3 <- cov.shrink(X, protect=0.01)
+
 
 # squared error
 sum((s1-sigma)^2)
 sum((s2-sigma)^2)
+sum((s3-sigma)^2)
 
 
 # compare positive definiteness
+is.positive.definite(sigma)
 is.positive.definite(s1)
 is.positive.definite(s2)
-is.positive.definite(sigma)
+is.positive.definite(s3)
+
 
 # compare ranks and condition
+rank.condition(sigma)
 rank.condition(s1)
 rank.condition(s2)
-rank.condition(sigma)
+rank.condition(s3)
 
 # compare eigenvalues
+e0 <- eigen(sigma, symmetric=TRUE)$values
 e1 <- eigen(s1, symmetric=TRUE)$values
 e2 <- eigen(s2, symmetric=TRUE)$values
-e3 <- eigen(sigma, symmetric=TRUE)$values
-m <-max(e1, e2, e3)
+e3 <- eigen(s3, symmetric=TRUE)$values
+m <-max(e0, e1, e2, e3)
 yl <- c(0, m)
 
-par(mfrow=c(1,3))
+par(mfrow=c(2,2))
 plot(e1,  main="empirical")
-plot(e2,  ylim=yl, main="shrinkage")
-plot(e3,  ylim=yl, main="true")
+plot(e2,  ylim=yl, main="full shrinkage")
+plot(e3,  ylim=yl, main="protected shrinkage")
+plot(e0,  ylim=yl, main="true")
 par(mfrow=c(1,1))
 
 }

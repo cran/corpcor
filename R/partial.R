@@ -1,6 +1,6 @@
-### partial.R  (2006-03-27)
+### partial.R  (2006-06-02)
 ###
-###    Partial Correlation and Partial Covariance
+###    Partial Correlation and Partial Variance
 ###    
 ###
 ### Copyright 2003-06 Juliane Schaefer and Korbinian Strimmer
@@ -60,28 +60,10 @@ pcor2cor <- function(m, tol)
 ########################################################
 
 
-cov2pcov <- function(m, tol)
+# partial correlation
+pcor.shrink <- function(x, lambda, w, protect=0.01, verbose=TRUE)
 {
-  m <- -pseudoinverse(m, tol=tol)
-  diag(m) <- -diag(m)
-
-  return(m)
-}
-
-pcov2cov <- function(m, tol)
-{
-  # negate off-diagonal entries, then invert
-  m <- -m
-  diag(m) <- -diag(m)
-  m <- pseudoinverse(m, tol=tol)
-  
-  return(m)
-}
-
-
-pcor.shrink <- function(x, lambda, w, verbose=TRUE)
-{
-  pc <- -invcor.shrink(x, lambda, w, verbose)
+  pc <- -invcor.shrink(x, lambda, w, protect, verbose)
   diag(pc) <- -diag(pc)
 
   # standardize and return  
@@ -89,12 +71,16 @@ pcor.shrink <- function(x, lambda, w, verbose=TRUE)
 }
 
 
-pcov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
+# partial variances
+pvar.shrink <- function(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 {
-  pc <- -invcov.shrink(x, lambda, lambda.var, w, verbose)
-  diag(pc) <- -diag(pc)
+  prec <- invcov.shrink( x, lambda, lambda.var, w, protect, verbose)
+  pvar <- 1/diag(prec)
 
-  return(pc)
+  attr(pvar, "lambda") <- attr(prec, "lambda")
+  attr(pvar, "lambda.estimated") <- attr(prec, "lambda.estimated")
+  attr(pvar, "lambda.var") <- attr(prec, "lambda.var")
+  attr(pvar, "lambda.var.estimated") <- attr(prec, "lambda.var.estimated")
+    
+  return( pvar )
 }
-
-

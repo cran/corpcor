@@ -41,7 +41,7 @@
 
 
 \author{
-  Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
+  Korbinian Strimmer (\url{http://strimmerlab.org}).
 }
 
 \seealso{\code{\link{weighted.mean}}, \code{\link{cov.wt}}.}

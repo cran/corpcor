@@ -1,4 +1,4 @@
-### cor.shrink.R  (2006-04-25)
+### cov.shrink.R  (2006-06-04)
 ###
 ###    Shrinkage Estimation of Variance Vector, Correlation Matrix,
 ###    and Covariance Matrix, and their inverses
@@ -25,15 +25,18 @@
 
 
 # correlation
-cor.shrink <- function(x, lambda, w, verbose=TRUE)
+cor.shrink <- function(x, lambda, w, protect=0.01, verbose=TRUE)
 {
+   if (protect < 0 || protect > 1 )
+    stop("The fraction of protected components must be inside the interval [0,1].") 
+
    x <- as.matrix(x)
    n <- nrow(x)
    if (missing(lambda)) lambda <- -1  # estimate correlation shrinkage parameter
    w <- pvt.check.w(w, n)
    
    # shrinkage correlation
-   r <- pvt.scor(x, lambda, w, verbose)
+   r <- pvt.scor(x=x, lambda=lambda, w=w, protect=protect, verbose=verbose)
    if (verbose) cat("\n")
 
    return(r)
@@ -41,15 +44,18 @@ cor.shrink <- function(x, lambda, w, verbose=TRUE)
 
 
 # inverse correlation
-invcor.shrink <- function(x, lambda, w, verbose=TRUE)
+invcor.shrink <- function(x, lambda, w, protect=0.01, verbose=TRUE)
 {
+   if (protect < 0 || protect > 1 )
+    stop("The fraction of protected components must be inside the interval [0,1].") 
+
    x <- as.matrix(x)
    n <- nrow(x)  
    if (missing(lambda)) lambda <- -1  # estimate correlation shrinkage parameter
    w <- pvt.check.w(w, n)
    
    # inverse shrinkage correlation
-   invr <- pvt.invscor(x, lambda, w, verbose)
+   invr <- pvt.invscor(x=x, lambda=lambda, w=w, protect=protect, verbose=verbose)
    if (verbose) cat("\n")
    
    return(invr)
@@ -65,7 +71,7 @@ var.shrink <- function(x, lambda.var, w, verbose=TRUE)
   w <- pvt.check.w(w, n)
   
   # shrinkage variance 
-  sv <- pvt.svar(x, lambda.var, w, verbose=verbose)
+  sv <- pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose)
   if (verbose) cat("\n")
   
   return(sv)
@@ -73,8 +79,11 @@ var.shrink <- function(x, lambda.var, w, verbose=TRUE)
 
 
 # covariance
-cov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
-{   
+cov.shrink <- function(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
+{
+   if (protect < 0 || protect > 1 )
+    stop("The fraction of protected components must be inside the interval [0,1].") 
+   
    x <- as.matrix(x)
    n <- nrow(x)   
    if (missing(lambda)) lambda <- -1          # estimate correlation shrinkage parameter
@@ -82,10 +91,10 @@ cov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
    w <- pvt.check.w(w, n)
    
    # shrinkage scale factors
-   sc <- sqrt( pvt.svar(x, lambda.var, w, verbose) )
+   sc <- sqrt( pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose) )
 
    # shrinkage correlation
-   c <- pvt.scor(x, lambda, w, verbose)
+   c <- pvt.scor(x=x, lambda=lambda, w=w, protect=protect, verbose=verbose)
    
    # shrinkage covariance 
    c <- sweep(sweep(c, 1, sc, "*"), 2, sc, "*")
@@ -98,8 +107,11 @@ cov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
 
 
 # precision matrix (inverse covariance)
-invcov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
+invcov.shrink <- function(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 {   
+   if (protect < 0 || protect > 1 )
+    stop("The fraction of protected components must be inside the interval [0,1].") 
+
    x <- as.matrix(x)
    n <- nrow(x) 
    if (missing(lambda)) lambda <- -1          # estimate correlation shrinkage parameter
@@ -107,10 +119,10 @@ invcov.shrink <- function(x, lambda, lambda.var, w, verbose=TRUE)
    w <- pvt.check.w(w, n)
 
    # shrinkage scale factors
-   sc <- sqrt( pvt.svar(x, lambda.var, w, verbose) )
+   sc <- sqrt( pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose) )
         
    # inverse shrinkage correlation
-   invc <- pvt.invscor(x, lambda, w, verbose)
+   invc <- pvt.invscor(x=x, lambda=lambda, w=w, protect=protect, verbose=verbose)
    
    # inverse shrinkage covariance 
    invc <- sweep(sweep(invc, 1, 1/sc, "*"), 2, 1/sc, "*")

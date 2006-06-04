@@ -1,6 +1,21 @@
+
+
            
 
            REVISION HISTORY OF THE "corpcor" PACKAGE
+
+Version 1.4.2
+
+- limited translation estimator implemented for the shrinkage estimate
+  of the correlation matrix. This prevents excessive component risk.
+- new functions for decomposing the covariance matrix and
+  its inverse: decompose.cov(), decompose.invcov(), rebuild.invcov()
+- new function pvar.shrink() to estimate partial variance.
+- in the documention the definition of partial variance and 
+  partial covariance are corrected (following Whittaker 1990)  
+- the functions cov2pcov(), pcov2cov(), pcov.shrink() have been removed.
+- functions sm2vec(), vec2sm(), sm.index() back (from GeneTS)
+- is.positive.definite() checks for complex eigenvalues.
 
 
 Version 1.4.1:

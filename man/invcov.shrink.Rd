@@ -11,8 +11,8 @@
   and correlation (\code{\link{cor.shrink}}).
 }
 \usage{
-invcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
-invcor.shrink(x, lambda, w, verbose=TRUE)
+invcov.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
+invcor.shrink(x, lambda, w, protect=0.01, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
@@ -28,16 +28,20 @@ invcor.shrink(x, lambda, w, verbose=TRUE)
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
+  \item{protect}{the fraction of correlation components protected against excessive individual 
+                 component risk (default: 0.01)}	     
   \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{
   The trick that allows the fast computation of the inverses  
    of the shrinkage covariance and correlation matrices is the
-  Woodbury matrix identity - see, e.g., \url{http://en.wikipedia.org/wiki/Woodbury_matrix_identity}.  The key insight from this identity 
-is that for inverting the covariance/correlation shrinkage estimator 
+  Woodbury matrix identity - see, e.g., \url{http://en.wikipedia.org/wiki/Woodbury_matrix_identity}. 
+The key insight from this identity  is that for inverting the covariance/correlation shrinkage estimator 
 obtained from a n x p matrix you only need to invert a matrix of
 the size of the rank of the data matrix (which in "small n, large p" setting
-may mean substantial savings in computions). 
+may mean substantial savings in computations). 
+
+Note: at the moment the algorithmic savings are only available if \code{protect=0}.
 }
 \value{
   \code{invcov.shrink} returns the inverse of the output from \code{\link{cov.shrink}}. 
@@ -46,7 +50,7 @@ may mean substantial savings in computions).
 }
 \author{
   Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}) 
-  and Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
+  and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
 \references{

@@ -14,7 +14,7 @@
 }
 
 \usage{
-mvr.shrink(x, y, lambda, lambda.var, w, verbose=TRUE)
+mvr.shrink(x, y, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 mvr.predict(coef, x)
 }
 
@@ -36,27 +36,25 @@ mvr.predict(coef, x)
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
+  \item{protect}{the fraction of correlation components protected against excessive individual 
+                 component risk (default: 0.01)}	     
   \item{verbose}{output some status messages while computing (default: TRUE)}
   \item{coef}{the matrix of regression coefficients, as output by \code{mvr.shrink()}.}
   
 }
 \details{
    
-   Most approaches to regularized regression focus solely on improving the estimated 
-   covariance among the predictors (this is for example the case for ridge
-   regression, lasso regression, elastic net, and its Bayesian cousins).
+   Regression coefficents and partial correlations/variances are interrelated,
+   see for example Cox and Wermuth (1993). Specifically, the regression coefficients
+   are the partial correlations times the square-root of the ratio of the partial
+   variances.
    
-   In contrast, the shrinkage approach implemented in \code{mvr.shrink()} treats
-   all response and predictor variables on an equal basis and regularizes the 
-   \emph{joint} covariance matrix. Furthermore, if one considers both the 
-   response and the predictors as random variables and estimates the best linear
-   predictor with minimum MSE, then one arrives at a simple relationship
-   between the shrinkage regression coefficients and shrunken partial covariance
-   matrix.  For the specific details please see Opgen-Rhein and Strimmer (2006).
-   
-   In simulations this approach to multivariate shrinkage regression is generally
-   more efficient than  standard least-squares and other regularized regression
-   methods such as ridge regression.  
+   The function \code{mvr.shrink}
+   computes shrinkage estimates of partial correlation and variance following
+   the method described in Schaefer and Strimmer (2005), and
+   calculates the respective regression coefficients.  Note that if the response
+   is multivariate, the regression coefficients correspond to those
+   from so-called block regression (Cox and Wermuth 1993). 
 }
 \value{
   \code{mvr.shrink} returns a matrix with the estimated regression coefficients.
@@ -64,16 +62,14 @@ mvr.predict(coef, x)
   \code{mvr.predict} returns a response matrix.
 }
 \author{
-  Rainer Opgen-Rhein (\url{http://www.statistik.lmu.de/~opgen/})
-  and Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
+  Rainer Opgen-Rhein (\url{http://opgen-rhein.de})
+  and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
 \references{
-
-  Opgen-Rhein, R., and Strimmer, K. (2006).  Beyond Gauss-Markov and ridge:
-  an effective approach for high-dimensional regression and causal inference.
-  Submitted.
-
+  Cox, D.R., and Wermuth, N. (1993). Linear dependencies represented by chain graphs.
+  Statistical Science \bold{8}:204-283.
+  
   Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol.\bold{4}:32.

@@ -1,64 +1,95 @@
 \name{rebuild.cov}
 \alias{rebuild.cov}
+\alias{rebuild.invcov}
+\alias{decompose.cov}
+\alias{decompose.invcov}
 
-\title{Rebuild Covariance Matrix from Correlation Matrix}
+
+\title{Rebuild and Decompose the (Inverse) Covariance Matrix}
 \usage{
+
 rebuild.cov(r, v)
+rebuild.invcov(pr, pv)
+decompose.cov(m)
+decompose.invcov(m)
 }
 \arguments{
   \item{r}{correlation matrix}
   \item{v}{variance vector}
+  \item{pr}{partial correlation matrix}
+  \item{pv}{partial variance vector}
+  \item{m}{a covariance or a concentration matrix}
+  
 }
 \description{
   
   \code{rebuild.cov} takes a correlation matrix and a vector with variances
   and reconstructs the corresponding covariance matrix.
   
-   For the inverse operation use \code{\link{cov2cor}}.
-
+  Conversely, \code{decompose.cov} decomposes 
+  a covariance matrix into correlations and variances.
+  
+  \code{decompose.invcov} decomposes a concentration matrix (=inverse covariance
+  matrix) into partial correlations and partial variances.  
+  
+  \code{rebuild.invcov} takes a partial correlation matrix and a vector 
+  with partial variances and reconstructs the corresponding concentration matrix.
 }
+
+\details{
+  The diagonal elements of the concentration matrix (=inverse covariance matrix)
+  are the precisions, and the off-diagonal elements
+  are the concentrations. Thus, the partial variances
+  correspond to the inverse precisions, and the partial correlations to the
+  negative standardized concentrations.
+}
+
 
 \value{
 
-  A covariance matrix.
+  \code{rebuild.cov} and \code{rebuild.invcov} return a matrix.
+  
+   \code{decompose.cov} and \code{decompose.invcov} return a list containing
+   a matrix and a vector.
 }
 
 
 \author{
-  Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
+  Korbinian Strimmer (\url{http://strimmerlab.org}).
 }
-\seealso{\code{\link{cor}}, \code{\link{cov}}}
+\seealso{\code{\link{cor}}, \code{\link{cov}}, \code{\link{pcor.shrink}}}
 
 \examples{
 # load corpcor library
 library("corpcor")
 
+# a correlation matrix and some variances
+r <- matrix(c(1, 1/2, 1/2, 1),  nrow = 2, ncol=2)
+r
+v <- c(2, 3)
 
-# some statistics on the US states
-data(state)
-m <- t(state.x77)
-dim(m) # sample size: 8, number of variables: 50
+# construct the associated covariance matrix
+c <- rebuild.cov(r, v)
+c
 
-# covariance matrix
-m.cov <- cov(m)
-m.cov
+# decompose into correlations and variances
+decompose.cov(c)
 
-# variances
-m.var <- diag(m.cov)
-m.var
 
-# correlation matrix
-m.cor.1 <- cor(m)
-m.cor.1
+# the corresponding concentration matrix
+conc <- pseudoinverse(c) 
+conc
 
-# correlation matrix via covariance matrix
-m.cor.2 <- cov2cor(m.cov)
-m.cor.2
+# decompose into partial correlation matrix and partial variances
+tmp <- decompose.invcov(conc)
+tmp
+# note: because this is an example with two variables,
+# the partial and standard correlations are identical!
 
-zapsmall(m.cor.1) == zapsmall(m.cor.2)
 
-# reconstruct covariance matrix
-rebuild.cov(m.cor.1, m.var)
+# reconstruct the concentration matrix from partial correlations and
+# partial variances 
+rebuild.invcov(tmp$pr, tmp$pv)
 
 }
 \keyword{multivariate}

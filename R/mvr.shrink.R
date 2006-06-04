@@ -1,4 +1,4 @@
-### mvr.shrink.R  (2005-04-25)
+### mvr.shrink.R  (2006-06-02)
 ###
 ###    Fit multivariate linear regression model by shrinkage
 ###
@@ -23,7 +23,7 @@
 
 
 # compute matrix of regression cofficients
-mvr.shrink <- function(x, y, lambda, lambda.var, w, verbose=TRUE)
+mvr.shrink <- function(x, y, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 {
   x <- as.matrix(x)
   n <- nrow(x) # sample size
@@ -49,10 +49,10 @@ mvr.shrink <- function(x, y, lambda, lambda.var, w, verbose=TRUE)
   }
   
   
-  # mean and partical covariance of combined data
+  # estimate mean vector and precision matrix from combined data
   yx <- cbind(y, x) 
   mu <- wt.moments(yx, w)$mean
-  pcov <- pcov.shrink(yx, lambda=lambda, lambda.var=lambda.var, w=w, verbose=verbose) 
+  prec <- invcov.shrink(yx, lambda=lambda, lambda.var=lambda.var, w=w, protect=protect, verbose=verbose) 
   
   # estimate regression coefficients
   if (SEM) # consider each predictor variable in turn as response 
@@ -60,7 +60,7 @@ mvr.shrink <- function(x, y, lambda, lambda.var, w, verbose=TRUE)
     beta <- matrix(NA, ncol=p+1, nrow=p)
     for (i in 1:p)
     {
-      beta[i,-i-1] <- pvt.usr(i, -i, pcov, mu)
+      beta[i,-i-1] <- pvt.usr(i, -i, prec, mu)
       beta[i, i+1] <- 0
     }  
     rownames(beta) <- xnames
@@ -69,15 +69,17 @@ mvr.shrink <- function(x, y, lambda, lambda.var, w, verbose=TRUE)
   {
     beta <- matrix(NA, ncol=p+1, nrow=m)
     for (i in 1:m)
-      beta[i,] <- pvt.usr(i, -(1:m), pcov, mu)
+      beta[i,] <- pvt.usr(i, -(1:m), prec, mu)
     rownames(beta) <- ynames
   }
   
   colnames(beta) <- c("(Intercept)", xnames)
-  attr(beta,"lambda") <- attr(pcov,"lambda")
-  attr(beta,"lambda.estimated") <- attr(pcov,"lambda.estimated")
-  attr(beta,"lambda.var") <- attr(pcov,"lambda.var")
-  attr(beta,"lambda.var.estimated") <- attr(pcov,"lambda.var.estimated")
+  attr(beta,"lambda") <- attr(prec,"lambda")
+  attr(beta,"lambda.estimated") <- attr(prec,"lambda.estimated")
+  attr(beta,"lambda.var") <- attr(prec,"lambda.var")
+  attr(beta,"lambda.var.estimated") <- attr(prec,"lambda.var.estimated")
+  attr(beta,"protect") <- attr(prec,"protect")
+  
   
   attr(beta,"class") <- "shrinkage"
 
@@ -100,9 +102,9 @@ mvr.predict <- function(coef, x)
 ##### private function #######
 
 # unvariate shrinkage regression
-pvt.usr <- function(response, predictors, pcov, mu)
+pvt.usr <- function(response, predictors, prec, mu)
 {
-   b <- pcov[response,predictors]/pcov[response,response]
+   b <- -prec[response,predictors]/prec[response,response]
    a <- mu[response] - sum(b * mu[predictors]) # intercept
    
    return ( c(a, b) )

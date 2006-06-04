@@ -1,15 +1,15 @@
 \name{pcor.shrink}
 \alias{pcor.shrink}
-\alias{pcov.shrink}
+\alias{pvar.shrink}
 
-\title{Shrinkage Estimates of Partial Correlation and Partial Covariance}
+\title{Shrinkage Estimates of Partial Correlation and Partial Variance}
 \description{
-  The functions \code{pcor.shrink} and \code{pcov.shrink} provide shrinkage estimates
-  the matrix of partial correlations and partical covariance, respectively.  
+  The functions \code{pcor.shrink} and \code{pvar.shrink} compute shrinkage estimates
+  of partial correlation and partial variance, respectively.  
 }
 \usage{
-pcor.shrink(x, lambda, w, verbose=TRUE)
-pcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
+pcor.shrink(x, lambda, w, protect=0.01, verbose=TRUE)
+pvar.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
@@ -25,12 +25,20 @@ pcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights
             are assumed (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
+  \item{protect}{the fraction of correlation components protected against excessive individual 
+                 component risk (default: 0.01)}	     
   \item{verbose}{report progress while computing (default: TRUE)}
 }
 \details{
-   The partial covariance is simply the inverse of the covariance matrix, with
-   the sign of the off-diagonal elements reversed.  The partial correlation matrix
-   is the standardized partial covariance matrix.
+   The partial variance \eqn{var(X_k | rest)} is the variance of \eqn{X_k} conditioned on the
+   remaining variables.  It equals the inverse of the corresponding diagonal entry
+   of the precision matrix (see Whittaker 1990).
+   
+   The partial correlations \eqn{corr(X_k, X_l | rest)} is the correlation between
+   \eqn{X_k} and \eqn{X_l} conditioned on the remaining variables. It equals the sign-reversed
+   entries of the off-diagonal entries of the precision matrix, standardized
+   by the the squared root of the associated inverse partial variances.
+  
   
    Note that using \code{pcor.shrink(x)} \emph{much} faster than 
    \code{cor2pcor(cor.shrink(x))}.
@@ -40,13 +48,13 @@ pcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
    
 }
 \value{
-  \code{pcor.shrink} returns the partical correlation matrix.
+  \code{pcor.shrink} returns the partial correlation matrix.
   
-  \code{pcov.shrink} returns the partial covariance matrix. 
+  \code{pvar.shrink} returns the partial variances. 
 }
 \author{
   Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}) 
-  and Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
+  and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
 \references{
@@ -55,8 +63,12 @@ pcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})  
+  
+  Whittaker J. (1990).  Graphical Models in Applied Multivariate Statistics.
+  John Wiley, Chichester.
+    
 }
-\seealso{\code{\link{cov.shrink}}, \code{\link{cor2pcor}}}
+\seealso{\code{\link{invcov.shrink}}, \code{\link{cov.shrink}}, \code{\link{cor2pcor}}}
 
 \examples{
 # load corpcor library
@@ -68,21 +80,19 @@ n <- 10
 X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 
 
-# partial covariance
-pco <- pcov.shrink(X)
+# partial variance
+pv <- pvar.shrink(X)
+pv
 
 # partial correlations (fast and recommend way)
 pcr1 <- pcor.shrink(X)
 
-# other possibilites to estimate partial correlations
+# other possibilities to estimate partial correlations
 pcr2 <- cor2pcor( cor.shrink(X) )
-pcr3 <- cov2cor( pco ) # standarize partial covariance
 
 
 # all the same
 sum((pcr1 - pcr2)^2)
-sum((pcr2 - pcr3)^2)
-sum((pcr3 - pcr1)^2)
 
 }
 \keyword{multivariate}

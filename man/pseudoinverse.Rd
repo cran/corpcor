@@ -44,7 +44,7 @@ pseudoinverse(m, tol)
 
 
 \author{
-  Korbinian Strimmer (\url{http://www.statistik.lmu.de/~strimmer/}).
+  Korbinian Strimmer (\url{http://strimmerlab.org}).
 }
 \seealso{\code{\link{solve}}, \code{\link{fast.svd}}}
 

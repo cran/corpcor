@@ -1,4 +1,4 @@
-### condition.R  (2006-4-24)
+### condition.R  (2006-6-03)
 ###
 ###     Rank, condition, and positive definiteness of a matrix
 ###
@@ -32,6 +32,11 @@ is.positive.definite <- function (m, tol, method=c("eigen", "chol"))
     if (method=="eigen")
     {
         eval <- eigen(m, only.values = TRUE)$values
+        if (is.complex( eval ))
+        {
+           warning("Input matrix has complex eigenvalues!")
+           return(FALSE)
+        }
 
         if( missing(tol) )
             tol <- max(dim(m))*max(abs(eval))*.Machine$double.eps
