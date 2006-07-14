@@ -1,5 +1,5 @@
 
-/* lambda.c  (2006-06-03)  
+/* lambda.c  (2006-07-13)  
  *
  * Copyright 2006 Korbinian Strimmer
  *
@@ -94,9 +94,10 @@ void C_compute_lambda(double numerator, double denominator, double* lambda)
  *         n       sample size (number of rows)
  *         p       number of variables (number of columns)
  *         w       data weights
- * output: lambda  shrinkage intensity (Target: correlations -> 0)  
+ *         t       target (ignored: in this function target is always assumed to be zero)      
+ * output: lambda  shrinkage intensity  
  */
-void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
+void C_corlambda(double* xs, int* n, int* p, double* w, double* t, double* lambda)
 {
   double h1, h3, rr, vr;
   double a, b, suma, sumb;
@@ -160,14 +161,15 @@ void C_corlambda(double* xs, int* n, int* p, double* w, double* lambda)
  *         n       sample size (number of rows)
  *         p       number of variables (number of columns)
  *         w       data weights
+ *         t       target (this is the median value of all empirical variances)      
  * output: lambda  shrinkage intensity (Target: average empirical variance)  
  */
-void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
+void C_varlambda(double* xc, int* n, int* p, double* w, double* t, double* lambda)
 {
-  double h1, h3, vv, varvv, fac;
-  double suma, sumb,meanb;
+  double h1, h3, vv, varvv;
+  double a, b, suma, sumb;
   int i, k, nn, pp, kn; 
-  double* xc2, *avec, *bvec;
+  double* xc2;
     
   nn = *n;
   pp = *p;
@@ -177,17 +179,16 @@ void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
 
   /* allocate vectors - error handling is done by R */
   xc2 = (double *) Calloc((size_t) nn, double);
-  avec = (double *) Calloc((size_t) pp, double);
-  bvec = (double *) Calloc((size_t) pp, double);
  
     
   /* compute numerator and denominator for the optimal 
-     shrinkage intensity using target: mean of the varianes */
+     shrinkage intensity using the target t */
  
   vv = 0;
   varvv = 0;
-  meanb = 0;
-  fac = (1.0-1.0/((double)pp));
+  suma = 0;
+  sumb = 0;
+  
   for (k=0; k < pp; k++)
   {  
        kn = k*nn;
@@ -200,22 +201,12 @@ void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
  
        C_meanvarmean(xc2, nn, w,  &vv, &varvv);
               
-       avec[k] = fac*h3*varvv;
-       bvec[k] = h1*vv;
-       meanb += bvec[k];
+       a = h3*varvv;
+       b = h1*vv - (*t); 
+       suma += a;
+       sumb += b*b;
   }
-  meanb = meanb/pp;
-  
-  suma = 0;
-  sumb = 0;
-  for (k=0; k < pp; k++)
-  {  
-    bvec[k] = bvec[k] - meanb;
-    bvec[k] = bvec[k]*bvec[k];
-  
-    suma += avec[k];
-    sumb += bvec[k];
-  }
+
   
   /* optimal ensemble shrinkage intensity */
   C_compute_lambda(suma, sumb, lambda);
@@ -223,6 +214,4 @@ void C_varlambda(double* xc, int* n, int* p, double* w, double* lambda)
      
   /* free vectors */
   Free(xc2);
-  Free(avec);
-  Free(bvec);
 }

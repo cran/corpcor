@@ -4,6 +4,16 @@
 
            REVISION HISTORY OF THE "corpcor" PACKAGE
 
+
+Version 1.4.3
+
+- the shrinkage target for the variance is now the median (previously,
+  variances were shrunken towards the mean).
+- var.shrink now also has a"protect" argument. 
+- limited translation shrinkage is now turned off by default 
+   (i.e. protect has value zero). 
+  
+
 Version 1.4.2
 
 - limited translation estimator implemented for the shrinkage estimate

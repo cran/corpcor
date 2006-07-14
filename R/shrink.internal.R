@@ -1,4 +1,4 @@
-### shrink.internal.R  (2006-06-02)
+### shrink.internal.R  (2006-07-14)
 ###
 ###    Non-public functions used in the covariance shrinkage estimator 
 ###    
@@ -101,18 +101,47 @@ print.shrinkage <- function(x, ...)
 #    lambda.var < 0: shrink with estimated lambda  
 #  - w:  data weights
 
-pvt.svar <- function(x, lambda.var, w, verbose)
-{  
+pvt.svar <- function(x, lambda.var, w, protect=protect, verbose)
+{    
   # center input matrix
   xs <- wt.scale(x, w, center=TRUE, scale=FALSE) 
   
   # compute variances 
   v <- wt.moments(xs, w)$var
-        
-  # shrinkage estimate of cv
-  z <- pvt.get.lambda(xs, lambda.var, w, 0, verbose=verbose, type="variance")
-  vs <- z$lambda.var*mean(v) + (1-z$lambda.var)*v
   
+  # compute target
+  tgt <- median(v)
+          
+  # shrinkage estimate 
+  z <- pvt.get.lambda(xs, lambda.var, w, 0, verbose=verbose, type="variance", tgt)   
+  vs <- z$lambda.var*tgt + (1-z$lambda.var)*v
+
+  if (protect > 0)
+  {
+    if (protect >= 1)
+    {
+      vs <- v
+      protect=1
+    }
+    else
+    {
+      diff <- v-vs 
+      adiff <- abs(diff)
+      sdiff <- sign(diff)
+      diff <- NULL
+  
+      M <- quantile(adiff, probs=c(1-protect))
+  
+      d <- adiff-M # soft thresholding
+      d[d < 0] <- 0
+      d <- d*sdiff
+    
+      vs <- vs + d  # add correction term
+    }
+  
+    attr(vs, "protect") <- protect
+  }
+
          
   attr(vs, "lambda.var") <- z$lambda.var
   attr(vs, "lambda.var.estimated") <- z$lambda.var.estimated
@@ -145,7 +174,7 @@ pvt.scor <- function(x, lambda, w, protect, verbose)
   
   
   # get ensemble shrinkage intensity
-  z <- pvt.get.lambda(xs, lambda, w, protect, verbose=verbose, type="correlation")
+  z <- pvt.get.lambda(xs, lambda, w, protect, verbose=verbose, type="correlation", 0)
   
   
   # shrinkage estimate of correlation matrix
@@ -244,7 +273,7 @@ pvt.invscor <- function(x, lambda, w, protect, verbose)
   # standardize input matrix by standard deviations
   xs <- wt.scale(x, w, center=TRUE, scale=TRUE, scale.by="sd") # standardize data matrix
 
-  z <- pvt.get.lambda(xs, lambda, w, protect, verbose=verbose, type="correlation")
+  z <- pvt.get.lambda(xs, lambda, w, protect, verbose=verbose, type="correlation", 0)
   p <- ncol(xs)
     
   if (z$lambda == 1)
@@ -302,7 +331,7 @@ pvt.invscor <- function(x, lambda, w, protect, verbose)
 
 
 # returns lambda to be used for shrinkage
-pvt.get.lambda <- function(x, lambda, w, protect, verbose, type=c("correlation", "variance"))
+pvt.get.lambda <- function(x, lambda, w, protect, verbose, type=c("correlation", "variance"), target)
 {
   type <- match.arg(type)
   
@@ -347,6 +376,7 @@ pvt.get.lambda <- function(x, lambda, w, protect, verbose, type=c("correlation",
 	    as.integer( nrow(x) ),
 	    as.integer( ncol(x) ),
 	    as.double(w),
+	    as.double(target),
 	    lambda=double(1), PACKAGE="corpcor", DUP=FALSE)$lambda
 
     lambda.estimated <- TRUE

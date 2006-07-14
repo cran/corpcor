@@ -1,4 +1,4 @@
-### partial.R  (2006-06-02)
+### partial.R  (2006-07-14)
 ###
 ###    Partial Correlation and Partial Variance
 ###    
@@ -61,7 +61,7 @@ pcor2cor <- function(m, tol)
 
 
 # partial correlation
-pcor.shrink <- function(x, lambda, w, protect=0.01, verbose=TRUE)
+pcor.shrink <- function(x, lambda, w, protect=0, verbose=TRUE)
 {
   pc <- -invcor.shrink(x, lambda, w, protect, verbose)
   diag(pc) <- -diag(pc)
@@ -72,7 +72,7 @@ pcor.shrink <- function(x, lambda, w, protect=0.01, verbose=TRUE)
 
 
 # partial variances
-pvar.shrink <- function(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
+pvar.shrink <- function(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 {
   prec <- invcov.shrink( x, lambda, lambda.var, w, protect, verbose)
   pvar <- 1/diag(prec)

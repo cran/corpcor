@@ -11,8 +11,8 @@
   and correlation (\code{\link{cor.shrink}}).
 }
 \usage{
-invcov.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
-invcor.shrink(x, lambda, w, protect=0.01, verbose=TRUE)
+invcov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
+invcor.shrink(x, lambda, w, protect=0, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
@@ -29,7 +29,7 @@ invcor.shrink(x, lambda, w, protect=0.01, verbose=TRUE)
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
   \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0.01)}	     
+                 component risk (default: 0, no protection by limiting translation)}	     
   \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{

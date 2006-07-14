@@ -1,4 +1,4 @@
-### mvr.shrink.R  (2006-06-02)
+### mvr.shrink.R  (2006-07-14)
 ###
 ###    Fit multivariate linear regression model by shrinkage
 ###
@@ -23,7 +23,7 @@
 
 
 # compute matrix of regression cofficients
-mvr.shrink <- function(x, y, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
+mvr.shrink <- function(x, y, lambda, lambda.var, w, protect=0, verbose=TRUE)
 {
   x <- as.matrix(x)
   n <- nrow(x) # sample size

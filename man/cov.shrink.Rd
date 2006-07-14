@@ -11,9 +11,9 @@
 }
 
 \usage{
-var.shrink(x, lambda.var, w, verbose=TRUE)
-cor.shrink(x, lambda, w, protect=0.01, verbose=TRUE)
-cov.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
+var.shrink(x, lambda.var, w, protect=0, verbose=TRUE)
+cor.shrink(x, lambda, w, protect=0, verbose=TRUE)
+cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 }
 
 \arguments{
@@ -25,24 +25,26 @@ cov.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
                 If \code{lambda.var} is not specified (the default) it is estimated
-	        using an analytic formula from Schaefer and Strimmer (2005)
+	        using an analytic formula from Opgen-Rhein and Strimmer (2006)
                 - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	
   \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0.01)}	     
+                 component risk (default: 0, no limited translation)}	     
   \item{verbose}{output some status messages while computing (default: TRUE)}
 }
 \details{
    
-   \code{var.shrink} computes the empirical variance of each considered random variable, and shrinks 
-   them towards their common average.  The shrinkage intensity is estimated using Eq. 6 from 
-   Schaefer and Strimmer (2005), which leads to 
+   \code{var.shrink} computes the empirical variance of each considered random variable, 
+   and shrinks them towards their median.  The shrinkage intensity is estimated using 
+   Eq. 6 from Schaefer and Strimmer (2005), which leads to 
    
    
-      \deqn{\lambda_{var}^{*} = ( (1-1/p) \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - \bar{s})^2  .}
+      \deqn{\lambda_{var}^{*} = (  \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - median{s})^2  }
 
+  where \eqn{median{s}} denotes the median of the empirical variances.   
+  
   Similarly   \code{cor.shrink} computes a shrinkage estimate of the correlation matrix by
   shrinking the empirical correlations towards  the identity matrix.  
   In this case the shrinkage intensity is 
@@ -95,12 +97,14 @@ cov.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
 }
 \references{
 
+  Opgen-Rhein, R., and Strimmer, K. (2006).  Ranking differentially expressed genes
+  revisited: a quasi empirical Bayes approach. In preparation.
 
   Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
-   
+
 }
 \seealso{\code{\link{invcov.shrink}}, \code{\link{pcor.shrink}}, \code{\link{cor2pcor}}}
 
@@ -125,7 +129,7 @@ X <- matrix(rnorm(n * ncol(sigma)), nrow = n) \%*\% Y
 # estimate covariance matrix
 s1 <- cov(X)
 s2 <- cov.shrink(X, protect=0)
-s3 <- cov.shrink(X, protect=0.01)
+s3 <- cov.shrink(X, protect=0.05)
 
 
 # squared error

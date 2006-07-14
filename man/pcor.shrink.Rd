@@ -8,8 +8,8 @@
   of partial correlation and partial variance, respectively.  
 }
 \usage{
-pcor.shrink(x, lambda, w, protect=0.01, verbose=TRUE)
-pvar.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
+pcor.shrink(x, lambda, w, protect=0, verbose=TRUE)
+pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
@@ -26,7 +26,7 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
   \item{w}{optional: weights for each data point - if not specified uniform weights
             are assumed (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
   \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0.01)}	     
+                 component risk (default: 0, no limited translation)}	     
   \item{verbose}{report progress while computing (default: TRUE)}
 }
 \details{

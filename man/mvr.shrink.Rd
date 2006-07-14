@@ -14,7 +14,7 @@
 }
 
 \usage{
-mvr.shrink(x, y, lambda, lambda.var, w, protect=0.01, verbose=TRUE)
+mvr.shrink(x, y, lambda, lambda.var, w, protect=0, verbose=TRUE)
 mvr.predict(coef, x)
 }
 
@@ -31,13 +31,13 @@ mvr.predict(coef, x)
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
                 If \code{lambda.var} is not specified (the default) it is estimated
-	        using an analytic formula from Schaefer and Strimmer (2005)
+	        using an analytic formula from Opgen-Rhein and Strimmer (2006)
                 - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
   \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0.01)}	     
+                 component risk (default: 0, no limited translation)}	     
   \item{verbose}{output some status messages while computing (default: TRUE)}
   \item{coef}{the matrix of regression coefficients, as output by \code{mvr.shrink()}.}
   
@@ -50,11 +50,11 @@ mvr.predict(coef, x)
    variances.
    
    The function \code{mvr.shrink}
-   computes shrinkage estimates of partial correlation and variance following
-   the method described in Schaefer and Strimmer (2005), and
-   calculates the respective regression coefficients.  Note that if the response
-   is multivariate, the regression coefficients correspond to those
-   from so-called block regression (Cox and Wermuth 1993). 
+   first computes shrinkage estimates of partial correlation and variance following
+   the method described in Schaefer and Strimmer (2005) and Opgen-Rhein and
+   Strimmer (2006), and then calculates from these the respective regression coefficients. 
+   If the response is multivariate, the regression coefficients correspond to those
+   from block regression (Cox and Wermuth 1993). 
 }
 \value{
   \code{mvr.shrink} returns a matrix with the estimated regression coefficients.
@@ -69,6 +69,10 @@ mvr.predict(coef, x)
 \references{
   Cox, D.R., and Wermuth, N. (1993). Linear dependencies represented by chain graphs.
   Statistical Science \bold{8}:204-283.
+  
+  Opgen-Rhein, R., and Strimmer, K. (2006).  An effective approach for
+  regularized regression, with application to the reverse engineering
+  of VAR genetic networks from expression time series data. In preparation.
   
   Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
