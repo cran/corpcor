@@ -97,10 +97,12 @@ cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 }
 \references{
 
-  Opgen-Rhein, R., and Strimmer, K. (2006).  Ranking differentially expressed genes
-  revisited: a quasi empirical Bayes approach. In preparation.
+  Opgen-Rhein, R., and K. Strimmer. 2006. Accurate ranking of 
+  differentially expressed genes by a distribution-free shrinkage 
+  approach.  Preprint.  
+  (\url{http://strimmerlab.org/publications/shrinkt2006.pdf})
 
-  Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
+  Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})

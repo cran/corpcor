@@ -1,8 +1,15 @@
 
-
            
 
            REVISION HISTORY OF THE "corpcor" PACKAGE
+
+
+Version 1.4.4
+
+- the function wt.scale() is now *much* faster, especially for large p,
+  due to using colSums() rather than apply() .. note that this indirectly 
+  speeds up most other functions in the corpcor package!
+- typos in the documtation were corrected and references updated
 
 
 Version 1.4.3

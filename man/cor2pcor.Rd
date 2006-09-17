@@ -57,7 +57,7 @@ pcor2cor(m, tol)
   Korbinian Strimmer (\url{http://strimmerlab.org}).
 }
 \references{
-  Whittaker J. (1990).  Graphical Models in Applied Multivariate Statistics.
+  Whittaker J. 1990.  Graphical Models in Applied Multivariate Statistics.
    John Wiley, Chichester.
 }
 

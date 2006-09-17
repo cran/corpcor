@@ -1,9 +1,9 @@
-### wt.scale.R  (2006-04-25)
+### wt.scale.R  (2007-09-17)
 ###
 ###    Weighted Expectations and Variances
 ###    
 ###
-### Copyright 2006 Korbinian Strimmer
+### Copyright 2006-2007 Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -53,9 +53,16 @@ wt.moments <- function(x, w)
 {
   x <- as.matrix(x)
   w <- pvt.check.w(w, nrow(x))
+  # bias correction factor
+  h1 <- 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
+ 
      
-  m <- apply(x, 2, weighted.mean, w=w)
-  v <- apply(x, 2, wt.var, w=w)
+  # m <- apply(x, 2, weighted.mean, w=w)
+  m <- colSums(w*x)  # same as above, but much faster
+  
+  # v <- apply(x, 2, wt.var, w=w)
+  v <- h1*(colSums(w*x^2)-colSums(w*x)^2) # same as above, but much faster
+ 
   
   # set small values of variance exactly to zero
   v[v < .Machine$double.eps] <- 0

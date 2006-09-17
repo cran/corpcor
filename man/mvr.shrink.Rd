@@ -6,7 +6,7 @@
 \title{Multivariate Shrinkage Regression}
 \description{
   \code{mvr.shrink} implements an analytic shrinkage approach 
-  fro multivariate linear regression that can be applied
+  for multivariate linear regression that can be applied
   for "small n, large p" data.
   
   \code{mvr.predict} is a function to predict the response given 
@@ -53,8 +53,9 @@ mvr.predict(coef, x)
    first computes shrinkage estimates of partial correlation and variance following
    the method described in Schaefer and Strimmer (2005) and Opgen-Rhein and
    Strimmer (2006), and then calculates from these the respective regression coefficients. 
-   If the response is multivariate, the regression coefficients correspond to those
-   from block regression (Cox and Wermuth 1993). 
+   
+   Note that if the response is multivariate, the the type of regression performed is
+   block regression (Cox and Wermuth 1993). 
 }
 \value{
   \code{mvr.shrink} returns a matrix with the estimated regression coefficients.
@@ -67,14 +68,15 @@ mvr.predict(coef, x)
   
 }
 \references{
-  Cox, D.R., and Wermuth, N. (1993). Linear dependencies represented by chain graphs.
+  Cox, D. R., and N. Wermuth. 1993. Linear dependencies represented by chain graphs.
   Statistical Science \bold{8}:204-283.
   
-  Opgen-Rhein, R., and Strimmer, K. (2006).  An effective approach for
-  regularized regression, with application to the reverse engineering
-  of VAR genetic networks from expression time series data. In preparation.
-  
-  Schaefer, J., and Strimmer, K. (2005).  A shrinkage approach to large-scale
+  Opgen-Rhein, R., and K. Strimmer. 2006. Accurate ranking of 
+  differentially expressed genes by a distribution-free shrinkage 
+  approach.  Preprint.  
+  (\url{http://strimmerlab.org/publications/shrinkt2006.pdf})
+
+  Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
