@@ -3,6 +3,13 @@
 
            REVISION HISTORY OF THE "corpcor" PACKAGE
 
+Version 1.4.5
+
+- when partial correlations are computed using pcor.shrink() the
+  returned matrix now has the standardized partial variances (i.e. 
+  PVAR/VAR) attached under the attribute "spv".
+- updated references in the help pages
+
 
 Version 1.4.4
 

@@ -25,7 +25,7 @@ cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
                 If \code{lambda.var} is not specified (the default) it is estimated
-	        using an analytic formula from Opgen-Rhein and Strimmer (2006)
+	        using an analytic formula from Opgen-Rhein and Strimmer (2007)
                 - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
@@ -97,14 +97,14 @@ cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 }
 \references{
 
-  Opgen-Rhein, R., and K. Strimmer. 2006. Accurate ranking of 
+  Opgen-Rhein, R., and K. Strimmer. 2007. Accurate ranking of 
   differentially expressed genes by a distribution-free shrinkage 
-  approach.  Preprint.  
-  (\url{http://strimmerlab.org/publications/shrinkt2006.pdf})
+  approach.    Statist. Appl. Genet. Mol. Biol. \bold{6}:9.
+  (\url{http://www.bepress.com/sagmb/vol6/iss1/art9/})
 
   Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
-  Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
+  Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
 
 }

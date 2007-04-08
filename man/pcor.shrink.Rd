@@ -20,8 +20,8 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
                 If \code{lambda.var} is not specified (the default) it is estimated
-	        using an analytic formula from Schaefer and Strimmer (2005) 
-                - see \code{\link{var.shrink}}.  
+	        using an analytic formula from Opgen-Rhein and Strimmer (2007)
+                - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights
             are assumed (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
@@ -43,12 +43,14 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
    Note that using \code{pcor.shrink(x)} \emph{much} faster than 
    \code{cor2pcor(cor.shrink(x))}.
    
-   For details about the shrinkage procedure consult Schaefer and Strimmer (2005)
-   and the help page of \code{\link{cov.shrink}}.
+   For details about the shrinkage procedure consult Schaefer and Strimmer (2005),
+   Opgen-Rhein and Strimmer (2007), and the help page of \code{\link{cov.shrink}}.
    
 }
 \value{
-  \code{pcor.shrink} returns the partial correlation matrix.
+  \code{pcor.shrink} returns the partial correlation matrix.  Attached to this
+  matrix are the standardized partial variances (i.e. PVAR/VAR) that 
+  can be retrieved using \code{\link{attr}} under the attribute "spv".
   
   \code{pvar.shrink} returns the partial variances. 
 }
@@ -59,9 +61,14 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 }
 \references{
 
+  Opgen-Rhein, R., and K. Strimmer. 2007. Accurate ranking of 
+  differentially expressed genes by a distribution-free shrinkage 
+  approach.    Statist. Appl. Genet. Mol. Biol. \bold{6}:9.
+  (\url{http://www.bepress.com/sagmb/vol6/iss1/art9/})
+
   Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
-  Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
+  Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})  
   
   Whittaker J. 1990.  Graphical Models in Applied Multivariate Statistics.

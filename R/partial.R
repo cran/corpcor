@@ -1,9 +1,9 @@
-### partial.R  (2006-07-14)
+### partial.R  (2007-04-08)
 ###
 ###    Partial Correlation and Partial Variance
 ###    
 ###
-### Copyright 2003-06 Juliane Schaefer and Korbinian Strimmer
+### Copyright 2003-07 Juliane Schaefer and Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -66,8 +66,12 @@ pcor.shrink <- function(x, lambda, w, protect=0, verbose=TRUE)
   pc <- -invcor.shrink(x, lambda, w, protect, verbose)
   diag(pc) <- -diag(pc)
 
-  # standardize and return  
-  return(cov2cor(pc))
+  spv <- 1/diag(pc)  # standardized partial variances (i.e. pvar/var)
+  pc <- cov2cor(pc)  # partial correlations
+
+  attr(pc, "spv") <- spv
+ 
+  return(pc)
 }
 
 

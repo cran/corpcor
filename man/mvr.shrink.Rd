@@ -31,7 +31,7 @@ mvr.predict(coef, x)
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
                 If \code{lambda.var} is not specified (the default) it is estimated
-	        using an analytic formula from Opgen-Rhein and Strimmer (2006)
+	        using an analytic formula from Opgen-Rhein and Strimmer (2007)
                 - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
@@ -52,7 +52,7 @@ mvr.predict(coef, x)
    The function \code{mvr.shrink}
    first computes shrinkage estimates of partial correlation and variance following
    the method described in Schaefer and Strimmer (2005) and Opgen-Rhein and
-   Strimmer (2006), and then calculates from these the respective regression coefficients. 
+   Strimmer (2007), and then calculates from these the respective regression coefficients. 
    
    Note that if the response is multivariate, the the type of regression performed is
    block regression (Cox and Wermuth 1993). 
@@ -71,14 +71,14 @@ mvr.predict(coef, x)
   Cox, D. R., and N. Wermuth. 1993. Linear dependencies represented by chain graphs.
   Statistical Science \bold{8}:204-283.
   
-  Opgen-Rhein, R., and K. Strimmer. 2006. Accurate ranking of 
+  Opgen-Rhein, R., and K. Strimmer. 2007. Accurate ranking of 
   differentially expressed genes by a distribution-free shrinkage 
-  approach.  Preprint.  
-  (\url{http://strimmerlab.org/publications/shrinkt2006.pdf})
+  approach.    Statist. Appl. Genet. Mol. Biol. \bold{6}:9.
+  (\url{http://www.bepress.com/sagmb/vol6/iss1/art9/})
 
   Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
-  Statist. Appl. Genet. Mol. Biol.\bold{4}:32.
+  Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
    
 }

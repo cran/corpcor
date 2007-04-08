@@ -1,9 +1,9 @@
-### shrink.internal.R  (2006-07-14)
+### shrink.internal.R  (2007-04-08)
 ###
 ###    Non-public functions used in the covariance shrinkage estimator 
 ###    
 ###
-### Copyright 2005-06 Korbinian Strimmer
+### Copyright 2005-07 Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -44,6 +44,7 @@ pvt.check.w <- function(w, n)
    return(w)
 }
 
+
 # print function
 print.shrinkage <- function(x, ...)
 {
@@ -61,6 +62,9 @@ print.shrinkage <- function(x, ...)
   
   protect <- attr(x, "protect")
   attr(x, "protect") <- NULL
+
+  spv <- attr(x, "spv")
+  attr(x, "spv") <- NULL
 
   NextMethod("print", x, quote = FALSE, right = TRUE)
     
@@ -88,8 +92,11 @@ print.shrinkage <- function(x, ...)
      cat("Fraction of components with limited translation:", protect, "\n")
   }
  
+  if (!is.null(spv))  
+  {
+     cat("Standardized partial variances (i.e PVAR/VAR) are attached (attribute \"spv\").\n")
+  }
 }
-
 
 
 
