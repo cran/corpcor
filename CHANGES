@@ -3,6 +3,15 @@
 
            REVISION HISTORY OF THE "corpcor" PACKAGE
 
+
+Version 1.4.6
+
+- following a suggestion (and a patch) by Nicola Soranzo internal big 
+  objects are now explicitely removed when they are not needed anymore.  
+  As a result, the package now needs less computer memory, and
+  larger (partial) correlation matrices can be computed.
+
+
 Version 1.4.5
 
 - when partial correlations are computed using pcor.shrink() the

@@ -1,4 +1,4 @@
-### shrink.internal.R  (2007-04-08)
+### shrink.internal.R  (2007-10-19)
 ###
 ###    Non-public functions used in the covariance shrinkage estimator 
 ###    
@@ -94,7 +94,7 @@ print.shrinkage <- function(x, ...)
  
   if (!is.null(spv))  
   {
-     cat("Standardized partial variances (i.e PVAR/VAR) are attached (attribute \"spv\").\n")
+     cat("Standardized partial variances (i.e. PVAR/VAR) are attached (attribute \"spv\").\n")
   }
 }
 
@@ -182,7 +182,7 @@ pvt.scor <- function(x, lambda, w, protect, verbose)
   
   # get ensemble shrinkage intensity
   z <- pvt.get.lambda(xs, lambda, w, protect, verbose=verbose, type="correlation", 0)
-  
+  rm(w)
   
   # shrinkage estimate of correlation matrix
   if (z$lambda == 1)
@@ -196,7 +196,7 @@ pvt.scor <- function(x, lambda, w, protect, verbose)
     r <- (1-z$lambda)*r0
     diag(r) <- 1 
   } 
-  
+  rm(xs)
   
   if (z$lambda > 0 && protect > 0) 
   {
@@ -212,30 +212,25 @@ pvt.scor <- function(x, lambda, w, protect, verbose)
     #       if protect==0 full shrinkage will occur
     
     diff <- sm2vec( r0-r )
+    rm(r0)
     adiff <- abs(diff)
     sdiff <- sign(diff)
-    diff <- NULL
+    rm(diff)
   
     M <- quantile(adiff, probs=c(1-protect))
    
-    ## ################
-    #if(verbose)
-    #{
-    #  library(GeneTS)
-    #  density.pr(adiff, plot=TRUE)
-    #  cat("DEBUG: Threshold=", M, "\n")
-    #}
-    ###################
-   
-   
     d <- adiff-M # soft thresholding
+    rm(adiff)
     d[d < 0] <- 0
     d <- d*sdiff
+    rm(sdiff)
   
     W <- vec2sm(d) # correction matrix
+    rm(d)
     diag(W) <- 0
     
     r <- r + W  # add correction term
+    rm(W)
     
     attr(r, "protect") <- protect
   }
@@ -258,12 +253,11 @@ pvt.scor <- function(x, lambda, w, protect, verbose)
 
 pvt.invscor <- function(x, lambda, w, protect, verbose)
 {
-  # DEBUG:
-  # this is a quick and dirty fix until I figure out how to employ
-  # the woodbury trick also to risk protected correlation estimates.
   
   if (protect > 0)
   {
+    # for protect > 0 the woodbury trick is not applied
+
     r <- pvt.scor(x=x, lambda=lambda, w=w, protect=protect, verbose=verbose)
     
     ir <- pseudoinverse(r)
@@ -271,6 +265,7 @@ pvt.invscor <- function(x, lambda, w, protect, verbose)
     attr(ir, "lambda") <- attr(r, "lambda")
     attr(ir, "lambda.estimated") <- attr(r, "lambda.estimated")
     attr(ir, "protect") <- attr(r, "protect")
+    rm(r)
     attr(ir, "class") <- "shrinkage"
 
     return( ir )

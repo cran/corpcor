@@ -1,6 +1,6 @@
 Package: corpcor
-Version: 1.4.5
-Date: 2007-04-08
+Version: 1.4.6
+Date: 2007-10-19
 Title: Efficient Estimation of Covariance and (Partial) Correlation
 Author: Juliane Schaefer, Rainer Opgen-Rhein, and Korbinian Strimmer.
 Maintainer: Korbinian Strimmer <strimmer@uni-leipzig.de>
@@ -20,4 +20,4 @@ Description: This package implements an analytic shrinkage approach
   and correlation matrix.
 License: GPL version 2 or newer
 URL: http://www.strimmerlab.org/software/corpcor/
-Packaged: Sun Apr  8 10:58:56 2007; strimmer
+Packaged: Fri Oct 19 16:40:07 2007; strimmer
