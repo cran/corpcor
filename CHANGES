@@ -4,6 +4,11 @@
            REVISION HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.4.7
+
+- change of license from "GPL 2 or later", to "GPL 3 or later".
+
+
 Version 1.4.6
 
 - following a suggestion (and a patch) by Nicola Soranzo internal big 
