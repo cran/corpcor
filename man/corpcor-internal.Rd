@@ -1,10 +1,5 @@
 \name{corpcor-internal}
 
-\alias{bag.fun}
-\alias{robust.boot}
-
-\alias{pcor.pseudo}
-\alias{psinv.cor}
 
 \alias{positive.svd}
 \alias{nsmall.svd}

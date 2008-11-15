@@ -11,25 +11,24 @@
   and correlation (\code{\link{cor.shrink}}).
 }
 \usage{
-invcov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
-invcor.shrink(x, lambda, w, protect=0, verbose=TRUE)
+invcov.shrink(x, lambda, lambda.var, w, collapse=FALSE, verbose=TRUE)
+invcor.shrink(x, lambda, w, collapse=FALSE, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
   \item{lambda}{the correlation shrinkage intensity (range 0-1).
                 If \code{lambda} is not specified (the default) it is estimated
-		using an analytic formula from Schaefer and Strimmer (2005) 
+		using an analytic formula from Sch\"afer and Strimmer (2005) 
 		- see \code{\link{cor.shrink}}.  
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
                 If \code{lambda.var} is not specified (the default) it is estimated
-	        using an analytic formula from Schaefer and Strimmer (2005) 
+	        using an analytic formula from Sch\"afer and Strimmer (2005) 
                 - see \code{\link{var.shrink}}.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
-            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
-  \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0, no protection by limiting translation)}	     
+            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	
+  \item{collapse}{return vector instead of matrix if estimated or specified \code{lambda} equals 1.} 
   \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{
@@ -40,8 +39,6 @@ The key insight from this identity  is that for inverting the covariance/correla
 obtained from a n x p matrix you only need to invert a matrix of
 the size of the rank of the data matrix (which in "small n, large p" setting
 may mean substantial savings in computations). 
-
-Note: at the moment the algorithmic savings are only available if \code{protect=0}.
 }
 \value{
   \code{invcov.shrink} returns the inverse of the output from \code{\link{cov.shrink}}. 
@@ -49,13 +46,13 @@ Note: at the moment the algorithmic savings are only available if \code{protect=
   \code{invcor.shrink} returns the inverse of the output from \code{\link{cor.shrink}}. 
 }
 \author{
-  Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}) 
+  Juliane Sch\"afer  
   and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
 \references{
 
-  Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
+  Sch\"afer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})

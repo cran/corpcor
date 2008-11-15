@@ -1,12 +1,11 @@
-Package: corpcor
-Version: 1.4.8
-Date: 2008-11-15
-Title: Efficient Estimation of Covariance and (Partial) Correlation
-Author: Juliane Schaefer, Rainer Opgen-Rhein, and Korbinian Strimmer.
-Maintainer: Korbinian Strimmer <strimmer@uni-leipzig.de>
-Depends: R (>= 2.7.0)
-Suggests: 
-Description: This package implements an analytic shrinkage approach
+\encoding{latin1}
+\name{corpcor-package}
+\alias{corpcor-package}
+\docType{package}
+\title{The corpcor package}
+
+\description{
+This package implements an analytic shrinkage approach
   for inferring the covariance matrix.  The estimator is statistically
   highly accurate and efficient, applicable to "small n, large p" data, 
   and always returns a positive definite and well-conditioned matrix. 
@@ -18,6 +17,14 @@ Description: This package implements an analytic shrinkage approach
   the pseudoinverse, for checking the rank and positive definiteness of a
   matrix, and for the computationally fast inversion of the covariance 
   and correlation matrix.
-License: GPL (>= 3)
-URL: http://strimmerlab.org/software/corpcor/
-Packaged: Sun Nov 16 23:43:17 2008; strimmer
+}
+
+\author{Juliane Sch\"afer, Rainer Opgen-Rhein, and Korbinian Strimmer (\url{http://strimmerlab.org/})}
+\references{
+  See website: \url{http://strimmerlab.org/software/corpcor/}
+}
+\keyword{multivariate}
+\seealso{
+\code{\link{cov.shrink}, \link{invcov.shrink}, \link{pcor.shrink}, 
+ \link{mvr.shrink}, \link{fast.svd}.}
+}

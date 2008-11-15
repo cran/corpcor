@@ -7,7 +7,7 @@
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
+### License, version 3, or at your option, any later version,
 ### incorporated herein by reference.
 ### 
 ### This program is distributed in the hope that it will be
@@ -22,7 +22,7 @@
 ### MA 02111-1307, USA
 
 
-.First.lib <- function(lib, pkg) {
+.First.lib = function(lib, pkg) {
     library.dynam("corpcor", pkg, lib)
 }
 

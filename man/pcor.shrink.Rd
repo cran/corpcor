@@ -8,14 +8,14 @@
   of partial correlation and partial variance, respectively.  
 }
 \usage{
-pcor.shrink(x, lambda, w, protect=0, verbose=TRUE)
-pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
+pcor.shrink(x, lambda, w, verbose=TRUE)
+pvar.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
   \item{lambda}{the correlation shrinkage intensity (range 0-1).
                 If \code{lambda} is not specified (the default) it is estimated
-		using an analytic formula from Schaefer and Strimmer (2005) 
+		using an analytic formula from Sch\"afer and Strimmer (2005) 
 		- see \code{\link{cor.shrink}}.  
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
@@ -25,8 +25,6 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights
             are assumed (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
-  \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0, no limited translation)}	     
   \item{verbose}{report progress while computing (default: TRUE)}
 }
 \details{
@@ -43,7 +41,7 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
    Note that using \code{pcor.shrink(x)} \emph{much} faster than 
    \code{cor2pcor(cor.shrink(x))}.
    
-   For details about the shrinkage procedure consult Schaefer and Strimmer (2005),
+   For details about the shrinkage procedure consult Sch\"afer and Strimmer (2005),
    Opgen-Rhein and Strimmer (2007), and the help page of \code{\link{cov.shrink}}.
    
 }
@@ -55,7 +53,7 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
   \code{pvar.shrink} returns the partial variances. 
 }
 \author{
-  Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}) 
+  Juliane Sch\"afer  
   and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
@@ -66,7 +64,7 @@ pvar.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
   approach.    Statist. Appl. Genet. Mol. Biol. \bold{6}:9.
   (\url{http://www.bepress.com/sagmb/vol6/iss1/art9/})
 
-  Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
+  Sch\"afer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})  

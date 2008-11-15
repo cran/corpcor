@@ -14,7 +14,7 @@
 }
 
 \usage{
-mvr.shrink(x, y, lambda, lambda.var, w, protect=0, verbose=TRUE)
+mvr.shrink(x, y, lambda, lambda.var, w, verbose=TRUE)
 mvr.predict(coef, x)
 }
 
@@ -26,7 +26,7 @@ mvr.predict(coef, x)
 	    against the remaining predictors.}
   \item{lambda}{the correlation shrinkage intensity (range 0-1).
                 If \code{lambda} is not specified (the default) it is estimated
-		using an analytic formula from Schaefer and Strimmer (2005) 
+		using an analytic formula from Sch\"afer and Strimmer (2005) 
 		- see details below.  
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
@@ -36,8 +36,6 @@ mvr.predict(coef, x)
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	 
-  \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0, no limited translation)}	     
   \item{verbose}{output some status messages while computing (default: TRUE)}
   \item{coef}{the matrix of regression coefficients, as output by \code{mvr.shrink()}.}
   
@@ -51,7 +49,7 @@ mvr.predict(coef, x)
    
    The function \code{mvr.shrink}
    first computes shrinkage estimates of partial correlation and variance following
-   the method described in Schaefer and Strimmer (2005) and Opgen-Rhein and
+   the method described in Sch\"afer and Strimmer (2005) and Opgen-Rhein and
    Strimmer (2007), and then calculates from these the respective regression coefficients. 
    
    Note that if the response is multivariate, the the type of regression performed is
@@ -63,7 +61,7 @@ mvr.predict(coef, x)
   \code{mvr.predict} returns a response matrix.
 }
 \author{
-  Rainer Opgen-Rhein (\url{http://opgen-rhein.de})
+  Rainer Opgen-Rhein 
   and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
@@ -76,7 +74,7 @@ mvr.predict(coef, x)
   approach.    Statist. Appl. Genet. Mol. Biol. \bold{6}:9.
   (\url{http://www.bepress.com/sagmb/vol6/iss1/art9/})
 
-  Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
+  Sch\"afer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})

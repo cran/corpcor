@@ -11,16 +11,16 @@
 }
 
 \usage{
-var.shrink(x, lambda.var, w, protect=0, verbose=TRUE)
-cor.shrink(x, lambda, w, protect=0, verbose=TRUE)
-cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
+var.shrink(x, lambda.var, w, verbose=TRUE)
+cor.shrink(x, lambda, w, collapse=FALSE, verbose=TRUE)
+cov.shrink(x, lambda, lambda.var, w, collapse=FALSE, verbose=TRUE)
 }
 
 \arguments{
   \item{x}{a data matrix}
   \item{lambda}{the correlation shrinkage intensity (range 0-1).
                 If \code{lambda} is not specified (the default) it is estimated
-		using an analytic formula from Schaefer and Strimmer (2005) 
+		using an analytic formula from Sch\"afer and Strimmer (2005) 
 		- see details below.  
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{lambda.var}{the variance shrinkage intensity (range 0-1). 
@@ -29,16 +29,15 @@ cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
                 - see details below.  
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
-            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	
-  \item{protect}{the fraction of correlation components protected against excessive individual 
-                 component risk (default: 0, no limited translation)}	     
+            (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}
+  \item{collapse}{return vector instead of matrix if estimated or specified \code{lambda} equals 1.}	
   \item{verbose}{output some status messages while computing (default: TRUE)}
 }
 \details{
    
    \code{var.shrink} computes the empirical variance of each considered random variable, 
    and shrinks them towards their median.  The shrinkage intensity is estimated using 
-   Eq. 6 from Schaefer and Strimmer (2005), which leads to 
+   Eq. 6 from Sch\"afer and Strimmer (2005), which leads to 
    
    
       \deqn{\lambda_{var}^{*} = (  \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - median{s})^2  }
@@ -90,8 +89,8 @@ cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
   \code{cor.shrink} returns the corresponding correlation matrix. 
 }
 \author{
-  Juliane Schaefer (\url{http://www.stat.math.ethz.ch/~schaefer/}),
-  Rainer Opgen-Rhein (\url{http://opgen-rhein.de}),
+  Juliane Sch\"afer,
+  Rainer Opgen-Rhein,
   and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
@@ -102,7 +101,7 @@ cov.shrink(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
   approach.    Statist. Appl. Genet. Mol. Biol. \bold{6}:9.
   (\url{http://www.bepress.com/sagmb/vol6/iss1/art9/})
 
-  Schaefer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
+  Sch\"afer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
@@ -130,41 +129,35 @@ X <- matrix(rnorm(n * ncol(sigma)), nrow = n) \%*\% Y
 
 # estimate covariance matrix
 s1 <- cov(X)
-s2 <- cov.shrink(X, protect=0)
-s3 <- cov.shrink(X, protect=0.05)
+s2 <- cov.shrink(X)
 
 
 # squared error
 sum((s1-sigma)^2)
 sum((s2-sigma)^2)
-sum((s3-sigma)^2)
 
 
 # compare positive definiteness
 is.positive.definite(sigma)
 is.positive.definite(s1)
 is.positive.definite(s2)
-is.positive.definite(s3)
 
 
 # compare ranks and condition
 rank.condition(sigma)
 rank.condition(s1)
 rank.condition(s2)
-rank.condition(s3)
 
 # compare eigenvalues
 e0 <- eigen(sigma, symmetric=TRUE)$values
 e1 <- eigen(s1, symmetric=TRUE)$values
 e2 <- eigen(s2, symmetric=TRUE)$values
-e3 <- eigen(s3, symmetric=TRUE)$values
-m <-max(e0, e1, e2, e3)
+m <-max(e0, e1, e2)
 yl <- c(0, m)
 
-par(mfrow=c(2,2))
+par(mfrow=c(1,3))
 plot(e1,  main="empirical")
 plot(e2,  ylim=yl, main="full shrinkage")
-plot(e3,  ylim=yl, main="protected shrinkage")
 plot(e0,  ylim=yl, main="true")
 par(mfrow=c(1,1))
 

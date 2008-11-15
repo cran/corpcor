@@ -1,13 +1,13 @@
-### partial.R  (2007-04-08)
+### partial.R  (2008-11-14)
 ###
 ###    Partial Correlation and Partial Variance
 ###    
 ###
-### Copyright 2003-07 Juliane Schaefer and Korbinian Strimmer
+### Copyright 2003-2008 Juliane Schaefer and Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
+### License, version 3, or at your option, any later version,
 ### incorporated herein by reference.
 ### 
 ### This program is distributed in the hope that it will be
@@ -28,11 +28,11 @@
 # input: covariance matrix or correlation matrix
 # ouput: partial correlation matrix
 #
-cor2pcor <- function(m, tol)
+cor2pcor = function(m, tol)
 {   
   # invert, then negate off-diagonal entries
-  m <- -pseudoinverse(m, tol=tol)
-  diag(m) <- -diag(m)
+  m = -pseudoinverse(m, tol=tol)
+  diag(m) = -diag(m)
 
   # standardize and return  
   return(cov2cor(m))
@@ -44,12 +44,12 @@ cor2pcor <- function(m, tol)
 #
 # input: partial correlation matrix
 # ouput: correlation matrix
-pcor2cor <- function(m, tol)
+pcor2cor = function(m, tol)
 {
   # negate off-diagonal entries, then invert
-  m <- -m
-  diag(m) <- -diag(m)
-  m <- pseudoinverse(m, tol=tol)
+  m = -m
+  diag(m) = -diag(m)
+  m = pseudoinverse(m, tol=tol)
   
   # standardize and return 
   return(cov2cor(m))
@@ -61,30 +61,30 @@ pcor2cor <- function(m, tol)
 
 
 # partial correlation
-pcor.shrink <- function(x, lambda, w, protect=0, verbose=TRUE)
+pcor.shrink = function(x, lambda, w, verbose=TRUE)
 {
-  pc <- -invcor.shrink(x, lambda, w, protect, verbose)
-  diag(pc) <- -diag(pc)
+  pc = -invcor.shrink(x, lambda, w, verbose=verbose)
+  diag(pc) = -diag(pc)
 
-  spv <- 1/diag(pc)  # standardized partial variances (i.e. pvar/var)
-  pc <- cov2cor(pc)  # partial correlations
+  spv = 1/diag(pc)  # standardized partial variances (i.e. pvar/var)
+  pc = cov2cor(pc)  # partial correlations
 
-  attr(pc, "spv") <- spv
+  attr(pc, "spv") = spv
  
   return(pc)
 }
 
 
 # partial variances
-pvar.shrink <- function(x, lambda, lambda.var, w, protect=0, verbose=TRUE)
+pvar.shrink = function(x, lambda, lambda.var, w, verbose=TRUE)
 {
-  prec <- invcov.shrink( x, lambda, lambda.var, w, protect, verbose)
-  pvar <- 1/diag(prec)
+  prec = invcov.shrink(x, lambda, lambda.var, w, verbose=verbose)
+  pvar = 1/diag(prec)
 
-  attr(pvar, "lambda") <- attr(prec, "lambda")
-  attr(pvar, "lambda.estimated") <- attr(prec, "lambda.estimated")
-  attr(pvar, "lambda.var") <- attr(prec, "lambda.var")
-  attr(pvar, "lambda.var.estimated") <- attr(prec, "lambda.var.estimated")
+  attr(pvar, "lambda") = attr(prec, "lambda")
+  attr(pvar, "lambda.estimated") = attr(prec, "lambda.estimated")
+  attr(pvar, "lambda.var") = attr(prec, "lambda.var")
+  attr(pvar, "lambda.var.estimated") = attr(prec, "lambda.var.estimated")
     
   return( pvar )
 }

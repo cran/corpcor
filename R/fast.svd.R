@@ -7,7 +7,7 @@
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
+### License, version 3, or at your option, any later version,
 ### incorporated herein by reference.
 ### 
 ### This program is distributed in the hope that it will be
@@ -26,13 +26,13 @@
 
 
 # svd that retains only positive singular values 
-positive.svd <- function(m, tol)
+positive.svd = function(m, tol)
 {
-  s <- svd(m)
+  s = svd(m)
   
   if( missing(tol) ) 
-      tol <- max(dim(m))*max(s$d)*.Machine$double.eps
-  Positive <- s$d > tol
+      tol = max(dim(m))*max(s$d)*.Machine$double.eps
+  Positive = s$d > tol
 
   return(list(
       d=s$d[Positive],
@@ -43,44 +43,44 @@ positive.svd <- function(m, tol)
 
 # fast computation of svd(m) if n << p  
 # (n are the rows, p are columns)
-nsmall.svd <- function(m, tol)
+nsmall.svd = function(m, tol)
 {
-   B <- m %*% t(m)     # nxn matrix
-   s <- svd(B,nv=0)    # of which svd is easy..
+   B = m %*% t(m)     # nxn matrix
+   s = svd(B,nv=0)    # of which svd is easy..
 
    # determine rank of B  (= rank of m)
    if( missing(tol) ) 
-      tol <- dim(B)[1]*max(s$d)*.Machine$double.eps 
-   Positive <- s$d > tol                            
+      tol = dim(B)[1]*max(s$d)*.Machine$double.eps 
+   Positive = s$d > tol                            
            
    # positive singular values of m  
-   d <- sqrt(s$d[Positive])
+   d = sqrt(s$d[Positive])
       
    # corresponding orthogonal basis vectors
-   u <- s$u[, Positive, drop=FALSE]
-   v <- crossprod(m, u) %*% diag(1/d, nrow=length(d))   
+   u = s$u[, Positive, drop=FALSE]
+   v = crossprod(m, u) %*% diag(1/d, nrow=length(d))   
   
    return(list(d=d,u=u,v=v))
 }
 
 # fast computation of svd(m) if n >> p  
 # (n are the rows, p are columns)
-psmall.svd <- function(m, tol)
+psmall.svd = function(m, tol)
 {
-   B <- crossprod(m)   # pxp matrix
-   s <- svd(B,nu=0)    # of which svd is easy..
+   B = crossprod(m)   # pxp matrix
+   s = svd(B,nu=0)    # of which svd is easy..
 
    # determine rank of B  (= rank of m)
    if( missing(tol) ) 
-      tol <- dim(B)[1]*max(s$d)*.Machine$double.eps 
-   Positive <- s$d > tol                            
+      tol = dim(B)[1]*max(s$d)*.Machine$double.eps 
+   Positive = s$d > tol                            
            
    # positive singular values of m  
-   d <- sqrt(s$d[Positive])
+   d = sqrt(s$d[Positive])
       
    # corresponding orthogonal basis vectors
-   v <- s$v[, Positive, drop=FALSE]
-   u <- m %*% v %*% diag(1/d, nrow=length(d))
+   v = s$v[, Positive, drop=FALSE]
+   u = m %*% v %*% diag(1/d, nrow=length(d))
   
    return(list(d=d,u=u,v=v))
 }
@@ -95,13 +95,13 @@ psmall.svd <- function(m, tol)
 
 # note that also only positive singular values are returned
 
-fast.svd <- function(m, tol)
+fast.svd = function(m, tol)
 {  
-  n <- dim(m)[1]
-  p <- dim(m)[2]
+  n = dim(m)[1]
+  p = dim(m)[2]
  
  
-  EDGE.RATIO <- 2 # use standard SVD if matrix almost square
+  EDGE.RATIO = 2 # use standard SVD if matrix almost square
   if (n > EDGE.RATIO*p)
   {
      return(psmall.svd(m,tol))

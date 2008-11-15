@@ -1,13 +1,13 @@
-### shrink.internal.R  (2007-10-19)
+### shrink.internal.R  (2008-11-14)
 ###
 ###    Non-public functions used in the covariance shrinkage estimator 
 ###    
 ###
-### Copyright 2005-07 Korbinian Strimmer
+### Copyright 2005-08 Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
+### License, version 3, or at your option, any later version,
 ### incorporated herein by reference.
 ### 
 ### This program is distributed in the hope that it will be
@@ -23,11 +23,11 @@
 
 
 # make sure we have weights that sum up to one
-pvt.check.w <- function(w, n)
+pvt.check.w = function(w, n)
 {
    if (missing(w))
    {
-     w <- rep(1/n, n)   # equal weights
+     w = rep(1/n, n)   # equal weights
    }
    else
    {
@@ -36,9 +36,9 @@ pvt.check.w <- function(w, n)
        stop("Weight vector has incompatible length", call. = FALSE)
      } 
      
-     sw <- sum(w)
+     sw = sum(w)
      if (sw != 1) 
-       w <- w/sw      # make weights sum up to 1
+       w = w/sw      # make weights sum up to 1
    } 
  
    return(w)
@@ -46,25 +46,22 @@ pvt.check.w <- function(w, n)
 
 
 # print function
-print.shrinkage <- function(x, ...)
+print.shrinkage = function(x, ...)
 {
-  attr(x, "class") <- NULL
+  attr(x, "class") = NULL
   
-  lambda <- attr(x, "lambda")
-  lambda.estimated <- attr(x, "lambda.estimated")
-  attr(x, "lambda") <- NULL 
-  attr(x, "lambda.estimated") <- NULL 
+  lambda = attr(x, "lambda")
+  lambda.estimated = attr(x, "lambda.estimated")
+  attr(x, "lambda") = NULL 
+  attr(x, "lambda.estimated") = NULL 
   
-  lambda.var <- attr(x, "lambda.var")
-  lambda.var.estimated <- attr(x, "lambda.var.estimated")
-  attr(x, "lambda.var") <- NULL 
-  attr(x, "lambda.var.estimated") <- NULL 
+  lambda.var = attr(x, "lambda.var")
+  lambda.var.estimated = attr(x, "lambda.var.estimated")
+  attr(x, "lambda.var") = NULL 
+  attr(x, "lambda.var.estimated") = NULL 
   
-  protect <- attr(x, "protect")
-  attr(x, "protect") <- NULL
-
-  spv <- attr(x, "spv")
-  attr(x, "spv") <- NULL
+  spv = attr(x, "spv")
+  attr(x, "spv") = NULL
 
   NextMethod("print", x, quote = FALSE, right = TRUE)
     
@@ -72,26 +69,21 @@ print.shrinkage <- function(x, ...)
   if (!is.null(lambda.estimated))  
   {
     if (lambda.estimated) 
-      le <- "(estimated)"
+      le = "(estimated)"
     else
-      le <- "(specified)"  
+      le = "(specified)"  
     cat(paste("Shrinkage intensity lambda (correlation matrix):", round(lambda,4), le, "\n"))
   }
   
   if (!is.null(lambda.var.estimated))  
   {
     if (lambda.var.estimated)
-      lve <- "(estimated)"
+      lve = "(estimated)"
     else
-      lve <- "(specified)"  
+      lve = "(specified)"  
     cat(paste("Shrinkage intensity lambda.var (variance vector):", round(lambda.var, 4), lve, "\n"))
   }
-  
-  if (!is.null(protect))  
-  {
-     cat("Fraction of components with limited translation:", protect, "\n")
-  }
- 
+   
   if (!is.null(spv))  
   {
      cat("Standardized partial variances (i.e. PVAR/VAR) are attached (attribute \"spv\").\n")
@@ -108,51 +100,24 @@ print.shrinkage <- function(x, ...)
 #    lambda.var < 0: shrink with estimated lambda  
 #  - w:  data weights
 
-pvt.svar <- function(x, lambda.var, w, protect=protect, verbose)
+pvt.svar = function(x, lambda.var, w, verbose)
 {    
   # center input matrix
-  xs <- wt.scale(x, w, center=TRUE, scale=FALSE) 
+  xs = wt.scale(x, w, center=TRUE, scale=FALSE) 
   
   # compute variances 
-  v <- wt.moments(xs, w)$var
+  v = wt.moments(xs, w)$var
   
   # compute target
-  tgt <- median(v)
+  tgt = median(v)
           
   # shrinkage estimate 
-  z <- pvt.get.lambda(xs, lambda.var, w, 0, verbose=verbose, type="variance", tgt)   
-  vs <- z$lambda.var*tgt + (1-z$lambda.var)*v
-
-  if (protect > 0)
-  {
-    if (protect >= 1)
-    {
-      vs <- v
-      protect=1
-    }
-    else
-    {
-      diff <- v-vs 
-      adiff <- abs(diff)
-      sdiff <- sign(diff)
-      diff <- NULL
-  
-      M <- quantile(adiff, probs=c(1-protect))
-  
-      d <- adiff-M # soft thresholding
-      d[d < 0] <- 0
-      d <- d*sdiff
-    
-      vs <- vs + d  # add correction term
-    }
-  
-    attr(vs, "protect") <- protect
-  }
-
+  z = pvt.get.lambda(xs, lambda.var, w, verbose=verbose, type="variance", tgt)   
+  vs = z$lambda.var*tgt + (1-z$lambda.var)*v
          
-  attr(vs, "lambda.var") <- z$lambda.var
-  attr(vs, "lambda.var.estimated") <- z$lambda.var.estimated
-  attr(vs, "class") <- "shrinkage"
+  attr(vs, "lambda.var") = z$lambda.var
+  attr(vs, "lambda.var.estimated") = z$lambda.var.estimated
+  attr(vs, "class") = "shrinkage"
   
   return(vs)   
 }    
@@ -165,81 +130,53 @@ pvt.svar <- function(x, lambda.var, w, protect=protect, verbose)
 #    lambda > 0: shrink with given lambda
 #    lambda < 0: shrink with estimated lambda  
 #  - w:  data weights
+#  - collapse:  if true return vector rather matrix if lambda=1
 
-pvt.scor <- function(x, lambda, w, protect, verbose)
+pvt.scor = function(x, lambda, w, collapse, verbose)
 {  
   # standardize input matrix by standard deviations
-  xs <- wt.scale(x, w, center=TRUE, scale=TRUE, scale.by="sd") 
+  xs = wt.scale(x, w, center=TRUE, scale=TRUE) 
   
   # bias correction factor
-  h1 <- 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
+  h1 = 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
  
   # unbiased empirical estimator
-  # for w=1/n  the following  would simplify to:  r <- 1/(n-1)*crossprod(xs)
-  #r0 <- h1 * t(xs) %*% diag(w) %*% xs
-  r0 <- h1 * t(xs) %*% sweep(xs, 1, w, "*") # sweep requires less memory
+  # for w=1/n  the following  would simplify to:  r = 1/(n-1)*crossprod(xs)
+  #r0 = h1 * t(xs) %*% diag(w) %*% xs
+  r0 = h1 * t(xs) %*% sweep(xs, 1, w, "*") # sweep requires less memory
   
   
   # get ensemble shrinkage intensity
-  z <- pvt.get.lambda(xs, lambda, w, protect, verbose=verbose, type="correlation", 0)
+  z = pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation", 0)
   rm(w)
   
   # shrinkage estimate of correlation matrix
   if (z$lambda == 1)
   {
-    p <- ncol(xs)
-    r <- diag(p)
+    p = ncol(xs)
+    if (collapse)
+    {
+      r = rep(1, p)  # return only diagonal vector to save memory
+      names(r) = colnames(xs)
+    }
+    else
+    {
+      r = diag(p)    # return complete matrix
+      rownames(r) = colnames(xs)
+      colnames(r) = colnames(xs)
+    }
   }
   else
   {   
     # shrink off-diagonal elements
-    r <- (1-z$lambda)*r0
-    diag(r) <- 1 
+    r = (1-z$lambda)*r0
+    diag(r) = 1 
   } 
   rm(xs)
-  
-  if (z$lambda > 0 && protect > 0) 
-  {
-    if (verbose)
-    {     
-      cat("Risk protection: limited translation of the", protect*100, "percent most shrunken components.\n")
-    }
-
     
-    # limit the translation/risk of some components
-    
-    # note: if protect==1 then lambda will be set to zero
-    #       if protect==0 full shrinkage will occur
-    
-    diff <- sm2vec( r0-r )
-    rm(r0)
-    adiff <- abs(diff)
-    sdiff <- sign(diff)
-    rm(diff)
-  
-    M <- quantile(adiff, probs=c(1-protect))
-   
-    d <- adiff-M # soft thresholding
-    rm(adiff)
-    d[d < 0] <- 0
-    d <- d*sdiff
-    rm(sdiff)
-  
-    W <- vec2sm(d) # correction matrix
-    rm(d)
-    diag(W) <- 0
-    
-    r <- r + W  # add correction term
-    rm(W)
-    
-    attr(r, "protect") <- protect
-  }
-   
-  attr(r, "lambda") <- z$lambda
-  attr(r, "lambda.estimated") <- z$lambda.estimated
-  
-
-  attr(r, "class") <- "shrinkage"
+  attr(r, "lambda") = z$lambda
+  attr(r, "lambda.estimated") = z$lambda.estimated
+  attr(r, "class") = "shrinkage"
 
   return(r)   
 }    
@@ -251,52 +188,43 @@ pvt.scor <- function(x, lambda, w, protect, verbose)
 # compute the inverse of the correlation shrinkage estimator
 # directly 
 
-pvt.invscor <- function(x, lambda, w, protect, verbose)
-{
-  
-  if (protect > 0)
-  {
-    # for protect > 0 the woodbury trick is not applied
-
-    r <- pvt.scor(x=x, lambda=lambda, w=w, protect=protect, verbose=verbose)
-    
-    ir <- pseudoinverse(r)
-    
-    attr(ir, "lambda") <- attr(r, "lambda")
-    attr(ir, "lambda.estimated") <- attr(r, "lambda.estimated")
-    attr(ir, "protect") <- attr(r, "protect")
-    rm(r)
-    attr(ir, "class") <- "shrinkage"
-
-    return( ir )
-  }
-  
-  
+pvt.invscor = function(x, lambda, w, collapse, verbose)
+{  
   # standardize input matrix by standard deviations
-  xs <- wt.scale(x, w, center=TRUE, scale=TRUE, scale.by="sd") # standardize data matrix
+  xs = wt.scale(x, w, center=TRUE, scale=TRUE) # standardize data matrix
 
-  z <- pvt.get.lambda(xs, lambda, w, protect, verbose=verbose, type="correlation", 0)
-  p <- ncol(xs)
+  z = pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation", 0)
+  p = ncol(xs)
     
   if (z$lambda == 1)
   {
-    invr <- diag(p)
+    if (collapse)
+    {
+      invr = rep(1, p)  # return only diagonal vector to save memory
+      names(invr) = colnames(xs)
+    }
+    else
+    {
+      invr = diag(p)    # return complete matrix
+      rownames(invr) = colnames(xs)
+      colnames(invr) = colnames(xs)
+    }
   }
   else
   {
     # number of zero-variance variables
-    zeros <- (attr(xs, "scaled:scale")==0.0)
+    zeros = (attr(xs, "scaled:scale")==0.0)
     
-    svdxs <- fast.svd(xs)
-    m <- length(svdxs$d)  # rank of xs
+    svdxs = fast.svd(xs)
+    m = length(svdxs$d)  # rank of xs
            
     # bias correction factor
-    h1 <- 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
+    h1 = 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
     
-    UTWU <- t(svdxs$u) %*% sweep(svdxs$u, 1, w, "*") #  t(U) %*% diag(w) %*% U
-    C <- sweep(sweep(UTWU, 1, svdxs$d, "*"), 2, svdxs$d, "*") # D %*% UTWU %*% D
-    C <- (1-z$lambda) * h1 * C
-    iC <- solve(C)
+    UTWU = t(svdxs$u) %*% sweep(svdxs$u, 1, w, "*") #  t(U) %*% diag(w) %*% U
+    C = sweep(sweep(UTWU, 1, svdxs$d, "*"), 2, svdxs$d, "*") # D %*% UTWU %*% D
+    C = (1-z$lambda) * h1 * C
+    iC = solve(C)
     
     # note: C is of size m x m, and diagonal if w=1/n
      
@@ -306,26 +234,26 @@ pvt.invscor <- function(x, lambda, w, protect, verbose)
         warning(paste("Estimated correlation matrix doesn't have full rank",
           "- pseudoinverse used for inversion."), call. = FALSE)    
        
-      invr <- svdxs$v %*% iC %*% t(svdxs$v)
+      #invr = svdxs$v %*% iC %*% t(svdxs$v)
+      invr = svdxs$v %*% tcrossprod(iC, svdxs$v)
     }
     else # use a special case of Woodbury matrix identity for inversion
     {
-      F <- solve(z$lambda*iC + diag(m))
-      invr <- (diag(p) - svdxs$v %*% F %*% t(svdxs$v))/z$lambda 
+      F = solve(z$lambda*iC + diag(m))
+      #invr = (diag(p) - svdxs$v %*% F %*% t(svdxs$v))/z$lambda 
+      invr = (diag(p) - svdxs$v %*% tcrossprod(F, svdxs$v))/z$lambda 
     }
  
     # set all diagonal entries corresponding to zero-variance variables to 1
-    diag(invr)[zeros] <- 1
- 
+    diag(invr)[zeros] = 1
+
+    rownames(invr) = colnames(xs)
+    colnames(invr) = colnames(xs)
   }  
   
-  attr(invr, "lambda") <- z$lambda
-  attr(invr, "lambda.estimated") <- z$lambda.estimated
-
-  attr(invr, "class") <- "shrinkage"
-  
-  rownames(invr) <- colnames(xs)
-  colnames(invr) <- colnames(xs)
+  attr(invr, "lambda") = z$lambda
+  attr(invr, "lambda.estimated") = z$lambda.estimated
+  attr(invr, "class") = "shrinkage"
   
   return( invr )
 }
@@ -333,31 +261,26 @@ pvt.invscor <- function(x, lambda, w, protect, verbose)
 
 
 # returns lambda to be used for shrinkage
-pvt.get.lambda <- function(x, lambda, w, protect, verbose, type=c("correlation", "variance"), target)
+pvt.get.lambda = function(x, lambda, w, verbose, type=c("correlation", "variance"), target)
 {
-  type <- match.arg(type)
+  type = match.arg(type)
   
   if (type == "correlation")
   {
-     kind <- "lambda (correlation matrix):"
-     func <- "C_corlambda"
+     kind = "lambda (correlation matrix):"
+     func = "C_corlambda"
      
      # note: x needs to be the *scaled* data matrix
   }
   
   if (type == "variance")
   {
-     kind <- "lambda.var (variance vector):"
-     func <- "C_varlambda"
+     kind = "lambda.var (variance vector):"
+     func = "C_varlambda"
      
      # note: x needs to be the *centered* data matrix
   }
   
-  if (protect == 1) # if all components are translation protected, don't shrink
-  {
-    lambda <- 0
-     cat("Risk protection:  no shrinkage (protect parameter equals 1).\n")
-  }
    
   # if lambda = 0: don't shrink
   # if lambda > 0: shrink with given lambda
@@ -373,7 +296,7 @@ pvt.get.lambda <- function(x, lambda, w, protect, verbose, type=c("correlation",
     
     # estimate optimal shrinkage intensity 
     # target: correlations/covariances -> 0  
-    lambda <- .C(func,
+    lambda = .C(func,
             as.double(x),
 	    as.integer( nrow(x) ),
 	    as.integer( ncol(x) ),
@@ -381,7 +304,7 @@ pvt.get.lambda <- function(x, lambda, w, protect, verbose, type=c("correlation",
 	    as.double(target),
 	    lambda=double(1), PACKAGE="corpcor", DUP=FALSE)$lambda
 
-    lambda.estimated <- TRUE
+    lambda.estimated = TRUE
       
     if (verbose)
     {
@@ -390,8 +313,8 @@ pvt.get.lambda <- function(x, lambda, w, protect, verbose, type=c("correlation",
   }
   else
   {
-    if (lambda > 1) lambda <- 1
-    lambda.estimated <- FALSE
+    if (lambda > 1) lambda = 1
+    lambda.estimated = FALSE
     
     if (verbose)
     {

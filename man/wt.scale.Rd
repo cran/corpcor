@@ -19,7 +19,7 @@
 \usage{
   wt.var(xvec, w) 
   wt.moments(x, w)
-  wt.scale(x, w, center=TRUE, scale=TRUE, scale.by=c("sd", "mean"))
+  wt.scale(x, w, center=TRUE, scale=TRUE)
 }
 
 \arguments{
@@ -28,9 +28,6 @@
   \item{w}{data weights}
   \item{center}{logical value}
   \item{scale}{logical value}
-  \item{scale.by}{determines whether the columns are standardized by the
-        standard errors of the respective variables (\code{"sd"}, the default) or by the
-	column means (\code{"mean"}).}
 }
 
 

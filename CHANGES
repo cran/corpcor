@@ -4,6 +4,16 @@
            REVISION HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.4.8
+
+- new "collapse" option in cor.shrink, cov.shrink, invcor.shrink, invov.shrink
+  to allow memory savings when lambda equals 1.
+- to simplify code base two rarely used options were removed:
+  "protect" and  "scale.by" (wt.scale is now always done using "sd").
+- package depends now on R 2.7.0.
+- documentation was polished.
+
+
 Version 1.4.7
 
 - change of license from "GPL 2 or later", to "GPL 3 or later".

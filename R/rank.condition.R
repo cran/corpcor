@@ -7,7 +7,7 @@
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
+### License, version 3, or at your option, any later version,
 ### incorporated herein by reference.
 ### 
 ### This program is distributed in the hope that it will be
@@ -23,15 +23,15 @@
 
 
 # checks whether a matrix is positive definite
-is.positive.definite <- function (m, tol, method=c("eigen", "chol"))
+is.positive.definite = function (m, tol, method=c("eigen", "chol"))
 {
-    method <- match.arg(method)
+    method = match.arg(method)
     
-    if (!is.matrix(m)) m <- as.matrix(m)
+    if (!is.matrix(m)) m = as.matrix(m)
 
     if (method=="eigen")
     {
-        eval <- eigen(m, only.values = TRUE)$values
+        eval = eigen(m, only.values = TRUE)$values
         if (is.complex( eval ))
         {
            warning("Input matrix has complex eigenvalues!")
@@ -39,7 +39,7 @@ is.positive.definite <- function (m, tol, method=c("eigen", "chol"))
         }
 
         if( missing(tol) )
-            tol <- max(dim(m))*max(abs(eval))*.Machine$double.eps
+            tol = max(dim(m))*max(abs(eval))*.Machine$double.eps
    
         if (sum(eval > tol) == length(eval))
             return(TRUE)
@@ -49,7 +49,7 @@ is.positive.definite <- function (m, tol, method=c("eigen", "chol"))
     
     if (method=="chol")
     {
-	val <- try(chol(m), silent=TRUE)
+	val = try(chol(m), silent=TRUE)
   
         if (class(val) == "try-error")
             return(FALSE)
@@ -60,23 +60,23 @@ is.positive.definite <- function (m, tol, method=c("eigen", "chol"))
 
 
 # Method by Higham 1988
-make.positive.definite <- function(m, tol)
+make.positive.definite = function(m, tol)
 {
-  if (!is.matrix(m)) m <- as.matrix(m)
+  if (!is.matrix(m)) m = as.matrix(m)
 
-  d <- dim(m)[1] 
+  d = dim(m)[1] 
   if ( dim(m)[2] != d ) stop("Input matrix is not square!")
    
-  es <- eigen(m)
-  esv <- es$values
+  es = eigen(m)
+  esv = es$values
   
   if (missing(tol))
-      tol <- d*max(abs(esv))*.Machine$double.eps 
-  delta <-  2*tol # factor to is just to make sure the resulting
+      tol = d*max(abs(esv))*.Machine$double.eps 
+  delta =  2*tol # factor to is just to make sure the resulting
                   # matrix passes all numerical tests of positive definiteness
   
-  tau <- pmax(0, delta - esv)
-  dm <- es$vectors %*% diag(tau, d) %*% t(es$vectors)    
+  tau = pmax(0, delta - esv)
+  dm = es$vectors %*% diag(tau, d) %*% t(es$vectors)    
   
   #print(max(DA))
   #print(esv[1]/delta)
@@ -88,22 +88,22 @@ make.positive.definite <- function(m, tol)
 
 
 # rank and condition of a matrix 
-rank.condition <- function (m, tol)
+rank.condition = function (m, tol)
 {
-    d <- svd(m, nv=0, nu=0)$d # compute only singular values
+    d = svd(m, nv=0, nu=0)$d # compute only singular values
     
-    max.d <- d[1]
-    min.d <- d[length(d)]
+    max.d = d[1]
+    min.d = d[length(d)]
     
     if( missing(tol) ) 
-        tol <- max(dim(m))*max.d*.Machine$double.eps
+        tol = max(dim(m))*max.d*.Machine$double.eps
     
-    r <- sum(d > tol) # rank: number of singular values larger than tol
+    r = sum(d > tol) # rank: number of singular values larger than tol
     
-    if (r < min(dim(m)) ) min.d <- 0 # if matrix is singular then set the  smallest
+    if (r < min(dim(m)) ) min.d = 0 # if matrix is singular then set the  smallest
                                      # singular value to 0, and hence condition = INF
     
-    c <- max.d/min.d
+    c = max.d/min.d
     
     return(list(rank = r, condition = c, tol=tol))
 }
