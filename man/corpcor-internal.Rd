@@ -5,8 +5,7 @@
 \alias{nsmall.svd}
 \alias{psmall.svd}
 
-\alias{pvt.scor}
-\alias{pvt.invscor}
+\alias{pvt.powscor}
 \alias{pvt.svar}
 \alias{pvt.get.lambda}
 \alias{pvt.check.w}

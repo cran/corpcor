@@ -53,7 +53,7 @@ pseudoinverse(m, tol)
 library("corpcor")
 
 # a singular matrix
-m <- rbind(
+m = rbind(
 c(1,2),
 c(1,2)
 )
@@ -62,7 +62,7 @@ c(1,2)
 try(solve(m))
 
 # pseudoinverse
-p <- pseudoinverse(m)
+p = pseudoinverse(m)
 p
 
 # characteristics of the pseudoinverse
@@ -73,7 +73,7 @@ zapsmall( m \%*\% p )  ==  zapsmall( t(m \%*\% p ) )
 
 
 # example with an invertable matrix
-m2 <- rbind(
+m2 = rbind(
 c(1,1),
 c(1,0)
 )

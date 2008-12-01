@@ -64,12 +64,12 @@ decompose.invcov(m)
 library("corpcor")
 
 # a correlation matrix and some variances
-r <- matrix(c(1, 1/2, 1/2, 1),  nrow = 2, ncol=2)
+r = matrix(c(1, 1/2, 1/2, 1),  nrow = 2, ncol=2)
 r
-v <- c(2, 3)
+v = c(2, 3)
 
 # construct the associated covariance matrix
-c <- rebuild.cov(r, v)
+c = rebuild.cov(r, v)
 c
 
 # decompose into correlations and variances
@@ -77,11 +77,11 @@ decompose.cov(c)
 
 
 # the corresponding concentration matrix
-conc <- pseudoinverse(c) 
+conc = pseudoinverse(c) 
 conc
 
 # decompose into partial correlation matrix and partial variances
-tmp <- decompose.invcov(conc)
+tmp = decompose.invcov(conc)
 tmp
 # note: because this is an example with two variables,
 # the partial and standard correlations are identical!

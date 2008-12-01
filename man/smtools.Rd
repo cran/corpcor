@@ -47,7 +47,7 @@ vec2sm(vec, diag = FALSE, order = NULL)
 library("corpcor")
 
 # a symmetric matrix
-m <- rbind(
+m = rbind(
  c(3,1,1,0),
  c(1,3,0,1),
  c(1,0,2,0),
@@ -56,8 +56,8 @@ m <- rbind(
 m
 
 # convert into vector (including the diagonals)
-v <- sm2vec(m, diag=TRUE)
-v.idx <- sm.index(m, diag=TRUE)
+v = sm2vec(m, diag=TRUE)
+v.idx = sm.index(m, diag=TRUE)
 v
 v.idx
 
@@ -65,9 +65,9 @@ v.idx
 vec2sm(v, diag=TRUE)
 
 # convert from vector with specified order of the elements
-sv <- sort(v)
+sv = sort(v)
 sv
-ov <- order(v)
+ov = order(v)
 ov
 vec2sm(sv, diag=TRUE, order=ov)
 }

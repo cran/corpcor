@@ -80,20 +80,20 @@ pvar.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 library("corpcor")
 
 # generate data matrix
-p <- 50
-n <- 10
-X <- matrix(rnorm(n*p), nrow = n, ncol = p)
+p = 50
+n = 10
+X = matrix(rnorm(n*p), nrow = n, ncol = p)
 
 
 # partial variance
-pv <- pvar.shrink(X)
+pv = pvar.shrink(X)
 pv
 
 # partial correlations (fast and recommend way)
-pcr1 <- pcor.shrink(X)
+pcr1 = pcor.shrink(X)
 
 # other possibilities to estimate partial correlations
-pcr2 <- cor2pcor( cor.shrink(X) )
+pcr2 = cor2pcor( cor.shrink(X) )
 
 
 # all the same

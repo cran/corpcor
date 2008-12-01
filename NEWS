@@ -1,7 +1,16 @@
+       
 
-           
+           RELEASE HISTORY OF THE "corpcor" PACKAGE
 
-           REVISION HISTORY OF THE "corpcor" PACKAGE
+
+Version 1.5.0
+
+- new function powcor.shrink()  computes (very efficiently!) an arbitrary 
+  power of the correlation shrinkage matrix (i.e.  R_shrink^alpha).
+- invcor.shrink() is now a special case powcor.shrink() with alpha=-1.
+- invcov.shrink() now also uses powcor.shrink().
+- new mpower() utility function to estimate the matrix power
+  of a real symmetric matrix.
 
 
 Version 1.4.8
@@ -146,16 +155,10 @@ Version 1.1:
 
 Version 1.0:
 
-- First stand-alone release of the functions for 
-  computing (partial) correlation and covariance.
-  Prior to this versions these functions were part
+- First stand-alone release (20 August 2005).
+
+  This package contains various functions shrinkage estimation
+  of (partial) correlation and covariance.
+  Prior to release in this package the functions were part
   of the GeneTS package.
 
-
-#################################################################
-
-Prior to 1.0.0:
-
-- In cor2pcor() and pcor2cor() input standardization removed.
-- LAPACK.svd function (with automatic choice of svd algorithm)
-- Now fast.svd, ggm.simulate.data, rank.condition uses LAPACK.svd 

@@ -114,22 +114,22 @@ cov.shrink(x, lambda, lambda.var, w, collapse=FALSE, verbose=TRUE)
 library("corpcor")
 
 # small n, large p
-p <- 100
-n <- 20
+p = 100
+n = 20
 
 # generate random pxp covariance matrix
-sigma <- matrix(rnorm(p*p),ncol=p)
-sigma <- crossprod(sigma)+ diag(rep(0.1, p))
+sigma = matrix(rnorm(p*p),ncol=p)
+sigma = crossprod(sigma)+ diag(rep(0.1, p))
 
 # simulate multinormal data of sample size n  
-sigsvd <- svd(sigma)
-Y <- t(sigsvd$v \%*\% (t(sigsvd$u) * sqrt(sigsvd$d)))
-X <- matrix(rnorm(n * ncol(sigma)), nrow = n) \%*\% Y
+sigsvd = svd(sigma)
+Y = t(sigsvd$v \%*\% (t(sigsvd$u) * sqrt(sigsvd$d)))
+X = matrix(rnorm(n * ncol(sigma)), nrow = n) \%*\% Y
 
 
 # estimate covariance matrix
-s1 <- cov(X)
-s2 <- cov.shrink(X)
+s1 = cov(X)
+s2 = cov.shrink(X)
 
 
 # squared error
@@ -149,11 +149,11 @@ rank.condition(s1)
 rank.condition(s2)
 
 # compare eigenvalues
-e0 <- eigen(sigma, symmetric=TRUE)$values
-e1 <- eigen(s1, symmetric=TRUE)$values
-e2 <- eigen(s2, symmetric=TRUE)$values
-m <-max(e0, e1, e2)
-yl <- c(0, m)
+e0 = eigen(sigma, symmetric=TRUE)$values
+e1 = eigen(s1, symmetric=TRUE)$values
+e2 = eigen(s2, symmetric=TRUE)$values
+m =max(e0, e1, e2)
+yl = c(0, m)
 
 par(mfrow=c(1,3))
 plot(e1,  main="empirical")

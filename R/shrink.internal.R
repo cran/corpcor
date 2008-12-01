@@ -1,4 +1,4 @@
-### shrink.internal.R  (2008-11-14)
+### shrink.internal.R  (2008-12-01)
 ###
 ###    Non-public functions used in the covariance shrinkage estimator 
 ###    
@@ -123,143 +123,6 @@ pvt.svar = function(x, lambda.var, w, verbose)
 }    
 
 
-
-# function to compute shrinkage correlation matrix 
-#  - x: data matrix, 
-#  - lambda = 0: don't shrink
-#    lambda > 0: shrink with given lambda
-#    lambda < 0: shrink with estimated lambda  
-#  - w:  data weights
-#  - collapse:  if true return vector rather matrix if lambda=1
-
-pvt.scor = function(x, lambda, w, collapse, verbose)
-{  
-  # standardize input matrix by standard deviations
-  xs = wt.scale(x, w, center=TRUE, scale=TRUE) 
-  
-  # bias correction factor
-  h1 = 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
- 
-  # unbiased empirical estimator
-  # for w=1/n  the following  would simplify to:  r = 1/(n-1)*crossprod(xs)
-  #r0 = h1 * t(xs) %*% diag(w) %*% xs
-  r0 = h1 * t(xs) %*% sweep(xs, 1, w, "*") # sweep requires less memory
-  
-  
-  # get ensemble shrinkage intensity
-  z = pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation", 0)
-  rm(w)
-  
-  # shrinkage estimate of correlation matrix
-  if (z$lambda == 1)
-  {
-    p = ncol(xs)
-    if (collapse)
-    {
-      r = rep(1, p)  # return only diagonal vector to save memory
-      names(r) = colnames(xs)
-    }
-    else
-    {
-      r = diag(p)    # return complete matrix
-      rownames(r) = colnames(xs)
-      colnames(r) = colnames(xs)
-    }
-  }
-  else
-  {   
-    # shrink off-diagonal elements
-    r = (1-z$lambda)*r0
-    diag(r) = 1 
-  } 
-  rm(xs)
-    
-  attr(r, "lambda") = z$lambda
-  attr(r, "lambda.estimated") = z$lambda.estimated
-  attr(r, "class") = "shrinkage"
-
-  return(r)   
-}    
-
-
-# compute the *inverse* of the shrinkage correlation matrix
-
-# this procedure exploits the Woodbury identity to efficiently
-# compute the inverse of the correlation shrinkage estimator
-# directly 
-
-pvt.invscor = function(x, lambda, w, collapse, verbose)
-{  
-  # standardize input matrix by standard deviations
-  xs = wt.scale(x, w, center=TRUE, scale=TRUE) # standardize data matrix
-
-  z = pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation", 0)
-  p = ncol(xs)
-    
-  if (z$lambda == 1)
-  {
-    if (collapse)
-    {
-      invr = rep(1, p)  # return only diagonal vector to save memory
-      names(invr) = colnames(xs)
-    }
-    else
-    {
-      invr = diag(p)    # return complete matrix
-      rownames(invr) = colnames(xs)
-      colnames(invr) = colnames(xs)
-    }
-  }
-  else
-  {
-    # number of zero-variance variables
-    zeros = (attr(xs, "scaled:scale")==0.0)
-    
-    svdxs = fast.svd(xs)
-    m = length(svdxs$d)  # rank of xs
-           
-    # bias correction factor
-    h1 = 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
-    
-    UTWU = t(svdxs$u) %*% sweep(svdxs$u, 1, w, "*") #  t(U) %*% diag(w) %*% U
-    C = sweep(sweep(UTWU, 1, svdxs$d, "*"), 2, svdxs$d, "*") # D %*% UTWU %*% D
-    C = (1-z$lambda) * h1 * C
-    iC = solve(C)
-    
-    # note: C is of size m x m, and diagonal if w=1/n
-     
-    if (lambda==0.0) # use eigenvalue decomposition for inversion
-    {
-      if (m < p-sum(zeros)) 
-        warning(paste("Estimated correlation matrix doesn't have full rank",
-          "- pseudoinverse used for inversion."), call. = FALSE)    
-       
-      #invr = svdxs$v %*% iC %*% t(svdxs$v)
-      invr = svdxs$v %*% tcrossprod(iC, svdxs$v)
-    }
-    else # use a special case of Woodbury matrix identity for inversion
-    {
-      F = solve(z$lambda*iC + diag(m))
-      #invr = (diag(p) - svdxs$v %*% F %*% t(svdxs$v))/z$lambda 
-      invr = (diag(p) - svdxs$v %*% tcrossprod(F, svdxs$v))/z$lambda 
-    }
- 
-    # set all diagonal entries corresponding to zero-variance variables to 1
-    diag(invr)[zeros] = 1
-
-    rownames(invr) = colnames(xs)
-    colnames(invr) = colnames(xs)
-  }  
-  
-  attr(invr, "lambda") = z$lambda
-  attr(invr, "lambda.estimated") = z$lambda.estimated
-  attr(invr, "class") = "shrinkage"
-  
-  return( invr )
-}
-
-
-
 # returns lambda to be used for shrinkage
 pvt.get.lambda = function(x, lambda, w, verbose, type=c("correlation", "variance"), target)
 {
@@ -334,7 +197,5 @@ pvt.get.lambda = function(x, lambda, w, verbose, type=c("correlation", "variance
   }
 	       
 }
-
-
 
 

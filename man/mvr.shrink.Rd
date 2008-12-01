@@ -89,22 +89,22 @@ library("corpcor")
 
 # example data
 data(longley) 
-x     <- as.matrix(longley[ 1:13, -2])
-y     <- as.matrix(longley[ 1:13,  2, drop=FALSE]) 
-xtest <- as.matrix(longley[14:16, -2])
-ytest <- as.matrix(longley[14:16,  2, drop=FALSE]) 
+x     = as.matrix(longley[ 1:13, -2])
+y     = as.matrix(longley[ 1:13,  2, drop=FALSE]) 
+xtest = as.matrix(longley[14:16, -2])
+ytest = as.matrix(longley[14:16,  2, drop=FALSE]) 
 
 
 # least squares regression is recovered if
 # shrinkage intensities are all set to zero
 lm(y ~ x)
-coefs.ols <- mvr.shrink(x, y, lambda=0, lambda.var=0)
+coefs.ols = mvr.shrink(x, y, lambda=0, lambda.var=0)
 coefs.ols
 
 
 # shrinkage regression coefficients 
 # note that these are quite different!
-coefs.shrink <- mvr.shrink(x, y)
+coefs.shrink = mvr.shrink(x, y)
 coefs.shrink
 
 
@@ -115,7 +115,7 @@ mvr.predict(coefs.shrink, xtest)
 
 # if no response matrix is given, then each predictor 
 # is regressed in turn against all others
-coefs <- mvr.shrink(longley)
+coefs = mvr.shrink(longley)
 coefs
 
 
@@ -123,10 +123,10 @@ coefs
 # (note that the mvr.shrink() function is specifically constructed so that 
 # this relationship holds for the shrinkage estimates)
 
-beta <- coefs[,-1]    # shrinkage regression coefficients w/o intercept
-pc <- pcor.shrink(longley) # shrunken partial correlations
-k <- 3
-l <- 4
+beta = coefs[,-1]    # shrinkage regression coefficients w/o intercept
+pc = pcor.shrink(longley) # shrunken partial correlations
+k = 3
+l = 4
 # partial correlations as computed by pcor.shrink()
 pc[k,l] 
 # partial correlations obtained from mvr.shrink() regression coefficients 

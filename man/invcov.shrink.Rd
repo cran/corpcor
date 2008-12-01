@@ -32,13 +32,10 @@ invcor.shrink(x, lambda, w, collapse=FALSE, verbose=TRUE)
   \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{
-  The trick that allows the fast computation of the inverses  
-   of the shrinkage covariance and correlation matrices is the
-  Woodbury matrix identity - see, e.g., \url{http://en.wikipedia.org/wiki/Woodbury_matrix_identity}. 
-The key insight from this identity  is that for inverting the covariance/correlation shrinkage estimator 
-obtained from a n x p matrix you only need to invert a matrix of
-the size of the rank of the data matrix (which in "small n, large p" setting
-may mean substantial savings in computations). 
+Both \code{invcov.shrink} and \code{invcor.shrink} rely on 
+\code{\link{powcor.shrink}}.  This allows to compute the inverses in
+a very efficient fashion (much more efficient than directly inverting
+the matrices - see the example).
 }
 \value{
   \code{invcov.shrink} returns the inverse of the output from \code{\link{cov.shrink}}. 
@@ -58,7 +55,7 @@ may mean substantial savings in computations).
   (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
    
 }
-\seealso{\code{\link{cov.shrink}}, \code{\link{pcor.shrink}}, \code{\link{cor2pcor}}}
+\seealso{\code{\link{powcor.shrink}}, \code{\link{cov.shrink}}, \code{\link{pcor.shrink}}, \code{\link{cor2pcor}}}
 
 \examples{
 \dontrun{
@@ -67,20 +64,20 @@ may mean substantial savings in computations).
 library("corpcor")
 
 # generate data matrix
-p <- 2000
-n <- 10
-X <- matrix(rnorm(n*p), nrow = n, ncol = p)
+p = 2000
+n = 10
+X = matrix(rnorm(n*p), nrow = n, ncol = p)
 
-lambda <- 0.23  # some arbitrary lambda
+lambda = 0.23  # some arbitrary lambda
 
 # slow
 system.time(
-  W1 <-  solve(cov.shrink(X, lambda)) 
+  (W1 =  solve(cov.shrink(X, lambda)))
 )
 
 # very fast
 system.time(
-  W2 <- invcov.shrink(X, lambda)
+  (W2 = invcov.shrink(X, lambda))
 )
 
 # no difference

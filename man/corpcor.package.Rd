@@ -25,6 +25,6 @@ This package implements an analytic shrinkage approach
 }
 \keyword{multivariate}
 \seealso{
-\code{\link{cov.shrink}, \link{invcov.shrink}, \link{pcor.shrink}, 
+\code{\link{cov.shrink}, \link{invcov.shrink}, \link{powcor.shrink}, \link{pcor.shrink}, 
  \link{mvr.shrink}, \link{fast.svd}.}
 }

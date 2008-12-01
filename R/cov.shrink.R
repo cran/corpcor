@@ -1,4 +1,4 @@
-### cov.shrink.R  (2008-11-14)
+### cov.shrink.R  (2008-12-01)
 ###
 ###    Shrinkage Estimation of Variance Vector, Correlation Matrix,
 ###    and Covariance Matrix, and their inverses
@@ -33,7 +33,7 @@ cor.shrink = function(x, lambda, w, collapse=FALSE, verbose=TRUE)
    w = pvt.check.w(w, n)
    
    # shrinkage correlation
-   r = pvt.scor(x=x, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
+   r = pvt.powscor(x=x, alpha=1, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
    if (verbose) cat("\n")
 
    return(r)
@@ -49,7 +49,7 @@ invcor.shrink = function(x, lambda, w, collapse=FALSE, verbose=TRUE)
    w = pvt.check.w(w, n)
    
    # inverse shrinkage correlation
-   invr = pvt.invscor(x=x, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
+   invr = pvt.powscor(x=x, alpha=-1, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
    if (verbose) cat("\n")
    
    return(invr)
@@ -85,7 +85,7 @@ cov.shrink = function(x, lambda, lambda.var, w, collapse=FALSE, verbose=TRUE)
    sc = sqrt( pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose) )
 
    # shrinkage correlation
-   c = pvt.scor(x=x, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
+   c = pvt.powscor(x=x, alpha=1, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
    
    # shrinkage covariance 
    if (is.null(dim(c)))
@@ -114,7 +114,7 @@ invcov.shrink = function(x, lambda, lambda.var, w, collapse=FALSE, verbose=TRUE)
    sc = sqrt( pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose) )
         
    # inverse shrinkage correlation
-   invc = pvt.invscor(x=x, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
+   invc = pvt.powscor(x=x, alpha=-1, lambda=lambda, w=w, collapse=collapse, verbose=verbose)
    
    # inverse shrinkage covariance 
    if (is.null(dim(invc)))

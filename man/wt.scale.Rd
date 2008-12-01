@@ -48,10 +48,10 @@
 library("corpcor")
 
 # generate some data
-p <- 5
-n <- 5
-X <- matrix(rnorm(n*p), nrow = n, ncol = p)
-w <- c(1,1,1,3,3)/9
+p = 5
+n = 5
+X = matrix(rnorm(n*p), nrow = n, ncol = p)
+w = c(1,1,1,3,3)/9
 
 
 # standardize matrix
