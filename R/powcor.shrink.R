@@ -1,4 +1,4 @@
-### powcor.shrink  (2008-12-01)
+### powcor.shrink  (2008-12-22)
 ###
 ###   Fast Computation of the Power of the Shrinkage Correlation Matrix
 ###
@@ -58,7 +58,7 @@ pvt.powscor = function(x, alpha, lambda, w, collapse, verbose)
   z = pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation", 0)
   p = ncol(xs)
     
-  if (z$lambda == 1)
+  if (z$lambda == 1 | alpha == 0) # result in both cases is the identity matrix
   {
     if (collapse)
     {

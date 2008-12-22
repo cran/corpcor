@@ -5,7 +5,10 @@
 \title{Fast Computation of the Power of the Shrinkage Correlation Matrix}
 \description{
   The function \code{powcor.shrink} efficiently computes the \code{alpha}-th power
-  of the shrinkage correlation matrix produced by \code{\link{cor.shrink}}.
+  of the shrinkage correlation matrix produced by \code{\link{cor.shrink}}. 
+
+  For instance, this function may be used for fast computation of the (inverse)
+  square root of the  shrinkage correlation matrix (needed, e.g., for decorrelation).
 }
 \usage{
 powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
@@ -24,25 +27,28 @@ powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
   \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{
-  This function employs the following identity to compute the matrix power of the correlation
-  matrix.
+  This function employs a special matrix identity to speed up the computation of
+  the matrix power of the shrinkage correlation matrix.
 
   Apart from a scaling factor the shrinkage correlation matrix computed 
    by \code{\link{cor.shrink}}  takes
   on the form
 
-    \deqn{Z = I_p + V M V' .}   
+    \deqn{Z = I_p + V M V' ,}   
 
-  Note that \code{Z} is of size \code{p} times \code{p}
-  whereas \code{M} is a matrix of size \code{m} times \code{m}, where \code{m} is the rank of
-  the matrix \code{Z}.  In order to calculate the \code{alpha}-th power of \code{Z}
-  the identity
+   where \code{V M V'} is a multiple of the empirical correlation matrix.
+   Crucially, \code{Z} is a matrix of size \code{p} times \code{p}
+   whereas  \code{M} is a potentially much smaller matrix of size \code{m} times \code{m},
+   where \code{m} is the rank of the empirical correlation matrix.  
+
+  In order to calculate the \code{alpha}-th power of \code{Z}
+  the function uses the identity
 
     \deqn{Z^\alpha = I_p - V (I_m -(I_m + M)^\alpha) V'}
 
-  requires only the computation of the \code{alpha}-th power of the  matrix
-  \eqn{I_m + M}.  This trick enables substantial computational savings when the number
-  of samples is much smaller than the number of observations.
+  requiring only the computation of the \code{alpha}-th power of the \code{m} by \code{m} matrix
+  \eqn{I_m + M}.  This trick enables substantial computational savings especially when the number
+  of observations is much smaller than the number of variables.
    
    Note that the above identity is related but not identical to the Woodbury matrix
    identity for inversion of a matrix.

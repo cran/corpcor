@@ -2,21 +2,25 @@
 \name{corpcor-package}
 \alias{corpcor-package}
 \docType{package}
-\title{The corpcor package}
+\title{The corpcor Package}
 
 \description{
-This package implements an analytic shrinkage approach
-  for inferring the covariance matrix.  The estimator is statistically
-  highly accurate and efficient, applicable to "small n, large p" data, 
-  and always returns a positive definite and well-conditioned matrix. 
-  Nevertheless, this method requires only little a priori modeling and is
-  computationally cheap. In addition to covariance estimation the
-  package contains similar functions for inferring variances, correlations,
-  partial correlations, partial variances, and regression coefficients.  
-  Furthermore, it provides  functions for fast SVD computation, for computing 
-  the pseudoinverse, for checking the rank and positive definiteness of a
-  matrix, and for the computationally fast inversion of the covariance 
-  and correlation matrix.
+This package implements a James-Stein-type shrinkage estimator for 
+  the covariance matrix, with separate shrinkage for variances and correlations.  
+  The details of the method are explained in Sch\"afer and Strimmer (2005) and 
+  Opgen-Rhein and Strimmer (2007).  The approach is both computationally as well
+  as statistically very efficient, it is applicable to ``small n, large p'' data, 
+  and always returns a positive definite and well-conditioned covariance matrix.  
+  In addition to inferring the covariance matrix the package also provides 
+  shrinkage estimators for partial correlations, partial variances, and 
+  regression coefficients.  The inverse of the covariance and correlation matrix 
+  can be efficiently computed, and as well as any arbitrary power of the 
+  shrinkage correlation matrix.  Furthermore, functions are available for fast 
+  singular value decomposition, for computing the pseudoinverse, and for 
+  checking the rank and positive definiteness of a matrix.
+
+  The name of the package refers to \bold{cor}relations and 
+  \bold{p}artial \bold{cor}relations.
 }
 
 \author{Juliane Sch\"afer, Rainer Opgen-Rhein, and Korbinian Strimmer (\url{http://strimmerlab.org/})}

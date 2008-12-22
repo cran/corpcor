@@ -3,6 +3,13 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.5.1
+
+- powcor.shrink() now collapses the identity matrix if alpha=0 and collapse=TRUE.
+- help page for powcor.shrink was revised.
+- package description was also revised.
+
+
 Version 1.5.0
 
 - new function powcor.shrink()  computes (very efficiently!) an arbitrary 
