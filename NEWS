@@ -3,6 +3,11 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.5.2
+
+- small corrections in the help pages, to pass the more stringent
+  checks on .Rd files introduced in R in January 2009.
+
 Version 1.5.1
 
 - powcor.shrink() now collapses the identity matrix if alpha=0 and collapse=TRUE.
@@ -38,7 +43,7 @@ Version 1.4.7
 Version 1.4.6
 
 - following a suggestion (and a patch) by Nicola Soranzo internal big 
-  objects are now explicitely removed when they are not needed anymore.  
+  objects are now explicitly removed when they are not needed anymore.  
   As a result, the package now needs less computer memory, and
   larger (partial) correlation matrices can be computed.
 
@@ -75,7 +80,7 @@ Version 1.4.2
 - new functions for decomposing the covariance matrix and
   its inverse: decompose.cov(), decompose.invcov(), rebuild.invcov()
 - new function pvar.shrink() to estimate partial variance.
-- in the documention the definition of partial variance and 
+- in the documentation the definition of partial variance and 
   partial covariance are corrected (following Whittaker 1990)  
 - the functions cov2pcov(), pcov2cov(), pcov.shrink() have been removed.
 - functions sm2vec(), vec2sm(), sm.index() back (from GeneTS)
@@ -85,7 +90,7 @@ Version 1.4.2
 Version 1.4.1:
 
 - fast.svd() now doesn't use any more the LAPACK routines DGESVD
-  to compute the singular value decomposition (this routine is depricated
+  to compute the singular value decomposition (this routine is deprecated
   from R version 2.3.0)
   
 - weighted.var(), weighted.moments(), weighted.scale() are

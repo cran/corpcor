@@ -42,7 +42,7 @@ mvr.predict(coef, x)
 }
 \details{
    
-   Regression coefficents and partial correlations/variances are interrelated,
+   Regression coefficients and partial correlations/variances are interrelated,
    see for example Cox and Wermuth (1993). Specifically, the regression coefficients
    are the partial correlations times the square-root of the ratio of the partial
    variances.

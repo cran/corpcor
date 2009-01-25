@@ -73,12 +73,10 @@ cov.shrink(x, lambda, lambda.var, w, collapse=FALSE, verbose=TRUE)
 
 
   
-  As an extra benefit, the shrinkage estimators have a form that can be \emph{very} efficiently inverted
-  using the Woodbury matrix identity, especially if the number of variables is large
-  and the sample size is small.  
-  Note that this identity is employed in the functions 
-  \\code{\link{invcov.shrink}} and \code{\link{invcor.shrink}}. and is much faster than directly 
-  inverting the matrix output by \code{cov.shrink} and \code{cor.shrink}, respectively.
+  As an extra benefit, the shrinkage estimators have a form that can be \emph{very} efficiently inverted, 
+  especially if the number of variables is large and the sample size is small.   Thus, instead of 
+   inverting the matrix output by \code{cov.shrink} and \code{cor.shrink} please use the functions
+  \code{\link{invcov.shrink}} and \code{\link{invcor.shrink}}, respectively.
   
 }
 \value{
