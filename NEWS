@@ -3,6 +3,10 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.5.3
+- small corrections to pass checks for R version 2.10.
+- reference to Zuber and Strimmer (2009) added.
+
 Version 1.5.2
 
 - small corrections in the help pages, to pass the more stringent

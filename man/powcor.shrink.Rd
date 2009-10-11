@@ -26,25 +26,26 @@ powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
   \item{collapse}{return vector instead of matrix if estimated or specified \code{lambda} equals 1.} 
   \item{verbose}{output status while computing (default: TRUE)}
 }
+
 \details{
   This function employs a special matrix identity to speed up the computation of
-  the matrix power of the shrinkage correlation matrix.
+  the matrix power of the shrinkage correlation matrix (see Zuber and Strimmer 2009 for details).
 
   Apart from a scaling factor the shrinkage correlation matrix computed 
-   by \code{\link{cor.shrink}}  takes
+  by \code{\link{cor.shrink}}  takes
   on the form
 
-    \deqn{Z = I_p + V M V' ,}   
+   \deqn{Z = I_p + V M V^T ,}   
 
-   where \code{V M V'} is a multiple of the empirical correlation matrix.
-   Crucially, \code{Z} is a matrix of size \code{p} times \code{p}
+  where \code{V M V^T} is a multiple of the empirical correlation matrix.
+  Crucially, \code{Z} is a matrix of size \code{p} times \code{p}
    whereas  \code{M} is a potentially much smaller matrix of size \code{m} times \code{m},
    where \code{m} is the rank of the empirical correlation matrix.  
 
   In order to calculate the \code{alpha}-th power of \code{Z}
   the function uses the identity
 
-    \deqn{Z^\alpha = I_p - V (I_m -(I_m + M)^\alpha) V'}
+    \deqn{Z^\alpha = I_p - V (I_m -(I_m + M)^\alpha) V^T}
 
   requiring only the computation of the \code{alpha}-th power of the \code{m} by \code{m} matrix
   \eqn{I_m + M}.  This trick enables substantial computational savings especially when the number
@@ -54,13 +55,13 @@ powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
    identity for inversion of a matrix.
    For \eqn{alpha=-1} the above identity reduces to
 
-    \deqn{Z^{-1} = I_p - V (I_m -(I_m + M)^{-1}) V' ,}
+    \deqn{Z^{-1} = I_p - V (I_m -(I_m + M)^{-1}) V^T ,}
 
    whereas the Woodbury matrix identity equals
 
-    \deqn{Z^{-1} = I_p - V (I_m + M^{-1})^{-1} V' .}
-
+    \deqn{Z^{-1} = I_p - V (I_m + M^{-1})^{-1} V^T .}
 }
+
 \value{
   \code{powcor.shrink} returns a matrix containing the  output from \code{\link{cor.shrink}} 
   taken to the power \code{alpha}. 
@@ -70,6 +71,14 @@ powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
   Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
+
+\references{
+
+  Zuber, V., and K. Strimmer. 2009. Gene ranking and biomarker
+  discovery under correlation.  Bioinformatics \bold{25}:2700-2707.
+  (\url{http://arxiv.org/abs/0902.0751})
+}
+
 
 \seealso{\code{\link{invcor.shrink}}, \code{\link{cor.shrink}}, \code{\link{mpower}}.}
 
