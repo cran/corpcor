@@ -3,12 +3,22 @@
 
 \title{Compute the Power of a Real Symmetric Matrix}
 \usage{
-mpower(m, alpha)
+mpower(m, alpha, pseudo=FALSE, tol)
 }
 \arguments{
   \item{m}{a real-valued symmetric matrix.}
   
   \item{alpha}{exponent.}
+
+  \item{pseudo}{if \code{pseudo=TRUE} then all zero eigenvalues are dropped 
+                (e.g. for computing the pseudoinverse).  The default is
+                to use all eigenvalues.}
+
+\item{tol}{tolerance - eigenvalues with absolute value smaller or equal
+           to \code{tol} are considered identically zero (default:
+	     \code{tol = max(dim(m))*max(abs(eval))*.Machine$double.eps}).
+	     }
+
 }
 \description{
   \code{mpower} computes \eqn{m^alpha}, i.e.
