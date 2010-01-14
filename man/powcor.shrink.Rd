@@ -83,13 +83,11 @@ powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
 \seealso{\code{\link{invcor.shrink}}, \code{\link{cor.shrink}}, \code{\link{mpower}}.}
 
 \examples{
-\dontrun{
-
 # load corpcor library
 library("corpcor")
 
 # generate data matrix
-p = 2000
+p = 500
 n = 10
 X = matrix(rnorm(n*p), nrow = n, ncol = p)
 
@@ -137,7 +135,5 @@ system.time(
 
 # no difference
 sum((W1-W2)^2)
-
-}
 }
 \keyword{multivariate}

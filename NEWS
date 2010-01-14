@@ -3,18 +3,32 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+
+Version 1.5.5
+- a numerical problem with symmetry check in invcor.shrink() and related
+  functions has been resolved (thanks to Gad Abraham).
+- following an idea by Miika Ahdesm\"aki the procedures for estimating the
+  shrinkage intensities have been rewritten in pure R without employing
+  any C code any more (w/o speed penalty!). 
+
+
 Version 1.5.4
+
 - mpower() now has an option to exclude nonzero eigenvalues
   and also checks whether the input matrix is symmetric.
 
+
 Version 1.5.3
+
 - small corrections to pass checks for R version 2.10.
 - reference to Zuber and Strimmer (2009) added.
+
 
 Version 1.5.2
 
 - small corrections in the help pages, to pass the more stringent
   checks on .Rd files introduced in R in January 2009.
+
 
 Version 1.5.1
 

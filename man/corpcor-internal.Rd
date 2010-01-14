@@ -8,6 +8,8 @@
 \alias{pvt.powscor}
 \alias{pvt.svar}
 \alias{pvt.get.lambda}
+\alias{pvt.varlambda}
+\alias{pvt.corlambda}
 \alias{pvt.check.w}
 \alias{pvt.usr}
 

@@ -1,8 +1,8 @@
-### mpower.R  (2009-12-15)
+### mpower.R  (2010-01-15)
 ###
 ###    Compute the Power of a Real Symmetric Matrix
 ###
-### Copyright 2008-09 Korbinian Strimmer
+### Copyright 2008-10 Korbinian Strimmer
 ###
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -25,7 +25,8 @@
 # compute m^alpha where m is a symmetric matrix
 mpower = function(m, alpha, pseudo=FALSE, tol)
 {
-    if( !isSymmetric(m) ) stop("Input matrix is not symmetric!")
+    if( any( abs(m-t(m)) > 100*.Machine$double.eps  ) ) 
+      stop("Input matrix is not symmetric!")
 
     em = eigen(m, symmetric = TRUE)
     eval = em$values

@@ -91,8 +91,6 @@ print.shrinkage = function(x, ...)
 }
 
 
-
-
 # function to compute shrinkage variance vector
 #  - x: data matrix, 
 #  - lambda.var = 0: don't shrink
@@ -122,80 +120,5 @@ pvt.svar = function(x, lambda.var, w, verbose)
   return(vs)   
 }    
 
-
-# returns lambda to be used for shrinkage
-pvt.get.lambda = function(x, lambda, w, verbose, type=c("correlation", "variance"), target)
-{
-  type = match.arg(type)
-  
-  if (type == "correlation")
-  {
-     kind = "lambda (correlation matrix):"
-     func = "C_corlambda"
-     
-     # note: x needs to be the *scaled* data matrix
-  }
-  
-  if (type == "variance")
-  {
-     kind = "lambda.var (variance vector):"
-     func = "C_varlambda"
-     
-     # note: x needs to be the *centered* data matrix
-  }
-  
-   
-  # if lambda = 0: don't shrink
-  # if lambda > 0: shrink with given lambda
-  # if lambda < 0: shrink with estimated lambda  (the default)
- 
-     
-  if (lambda < 0)
-  { 
-    if (verbose)
-    {
-      cat(paste("Estimating optimal shrinkage intensity", kind))     
-    }
-    
-    # estimate optimal shrinkage intensity 
-    # target: correlations/covariances -> 0  
-    lambda = .C(func,
-            as.double(x),
-	    as.integer( nrow(x) ),
-	    as.integer( ncol(x) ),
-	    as.double(w),
-	    as.double(target),
-	    lambda=double(1), PACKAGE="corpcor", DUP=FALSE)$lambda
-
-    lambda.estimated = TRUE
-      
-    if (verbose)
-    {
-      cat(paste(" ", round(lambda, 4), "\n", sep=""))     
-    }
-  }
-  else
-  {
-    if (lambda > 1) lambda = 1
-    lambda.estimated = FALSE
-    
-    if (verbose)
-    {
-      cat(paste("Specified shrinkage intensity", kind, round(lambda, 4), "\n"))     
-    }    
-  }
-  
-  if (type == "correlation") 
-  {
-     return (list(lambda=lambda, lambda.estimated=lambda.estimated))
-  }
-
-
-  if (type == "variance") 
-  {
-     return (list(lambda.var=lambda, lambda.var.estimated=lambda.estimated))
-  }
-	       
-}
 
 

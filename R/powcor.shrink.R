@@ -1,8 +1,8 @@
-### powcor.shrink  (2008-12-22)
+### powcor.shrink  (2010-01-13)
 ###
 ###   Fast Computation of the Power of the Shrinkage Correlation Matrix
 ###
-### Copyright 2008 Korbinian Strimmer
+### Copyright 2008-2010 Korbinian Strimmer
 ###
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -77,7 +77,8 @@ pvt.powscor = function(x, alpha, lambda, w, collapse, verbose)
     # unbiased empirical estimator
     # for w=1/n  the following  would simplify to:  r = 1/(n-1)*crossprod(xs)
     #r0 = h1 * t(xs) %*% diag(w) %*% xs
-    r0 = h1 * t(xs) %*% sweep(xs, 1, w, "*") # sweep requires less memory
+    #r0 = h1 * t(xs) %*% sweep(xs, 1, w, "*") # sweep requires less memory
+    r0 = h1 * crossprod( sweep(xs, 1, sqrt(w), "*") ) # even faster
 
     # shrink off-diagonal elements
     powr = (1-z$lambda)*r0
@@ -94,6 +95,8 @@ pvt.powscor = function(x, alpha, lambda, w, collapse, verbose)
     UTWU = t(svdxs$u) %*% sweep(svdxs$u, 1, w, "*") #  t(U) %*% diag(w) %*% U
     C = sweep(sweep(UTWU, 1, svdxs$d, "*"), 2, svdxs$d, "*") # D %*% UTWU %*% D
     C = (1-z$lambda) * h1 * C
+
+    C = (C + t(C))/2  # symmetrize for numerical reasons (mpower() checks symmetry)
     
     # note: C is of size m x m, and diagonal if w=1/n
          
