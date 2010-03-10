@@ -1,9 +1,9 @@
-### pvt.get.lambda.R  (2010-01-13)
+### pvt.get.lambda.R  (2010-03-10)
 ###
 ###    Non-public function for computing the shrinkage intensity
 ###    
 ###
-### Copyright 2005-10 Korbinian Strimmer
+### Copyright 2005-2010 Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -108,8 +108,10 @@ pvt.varlambda = function(xc, w, target)
   numerator = sum( q2 )
   denominator = sum( (q1 - target/h1)^2 )
 
-  lambda = numerator/denominator*h1w2
-  if (lambda > 1) lambda = 1
+  if(denominator == 0) 
+    lambda = 1
+  else
+    lambda = min(1, numerator/denominator * h1w2)
   
   return (lambda)
 }
@@ -134,9 +136,11 @@ pvt.corlambda = function(xs, w, target)
   denominator = sum(Q1.squared)-sum(diag(Q1.squared)) 
   numerator = sum(Q2)-sum(diag(Q2))
 
-  lambda = numerator/denominator * h1w2 
-  if (lambda > 1) lambda = 1
-
+  if(denominator == 0) 
+    lambda = 1
+  else
+    lambda = min(1, numerator/denominator * h1w2)
+  
   return (lambda)
 }
 
