@@ -29,6 +29,6 @@ This package implements a James-Stein-type shrinkage estimator for
 }
 \keyword{multivariate}
 \seealso{
-\code{\link{cov.shrink}, \link{invcov.shrink}, \link{powcor.shrink}, \link{pcor.shrink}, 
- \link{mvr.shrink}, \link{fast.svd}.}
+\code{\link{cov.shrink}, \link{invcov.shrink}, \link{powcor.shrink}, \link{pcor.shrink},
+ \link{fast.svd}.}
 }

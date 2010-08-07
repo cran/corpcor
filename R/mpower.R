@@ -50,6 +50,9 @@ mpower = function(m, alpha, pseudo=FALSE, tol)
          tcrossprod(diag(e2, nrow=length(e2)), 
          em$vectors[,idx, drop=FALSE])
 
+    rownames(ma) = rownames(m)
+    colnames(ma) = colnames(m)
+
     return(ma)
 }
 

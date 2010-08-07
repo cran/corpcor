@@ -3,6 +3,12 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.5.7
+- the function mvr.shrink() has been removed (for a related function see the 
+  "care" R package).
+- mpower() now keeps row and column names.
+
+
 Version 1.5.6
 - cor.shrink() now also works if the input data matrix only has a 
   single column.
