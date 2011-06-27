@@ -1,8 +1,8 @@
-### powcor.shrink  (2011-06-21)
+### crossprod.powcor.shrink.R  (2011-06-26)
 ###
-###   Fast Computation of the Power of the Shrinkage Correlation Matrix
+###    Efficient computation of crossprod(R^alpha, y)
 ###
-### Copyright 2008-2011 Verena Zuber and Korbinian Strimmer
+### Copyright 2011 A. Pedro Duarte Silva and Korbinian Strimmer
 ###
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -22,21 +22,24 @@
 ### MA 02111-1307, USA
 
 
-
-powcor.shrink = function(x, alpha, lambda, w, verbose=TRUE)
+# computes R_shrink^alpha %*% y
+crossprod.powcor.shrink = function(x, y, alpha, lambda, w, verbose=TRUE)
 {
   if (missing(alpha)) stop("Please specify the exponent alpha!")
 
    x = as.matrix(x)
+   y = as.matrix(y)
+   p = ncol(x)
+   if (nrow(y) != p) stop("Matrix y must have", p, "rows!")
    n = nrow(x)  
    if (missing(lambda)) lambda = -1  # estimate correlation shrinkage parameter
    w = pvt.check.w(w, n)
    
-   # matrix power of shrinkage correlation
-   powr = pvt.powscor(x=x, alpha=alpha, lambda=lambda, w=w, verbose=verbose)
+   # crossprod of matrix power of shrinkage correlation with y
+   cp.powr = pvt.cppowscor(x=x, y=y, alpha=alpha, lambda=lambda, w=w, verbose=verbose)
    if (verbose) cat("\n")
    
-   return(powr)
+   return(cp.powr)
 }
 
 
@@ -44,9 +47,10 @@ powcor.shrink = function(x, alpha, lambda, w, verbose=TRUE)
 ##### internal functions ######
 
 # this procedure exploits a special identity to efficiently
-# compute the matrix power of the correlation shrinkage estimator
+# compute the crosspord of matrix power of the correlation shrinkage estimator with y
 
-pvt.powscor = function(x, alpha, lambda, w, verbose)
+# computes R_shrink^alpha %*% y
+pvt.cppowscor = function(x, y, alpha, lambda, w, verbose)
 {  
   # standardize input matrix by standard deviations
   xs = wt.scale(x, w, center=TRUE, scale=TRUE) # standardize data matrix
@@ -57,23 +61,9 @@ pvt.powscor = function(x, alpha, lambda, w, verbose)
   z = pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation", 0)
   p = ncol(xs)
     
-  if (z$lambda == 1 | alpha == 0) # result in both cases is the identity matrix
+  if (z$lambda == 1 | alpha == 0) # result in both cases R is the identity matrix
   {
-      powr = diag(p)    # return identity matrix
-      rownames(powr) = colnames(xs)
-      colnames(powr) = colnames(xs)
-  }
-  else if (alpha == 1) # don't do SVD in this simple case
-  {
-    # unbiased empirical estimator
-    # for w=1/n  the following  would simplify to:  r = 1/(n-1)*crossprod(xs)
-    #r0 = h1 * t(xs) %*% diag(w) %*% xs
-    #r0 = h1 * t(xs) %*% sweep(xs, 1, w, "*") # sweep requires less memory
-    r0 = h1 * crossprod( sweep(xs, 1, sqrt(w), "*") ) # even faster
-
-    # shrink off-diagonal elements
-    powr = (1-z$lambda)*r0
-    diag(powr) = 1 
+      cp.powr = y    # return y
   }
   else
   {
@@ -97,27 +87,28 @@ pvt.powscor = function(x, alpha, lambda, w, verbose)
         warning(paste("Estimated correlation matrix doesn't have full rank",
           "- pseudoinverse used for inversion."), call. = FALSE)    
        
-      powr =  svdxs$v %*% tcrossprod( mpower(C, alpha), svdxs$v)
+      cp.powr =  svdxs$v %*%  (mpower(C, alpha)  %*% crossprod( svdxs$v, y))
     }
     else # use a special identity for computing the matrix power
     {
       F = diag(m) - mpower(C/z$lambda + diag(m), alpha)
-      powr = (diag(p) - svdxs$v %*% tcrossprod(F, svdxs$v))*(z$lambda)^alpha 
+      cp.powr = (y - svdxs$v %*% (F %*% crossprod(svdxs$v, y) ))*(z$lambda)^alpha 
     }
  
-    # set all diagonal entries corresponding to zero-variance variables to 1
-    diag(powr)[zeros] = 1
-
-    rownames(powr) = colnames(xs)
-    colnames(powr) = colnames(xs)
-  }  
+    # set all diagonal entries in R_shrink corresponding to zero-variance variables to 1
+    cp.powr[zeros,] = y[zeros,]
+  }
+  rownames(cp.powr) = colnames(xs)
+  colnames(cp.powr) = colnames(y)  
   rm(xs)
 
-  attr(powr, "lambda") = z$lambda
-  attr(powr, "lambda.estimated") = z$lambda.estimated
-  attr(powr, "class") = "shrinkage"
+  attr(cp.powr, "lambda") = z$lambda
+  attr(cp.powr, "lambda.estimated") = z$lambda.estimated
+  attr(cp.powr, "class") = "shrinkage"
   
-  return( powr )
+  return( cp.powr )
 }
+
+
 
 

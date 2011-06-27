@@ -11,8 +11,8 @@
   and correlation (\code{\link{cor.shrink}}).
 }
 \usage{
-invcov.shrink(x, lambda, lambda.var, w, collapse=FALSE, verbose=TRUE)
-invcor.shrink(x, lambda, w, collapse=FALSE, verbose=TRUE)
+invcov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
+invcor.shrink(x, lambda, w, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
@@ -28,7 +28,6 @@ invcor.shrink(x, lambda, w, collapse=FALSE, verbose=TRUE)
 	        For \code{lambda.var=0} the empirical variances are recovered.}	 
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	
-  \item{collapse}{return vector instead of matrix if estimated or specified \code{lambda} equals 1.} 
   \item{verbose}{output status while computing (default: TRUE)}
 }
 \details{

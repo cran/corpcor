@@ -6,6 +6,7 @@
 \alias{psmall.svd}
 
 \alias{pvt.powscor}
+\alias{pvt.cppowscor}
 \alias{pvt.svar}
 \alias{pvt.get.lambda}
 \alias{pvt.varlambda}
@@ -14,7 +15,6 @@
 \alias{pvt.usr}
 
 \alias{print.shrinkage}
-
 
 \title{Internal corpcor Functions}
 \description{

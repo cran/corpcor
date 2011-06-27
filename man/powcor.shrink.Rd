@@ -1,6 +1,6 @@
 \name{powcor.shrink}
 \alias{powcor.shrink}
-
+\alias{crossprod.powcor.shrink}
 
 \title{Fast Computation of the Power of the Shrinkage Correlation Matrix}
 \description{
@@ -9,12 +9,17 @@
 
   For instance, this function may be used for fast computation of the (inverse)
   square root of the  shrinkage correlation matrix (needed, e.g., for decorrelation).
+
+  \code{crossprod.powcor.shrink} efficiently computes \eqn{R^alpha y} without
+  actually computing the full matrix \eqn{R^alpha}.
 }
 \usage{
-powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
+powcor.shrink(x, alpha, lambda, w, verbose=TRUE)
+crossprod.powcor.shrink(x, y, alpha, lambda, w, verbose=TRUE)
 }
 \arguments{
   \item{x}{a data matrix}
+  \item{y}{a matrix, the number of rows of y must be the same as the number of columns of x}
   \item{alpha}{exponent}
   \item{lambda}{the correlation shrinkage intensity (range 0-1).
                 If \code{lambda} is not specified (the default) it is estimated
@@ -23,7 +28,6 @@ powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
 		For \code{lambda=0} the empirical correlations are recovered.}
   \item{w}{optional: weights for each data point - if not specified uniform weights are assumed
             (\code{w = rep(1/n, n)} with \code{n = nrow(x)}).}	
-  \item{collapse}{return vector instead of matrix if estimated or specified \code{lambda} equals 1.} 
   \item{verbose}{output status while computing (default: TRUE)}
 }
 
@@ -68,7 +72,7 @@ powcor.shrink(x, alpha, lambda, w, collapse=FALSE, verbose=TRUE)
     
 }
 \author{
-  Korbinian Strimmer (\url{http://strimmerlab.org}).
+  Verena Zuber, A. Pedro Duarte Silva, and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }
 
@@ -135,5 +139,22 @@ system.time(
 
 # no difference
 sum((W1-W2)^2)
+
+
+### fast computation of cross product
+
+y = rnorm(p)
+
+system.time(
+  (CP1 = crossprod(powcor.shrink(X, alpha=1.23, lambda=lambda), y))
+)
+
+system.time(
+  (CP2 = crossprod.powcor.shrink(X, y, alpha=1.23, lambda=lambda))
+)
+
+# no difference
+sum((CP1-CP2)^2)
+
 }
 \keyword{multivariate}
