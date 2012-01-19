@@ -39,16 +39,16 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
    Eq. 6 from Sch\"afer and Strimmer (2005), which leads to 
    
    
-      \deqn{\lambda_{var}^{*} = (  \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - median{s})^2  }
+      \deqn{\lambda_{var}^{*} = (  \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - median(s))^2  }
 
-  where \eqn{median{s}} denotes the median of the empirical variances.   
+  where \eqn{median(s)} denotes the median of the empirical variances.   
   
   Similarly   \code{cor.shrink} computes a shrinkage estimate of the correlation matrix by
   shrinking the empirical correlations towards  the identity matrix.  
   In this case the shrinkage intensity is 
   
   
-      \deqn{\lambda^{*} = \sum_{k \neq k} Var(r_{kl}) / \sum_{k \neq l} r_{kl}^2  .}
+      \deqn{\lambda^{*} = \sum_{k \neq l} Var(r_{kl}) / \sum_{k \neq l} r_{kl}^2  .}
  
 
   \code{cov.shrink} computes the corresponding full covariance matrix
@@ -149,7 +149,7 @@ rank.condition(s2)
 e0 = eigen(sigma, symmetric=TRUE)$values
 e1 = eigen(s1, symmetric=TRUE)$values
 e2 = eigen(s2, symmetric=TRUE)$values
-m =max(e0, e1, e2)
+m = max(e0, e1, e2)
 yl = c(0, m)
 
 par(mfrow=c(1,3))

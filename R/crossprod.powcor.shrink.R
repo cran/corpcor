@@ -1,4 +1,4 @@
-### crossprod.powcor.shrink.R  (2011-06-26)
+### crossprod.powcor.shrink.R  (2011-06-27)
 ###
 ###    Efficient computation of crossprod(R^alpha, y)
 ###
@@ -30,7 +30,7 @@ crossprod.powcor.shrink = function(x, y, alpha, lambda, w, verbose=TRUE)
    x = as.matrix(x)
    y = as.matrix(y)
    p = ncol(x)
-   if (nrow(y) != p) stop("Matrix y must have", p, "rows!")
+   if (nrow(y) != p) stop("Matrix y must have ", p, " rows!")
    n = nrow(x)  
    if (missing(lambda)) lambda = -1  # estimate correlation shrinkage parameter
    w = pvt.check.w(w, n)

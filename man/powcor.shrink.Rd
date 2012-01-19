@@ -10,8 +10,8 @@
   For instance, this function may be used for fast computation of the (inverse)
   square root of the  shrinkage correlation matrix (needed, e.g., for decorrelation).
 
-  \code{crossprod.powcor.shrink} efficiently computes \eqn{R^alpha y} without
-  actually computing the full matrix \eqn{R^alpha}.
+  \code{crossprod.powcor.shrink} efficiently computes \eqn{R^{\alpha} y} without
+  actually computing the full matrix \eqn{R^{\alpha}}.
 }
 \usage{
 powcor.shrink(x, alpha, lambda, w, verbose=TRUE)
@@ -57,7 +57,7 @@ crossprod.powcor.shrink(x, y, alpha, lambda, w, verbose=TRUE)
    
    Note that the above identity is related but not identical to the Woodbury matrix
    identity for inversion of a matrix.
-   For \eqn{alpha=-1} the above identity reduces to
+   For \eqn{\alpha=-1} the above identity reduces to
 
     \deqn{Z^{-1} = I_p - V (I_m -(I_m + M)^{-1}) V^T ,}
 
@@ -67,8 +67,9 @@ crossprod.powcor.shrink(x, y, alpha, lambda, w, verbose=TRUE)
 }
 
 \value{
-  \code{powcor.shrink} returns a matrix containing the  output from \code{\link{cor.shrink}} 
-  taken to the power \code{alpha}. 
+  \code{powcor.shrink} returns a matrix of the same size as the correlation matrix \code{R}
+
+ \code{crossprod.powcor.shrink} returns a matrix of the same size as \code{R} \code{y}.
     
 }
 \author{

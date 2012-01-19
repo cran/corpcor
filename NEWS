@@ -3,11 +3,16 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.6.1
+- NAMESPACE file added
+- small changes in de documentation
+
+
 Version 1.6.0
 - collapse option removed from:
   powcor.shrink, cor.shrink, invcor.shrink, cov.shrink, invcov.shrink
 - default minimum R version changed to 2.10.0
-- new function crossprod.powcor.shrink() to efficiently compute the
+- new function crossprod.powcor.shrink() to efficiently compute 
   R_shrink^alpha y without the need to explicitly compute R_shrink^alpha
 
 

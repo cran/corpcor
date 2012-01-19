@@ -1,6 +1,6 @@
 Package: corpcor
-Version: 1.6.0
-Date: 2011-06-27
+Version: 1.6.1
+Date: 2012-01-19
 Title: Efficient Estimation of Covariance and (Partial) Correlation
 Author: Juliane Schaefer, Rainer Opgen-Rhein, Verena Zuber, A. Pedro
         Duarte Silva, and Korbinian Strimmer.
@@ -9,14 +9,14 @@ Depends: R (>= 2.10.0)
 Suggests:
 Description: This package implements a James-Stein-type shrinkage
         estimator for the covariance matrix, with separate shrinkage
-        for variances and correlations. The details of the method are
+        for variances and correlations.  The details of the method are
         explained in Sch\"afer and Strimmer (2005) and Opgen-Rhein and
         Strimmer (2007).  The approach is both computationally as well
         as statistically very efficient, it is applicable to "small n,
         large p" data, and always returns a positive definite and
-        well-conditioned covariance matrix. In addition to inferring
+        well-conditioned covariance matrix.  In addition to inferring
         the covariance matrix the package also provides shrinkage
-        estimators for partial correlations and partial variances. The
+        estimators for partial correlations and partial variances.  The
         inverse of the covariance and correlation matrix can be
         efficiently computed, as well as any arbitrary power of the
         shrinkage correlation matrix.  Furthermore, functions are
@@ -25,6 +25,6 @@ Description: This package implements a James-Stein-type shrinkage
         definiteness of a matrix.
 License: GPL (>= 3)
 URL: http://strimmerlab.org/software/corpcor/
-Packaged: 2011-06-27 15:02:24 UTC; strimmer
+Packaged: 2012-01-19 22:23:27 UTC; strimmer
 Repository: CRAN
-Date/Publication: 2011-06-27 18:11:54
+Date/Publication: 2012-01-20 06:49:51
