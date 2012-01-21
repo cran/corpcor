@@ -8,12 +8,8 @@
 \alias{pvt.powscor}
 \alias{pvt.cppowscor}
 \alias{pvt.svar}
-\alias{pvt.get.lambda}
-\alias{pvt.varlambda}
-\alias{pvt.corlambda}
-\alias{pvt.check.w}
-\alias{pvt.usr}
 
+\alias{pvt.check.w}
 \alias{print.shrinkage}
 
 \title{Internal corpcor Functions}

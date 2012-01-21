@@ -61,7 +61,7 @@ wt.moments = function(x, w)
   m = colSums(w*x)  # same as above, but much faster
   
   # v = apply(x, 2, wt.var, w=w)
-  v = h1*(colSums(w*x^2)-colSums(w*x)^2) # same as above, but much faster
+  v = h1*(colSums(w*x^2)-m^2) # same as above, but much faster
  
   
   # set small values of variance exactly to zero

@@ -1,9 +1,10 @@
-### cov.shrink.R  (2011-06-21)
+### shrink.estimates.R  (2012-01-21)
 ###
 ###    Shrinkage Estimation of Variance Vector, Correlation Matrix,
-###    and Covariance Matrix, and their inverses
+###    and Covariance Matrix 
 ###
-### Copyright 2005-11 Juliane Schaefer, Rainer Opgen-Rhein and Korbinian Strimmer
+### Copyright 2005-12 Juliane Schaefer, Rainer Opgen-Rhein, 
+###        Verena Zuber, A. Pedro Duarte Silva, and Korbinian Strimmer
 ###
 ###
 ###
@@ -24,35 +25,32 @@
 ### MA 02111-1307, USA
 
 
+
+# power of the shrinkage correlation matrix
+powcor.shrink = function(x, alpha, lambda, w, verbose=TRUE)
+{
+  if (missing(alpha)) stop("Please specify the exponent alpha!")
+
+   x = as.matrix(x)
+   
+   # matrix power of shrinkage correlation
+   powr = pvt.powscor(x=x, alpha=alpha, lambda=lambda, w=w, verbose=verbose)
+   
+   return(powr)
+}
+
+
 # correlation
 cor.shrink = function(x, lambda, w, verbose=TRUE)
 {
-   x = as.matrix(x)
-   n = nrow(x)
-   if (missing(lambda)) lambda = -1  # estimate correlation shrinkage parameter
-   w = pvt.check.w(w, n)
-   
-   # shrinkage correlation
-   r = pvt.powscor(x=x, alpha=1, lambda=lambda, w=w, verbose=verbose)
-   if (verbose) cat("\n")
-
-   return(r)
+   return ( powcor.shrink(x=x, alpha=1, lambda=lambda, w=w, verbose=verbose) )
 }
 
 
 # inverse correlation
 invcor.shrink = function(x, lambda, w, verbose=TRUE)
 {
-   x = as.matrix(x)
-   n = nrow(x)  
-   if (missing(lambda)) lambda = -1  # estimate correlation shrinkage parameter
-   w = pvt.check.w(w, n)
-   
-   # inverse shrinkage correlation
-   invr = pvt.powscor(x=x, alpha=-1, lambda=lambda, w=w, verbose=verbose)
-   if (verbose) cat("\n")
-   
-   return(invr)
+   return ( powcor.shrink(x=x, alpha=-1, lambda=lambda, w=w, verbose=verbose) )
 }
 
 
@@ -60,13 +58,9 @@ invcor.shrink = function(x, lambda, w, verbose=TRUE)
 var.shrink = function(x, lambda.var, w, verbose=TRUE)
 {
   x = as.matrix(x)
-  n = nrow(x)  
-  if (missing(lambda.var)) lambda.var = -1  # estimate variance shrinkage parameter
-  w = pvt.check.w(w, n)
   
   # shrinkage variance 
   sv = pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose)
-  if (verbose) cat("\n")
   
   return(sv)
 }
@@ -76,10 +70,6 @@ var.shrink = function(x, lambda.var, w, verbose=TRUE)
 cov.shrink = function(x, lambda, lambda.var, w, verbose=TRUE)
 {   
    x = as.matrix(x)
-   n = nrow(x)   
-   if (missing(lambda)) lambda = -1          # estimate correlation shrinkage parameter
-   if (missing(lambda.var)) lambda.var = -1  # estimate variance shrinkage parameter  
-   w = pvt.check.w(w, n)
    
    # shrinkage scale factors
    sc = sqrt( pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose) )
@@ -95,7 +85,6 @@ cov.shrink = function(x, lambda, lambda.var, w, verbose=TRUE)
 
    attr(c, "lambda.var") = attr(sc, "lambda.var")
    attr(c, "lambda.var.estimated") = attr(sc, "lambda.var.estimated")
-   if (verbose) cat("\n")
                     
    return(c)
 }
@@ -105,10 +94,6 @@ cov.shrink = function(x, lambda, lambda.var, w, verbose=TRUE)
 invcov.shrink = function(x, lambda, lambda.var, w, verbose=TRUE)
 {   
    x = as.matrix(x)
-   n = nrow(x) 
-   if (missing(lambda)) lambda = -1          # estimate correlation shrinkage parameter
-   if (missing(lambda.var)) lambda.var = -1  # estimate variance shrinkage parameter  
-   w = pvt.check.w(w, n)
 
    # shrinkage scale factors
    sc = sqrt( pvt.svar(x=x, lambda.var=lambda.var, w=w, verbose=verbose) )
@@ -124,11 +109,25 @@ invcov.shrink = function(x, lambda, lambda.var, w, verbose=TRUE)
    
    attr(invc, "lambda.var") = attr(sc, "lambda.var")
    attr(invc, "lambda.var.estimated") = attr(sc, "lambda.var.estimated")
-   if (verbose) cat("\n")
    
    return(invc)
 }
 
 
+# computes R_shrink^alpha %*% y
+crossprod.powcor.shrink = function(x, y, alpha, lambda, w, verbose=TRUE)
+{
+  if (missing(alpha)) stop("Please specify the exponent alpha!")
+
+   x = as.matrix(x)
+   y = as.matrix(y)
+   p = ncol(x)
+   if (nrow(y) != p) stop("Matrix y must have ", p, " rows!")
+   
+   # crossprod of matrix power of shrinkage correlation with y
+   cp.powr = pvt.cppowscor(x=x, y=y, alpha=alpha, lambda=lambda, w=w, verbose=verbose)
+   
+   return(cp.powr)
+}
 
 

@@ -36,23 +36,12 @@ cov.shrink(x, lambda, lambda.var, w, verbose=TRUE)
    
    \code{var.shrink} computes the empirical variance of each considered random variable, 
    and shrinks them towards their median.  The shrinkage intensity is estimated using 
-   Eq. 6 from Sch\"afer and Strimmer (2005), which leads to 
-   
-   
-      \deqn{\lambda_{var}^{*} = (  \sum_{k=1}^p Var(s_{kk}) )/ \sum_{k=1}^p (s_{kk} - median(s))^2  }
-
-  where \eqn{median(s)} denotes the median of the empirical variances.   
+   \code{\link{estimate.lambda.var}} (Opgen-Rhein and Strimmer 2007).
   
   Similarly   \code{cor.shrink} computes a shrinkage estimate of the correlation matrix by
   shrinking the empirical correlations towards  the identity matrix.  
-  In this case the shrinkage intensity is 
-  
-  
-      \deqn{\lambda^{*} = \sum_{k \neq l} Var(r_{kl}) / \sum_{k \neq l} r_{kl}^2  .}
- 
-
-  \code{cov.shrink} computes the corresponding full covariance matrix
-  on the basis of the shrunken correlation matrix  and the shrunken variances.
+  In this case the shrinkage intensity is computed using  \code{\link{estimate.lambda}}
+  (Sch\"afer and Strimmer 2005).
       
    In comparison with the standard empirical estimates 
   (\code{\link{var}}, \code{\link{cov}}, and \code{\link{cor}}) the shrinkage estimates exhibit

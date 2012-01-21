@@ -91,34 +91,3 @@ print.shrinkage = function(x, ...)
 }
 
 
-# function to compute shrinkage variance vector
-#  - x: data matrix, 
-#  - lambda.var = 0: don't shrink
-#    lambda.var > 0: shrink with given lambda
-#    lambda.var < 0: shrink with estimated lambda  
-#  - w:  data weights
-
-pvt.svar = function(x, lambda.var, w, verbose)
-{    
-  # center input matrix
-  xs = wt.scale(x, w, center=TRUE, scale=FALSE) 
-  
-  # compute variances 
-  v = wt.moments(xs, w)$var
-  
-  # compute target
-  tgt = median(v)
-          
-  # shrinkage estimate 
-  z = pvt.get.lambda(xs, lambda.var, w, verbose=verbose, type="variance", tgt)   
-  vs = z$lambda.var*tgt + (1-z$lambda.var)*v
-         
-  attr(vs, "lambda.var") = z$lambda.var
-  attr(vs, "lambda.var.estimated") = z$lambda.var.estimated
-  attr(vs, "class") = "shrinkage"
-  
-  return(vs)   
-}    
-
-
-

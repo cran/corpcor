@@ -1,8 +1,8 @@
-### powcor.shrink  (2011-06-21)
+### pvt.powscor  (2012-01-21)
 ###
-###   Fast Computation of the Power of the Shrinkage Correlation Matrix
+###   Non-public function for computing R_shrink^alpha
 ###
-### Copyright 2008-2011 Verena Zuber and Korbinian Strimmer
+### Copyright 2008-2012 Verena Zuber and Korbinian Strimmer
 ###
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -23,41 +23,43 @@
 
 
 
-powcor.shrink = function(x, alpha, lambda, w, verbose=TRUE)
-{
-  if (missing(alpha)) stop("Please specify the exponent alpha!")
-
-   x = as.matrix(x)
-   n = nrow(x)  
-   if (missing(lambda)) lambda = -1  # estimate correlation shrinkage parameter
-   w = pvt.check.w(w, n)
-   
-   # matrix power of shrinkage correlation
-   powr = pvt.powscor(x=x, alpha=alpha, lambda=lambda, w=w, verbose=verbose)
-   if (verbose) cat("\n")
-   
-   return(powr)
-}
-
-
-
 ##### internal functions ######
 
 # this procedure exploits a special identity to efficiently
 # compute the matrix power of the correlation shrinkage estimator
+# (see Zuber and Strimmer 2009)
 
 pvt.powscor = function(x, alpha, lambda, w, verbose)
-{  
-  # standardize input matrix by standard deviations
+{
+  #### determine correlation shrinkage intensity
+  if (missing(lambda))
+  {
+    lambda = estimate.lambda(x, w, verbose)
+    lambda.estimated=TRUE     
+  }
+  else
+  {
+    if (lambda < 0) lambda = 0
+    if (lambda > 1) lambda = 1
+    if (verbose)
+    {
+      cat(paste("Specified shrinkage intensity lambda (correlation matrix):", round(lambda, 4), "\n"))     
+    }
+    lambda.estimated=FALSE
+  }
+  #####
+
+
+  n = nrow(x)  
+  w = pvt.check.w(w, n)
   xs = wt.scale(x, w, center=TRUE, scale=TRUE) # standardize data matrix
 
   # bias correction factor
   h1 = 1/(1-sum(w*w))   # for w=1/n this equals the usual h1=n/(n-1)
 
-  z = pvt.get.lambda(xs, lambda, w, verbose=verbose, type="correlation", 0)
   p = ncol(xs)
     
-  if (z$lambda == 1 | alpha == 0) # result in both cases is the identity matrix
+  if (lambda == 1 | alpha == 0) # result in both cases is the identity matrix
   {
       powr = diag(p)    # return identity matrix
       rownames(powr) = colnames(xs)
@@ -72,7 +74,7 @@ pvt.powscor = function(x, alpha, lambda, w, verbose)
     r0 = h1 * crossprod( sweep(xs, 1, sqrt(w), "*") ) # even faster
 
     # shrink off-diagonal elements
-    powr = (1-z$lambda)*r0
+    powr = (1-lambda)*r0
     diag(powr) = 1 
   }
   else
@@ -85,7 +87,7 @@ pvt.powscor = function(x, alpha, lambda, w, verbose)
                
     UTWU = t(svdxs$u) %*% sweep(svdxs$u, 1, w, "*") #  t(U) %*% diag(w) %*% U
     C = sweep(sweep(UTWU, 1, svdxs$d, "*"), 2, svdxs$d, "*") # D %*% UTWU %*% D
-    C = (1-z$lambda) * h1 * C
+    C = (1-lambda) * h1 * C
 
     C = (C + t(C))/2  # symmetrize for numerical reasons (mpower() checks symmetry)
     
@@ -101,8 +103,8 @@ pvt.powscor = function(x, alpha, lambda, w, verbose)
     }
     else # use a special identity for computing the matrix power
     {
-      F = diag(m) - mpower(C/z$lambda + diag(m), alpha)
-      powr = (diag(p) - svdxs$v %*% tcrossprod(F, svdxs$v))*(z$lambda)^alpha 
+      F = diag(m) - mpower(C/lambda + diag(m), alpha)
+      powr = (diag(p) - svdxs$v %*% tcrossprod(F, svdxs$v))*(lambda)^alpha 
     }
  
     # set all diagonal entries corresponding to zero-variance variables to 1
@@ -113,10 +115,12 @@ pvt.powscor = function(x, alpha, lambda, w, verbose)
   }  
   rm(xs)
 
-  attr(powr, "lambda") = z$lambda
-  attr(powr, "lambda.estimated") = z$lambda.estimated
+  attr(powr, "lambda") = lambda
+  attr(powr, "lambda.estimated") = lambda.estimated
   attr(powr, "class") = "shrinkage"
-  
+
+  if (verbose) cat("\n")
+
   return( powr )
 }
 

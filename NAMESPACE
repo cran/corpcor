@@ -5,6 +5,8 @@ export(
 "crossprod.powcor.shrink",
 "decompose.cov",
 "decompose.invcov",
+"estimate.lambda",
+"estimate.lambda.var",
 "fast.svd",
 "invcor.shrink",
 "invcov.shrink",

@@ -3,6 +3,12 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.6.2
+- new public functions estimate.lambda() and estimate.lambda.var()
+  returning the shrinkage intensities for correlation and variance shrinkage
+- some internal code reorganization
+
+
 Version 1.6.1
 - NAMESPACE file added
 - small changes in de documentation

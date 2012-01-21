@@ -1,6 +1,6 @@
 Package: corpcor
-Version: 1.6.1
-Date: 2012-01-19
+Version: 1.6.2
+Date: 2012-01-21
 Title: Efficient Estimation of Covariance and (Partial) Correlation
 Author: Juliane Schaefer, Rainer Opgen-Rhein, Verena Zuber, A. Pedro
         Duarte Silva, and Korbinian Strimmer.
@@ -25,6 +25,6 @@ Description: This package implements a James-Stein-type shrinkage
         definiteness of a matrix.
 License: GPL (>= 3)
 URL: http://strimmerlab.org/software/corpcor/
-Packaged: 2012-01-19 22:23:27 UTC; strimmer
+Packaged: 2012-01-21 22:23:40 UTC; strimmer
 Repository: CRAN
-Date/Publication: 2012-01-20 06:49:51
+Date/Publication: 2012-01-22 08:06:00
