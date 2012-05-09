@@ -3,6 +3,11 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.6.3
+- substantially faster estimate.lambda() for small sample size 
+  and large dimensions (new algorithm suggested by Miika Ahdesm\"aki) 
+
+
 Version 1.6.2
 - new public functions estimate.lambda() and estimate.lambda.var()
   returning the shrinkage intensities for correlation and variance shrinkage

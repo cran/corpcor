@@ -37,6 +37,9 @@ estimate.lambda.var(x, w, verbose=TRUE)
    
       \deqn{\lambda^{*} = \sum_{k \neq l} Var(r_{kl}) / \sum_{k \neq l} r_{kl}^2  }
   (Sch\"afer and Strimmer 2005).
+
+  Ahdesm\"aki suggested (2012) a computationally highly efficient algorithm to compute 
+  the shrinkage intensity estimate for the correlation matrix (see the R code for the implementation).
  
 }
 \value{
@@ -44,7 +47,7 @@ estimate.lambda.var(x, w, verbose=TRUE)
 }
 \author{
   Juliane Sch\"afer,
-  Rainer Opgen-Rhein,
+  Rainer Opgen-Rhein, Miika Ahdesm\"aki
   and Korbinian Strimmer (\url{http://strimmerlab.org}).
   
 }

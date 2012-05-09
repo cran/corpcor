@@ -1,9 +1,10 @@
-### shrink.intensity.R  (2012-01-21)
+### shrink.intensity.R  (2012-05-09)
 ###
 ###   Functions for computing the shrinkage intensity
 ###    
 ###
-### Copyright 2005-2012 Julian Schaefer, Rainer Opgen-Rhein and Korbinian Strimmer
+### Copyright 2005-2012 Juliane Sch\"afer, Rainer Opgen-Rhein, 
+###                     Miika Ahdesm\"aki and Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -77,29 +78,51 @@ estimate.lambda.var = function(x, w, verbose=TRUE)
 #
 estimate.lambda = function(x, w, verbose=TRUE)
 {
-  n = nrow(x)  
-  w = pvt.check.w(w, n)
-  xs = wt.scale(x, w, center=TRUE, scale=TRUE) # standardize data matrix
+   n = nrow(x)
+   p = ncol(x)
+
+   if (p == 1) return (1) 
+
+   w = pvt.check.w(w, n)
+   xs = wt.scale(x, w, center=TRUE, scale=TRUE) # standardize data matrix
 
   if (verbose) cat("Estimating optimal shrinkage intensity lambda (correlation matrix): ")
 
-  # bias correction factors
-  w2 = sum(w*w)           # for w=1/n this equals 1/n   where n=dim(xs)[1]
-  h1w2 = w2/(1-w2)        # for w=1/n this equals 1/(n-1)
+   # bias correction factors
+   w2 = sum(w*w)           # for w=1/n this equals 1/n   where n=dim(xs)[1]
+   h1w2 = w2/(1-w2)        # for w=1/n this equals 1/(n-1)
 
-  sw = sqrt(w)
-  Q1.squared = (crossprod(sweep(xs, MARGIN=1, STATS=sw, FUN="*")))^2
-  Q2 = crossprod(sweep(xs^2, MARGIN=1, STATS=sw, FUN="*")) - Q1.squared
-  denominator = sum(Q1.squared)-sum(diag(Q1.squared)) 
-  numerator = sum(Q2)-sum(diag(Q2))
+   sw = sqrt(w)
+   
+   # direct slow algorithm
+   #  E2R = (crossprod(sweep(xs, MARGIN=1, STATS=sw, FUN="*")))^2
+   #  ER2 = crossprod(sweep(xs^2, MARGIN=1, STATS=sw, FUN="*"))
+   #  ## offdiagonal sums
+   #  sE2R = sum(E2R)-sum(diag(E2R))
+   #  sER2 = sum(ER2)-sum(diag(ER2))
+ 
+   # Here's how to compute off-diagonal sums much more efficiently for n << p
+   # this algorithm is due to Miika Ahdesm\"aki
+   xsw = sweep(xs, MARGIN=1, STATS=sw, FUN="*")
+   xswsvd = fast.svd(xsw)
+   sE2R = sum(xsw*(sweep(xswsvd$u,2,xswsvd$d^3,'*')%*%t(xswsvd$v))) - sum(colSums(xsw^2)^2) 
+   remove(xsw,xswsvd) # free memory 
+   xs2w = sweep(xs^2, MARGIN=1, STATS=sw, FUN="*")
+   sER2 = 2*sum(xs2w[,(p-1):1] * t(apply(xs2w[,p:2],1,cumsum)))
+   remove(xs2w) # free memory 
+ 
+   #######
 
-  if(denominator == 0) 
-    lambda = 1
-  else
-    lambda = min(1, numerator/denominator * h1w2)
-  
-  if (verbose) cat(paste(round(lambda, 4), "\n"))
+   denominator = sE2R
+   numerator = sER2 - sE2R
 
-  return (lambda)
+   if(denominator == 0)
+     lambda = 1
+   else
+     lambda = min(1, numerator/denominator * h1w2)
+
+   if (verbose) cat(paste(round(lambda, 4), "\n"))
+
+   return (lambda)
 }
 

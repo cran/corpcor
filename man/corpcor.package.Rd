@@ -23,7 +23,8 @@ This package implements a James-Stein-type shrinkage estimator for
   \bold{p}artial \bold{cor}relations.
 }
 
-\author{Juliane Sch\"afer, Rainer Opgen-Rhein, and Korbinian Strimmer (\url{http://strimmerlab.org/})}
+\author{Juliane Sch\"afer, Rainer Opgen-Rhein, Verena Zuber, Miika Ahdesm\"aki, 
+ A. Pedro Duarte Silva, and Korbinian Strimmer (\url{http://strimmerlab.org/})}
 \references{
   See website: \url{http://strimmerlab.org/software/corpcor/}
 }
