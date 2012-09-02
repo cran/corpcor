@@ -1,7 +1,7 @@
-80a2addc5dfe2aabd37134896f13a1ca *DESCRIPTION
+8137c4a20a8294647c768ff106f01aec *DESCRIPTION
 d32239bcb673463ab874e80d47fae504 *LICENSE
 8823e73c98d649866e2e2a2ff6a2fb63 *NAMESPACE
-e8de7ef48d40ac621b4ef123f29c3750 *NEWS
+398a44decaca8b7326a77b9b208da348 *NEWS
 3fc9e2b797b62e30b44014a7ff6487cd *R/fast.svd.R
 c8c311c28ac6c6e53355ace75dcdcac5 *R/mpower.R
 98829ad88c78430dd2a3341b9e6e3e40 *R/partial.R
@@ -12,7 +12,7 @@ e956b4f371c7a719091a86d1790f7459 *R/pvt.svar.R
 edf5cf113d73667e29ee0bd213dd4dde *R/rank.condition.R
 b9b70de6713d3173fe7e2777a6350384 *R/rebuild.cov.R
 9f4f6ab81e92a8899104a8c85e72ae0d *R/shrink.estimates.R
-efd27ca651e28a1659cd4f91e84fcf09 *R/shrink.intensity.R
+ef0a0ccea0df38470f7659c2741b304f *R/shrink.intensity.R
 a23c8b8efee3ad7e11e513d3061ee9c9 *R/shrink.misc.R
 b8c3e4d9eb9a3e2539ccdf29a2e02043 *R/smtools.R
 c526455bc26476e592d14da8ef1a9c40 *R/wt.scale.R

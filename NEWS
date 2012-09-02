@@ -3,6 +3,11 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.6.4
+- estimate.lambda() now also works if the input data matrix has 
+  two columns (thanks to Manuela Hummel for reporting this bug)
+
+
 Version 1.6.3
 - substantially faster estimate.lambda() for small sample size 
   and large dimensions (new algorithm suggested by Miika Ahdesm\"aki) 

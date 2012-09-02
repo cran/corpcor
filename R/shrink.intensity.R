@@ -1,4 +1,4 @@
-### shrink.intensity.R  (2012-05-09)
+### shrink.intensity.R  (2012-09-02)
 ###
 ###   Functions for computing the shrinkage intensity
 ###    
@@ -108,7 +108,7 @@ estimate.lambda = function(x, w, verbose=TRUE)
    sE2R = sum(xsw*(sweep(xswsvd$u,2,xswsvd$d^3,'*')%*%t(xswsvd$v))) - sum(colSums(xsw^2)^2) 
    remove(xsw,xswsvd) # free memory 
    xs2w = sweep(xs^2, MARGIN=1, STATS=sw, FUN="*")
-   sER2 = 2*sum(xs2w[,(p-1):1] * t(apply(xs2w[,p:2],1,cumsum)))
+   sER2 = 2*sum(xs2w[,(p-1):1] * t(apply(xs2w[,p:2, drop=FALSE],1,cumsum)))
    remove(xs2w) # free memory 
  
    #######
