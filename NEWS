@@ -2,6 +2,11 @@
 
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
+            
+Version 1.6.5
+- License file removed
+- Dependencies updated
+
 
 Version 1.6.4
 - estimate.lambda() now also works if the input data matrix has 
