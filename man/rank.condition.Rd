@@ -11,7 +11,7 @@ rank.condition(m, tol)
 
 }
 \arguments{
-  \item{m}{matrix}
+  \item{m}{a matrix (assumed to be real and symmetric)}
   
   \item{tol}{tolerance for singular values and for absolute eigenvalues
               -  only those with values larger than
@@ -25,7 +25,7 @@ rank.condition(m, tol)
 }
 \description{
   \code{is.positive.definite} tests whether all eigenvalues of a symmetric matrix
-  are positive.
+  are positive.  
   
   \code{make.positive.definite} computes the nearest positive definite of a
   real symmetric matrix, using the algorithm of NJ Higham (1988, Linear Algebra
@@ -39,8 +39,11 @@ rank.condition(m, tol)
   and the condition is the ratio  of the largest and the smallest
   singular value.   
   
-  Note that the definition \code{tol= max(dim(m))*max(D)*.Machine$double.eps} 
+  The definition \code{tol= max(dim(m))*max(D)*.Machine$double.eps} 
   is exactly compatible with the conventions used in "Octave" or "Matlab".
+
+  Also note that it is not checked whether the input matrix m is real and symmetric.
+
 }
 
 \value{

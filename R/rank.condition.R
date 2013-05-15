@@ -1,8 +1,8 @@
-### condition.R  (2006-6-03)
+### condition.R  (2013-5-15)
 ###
 ###     Rank, condition, and positive definiteness of a matrix
 ###
-### Copyright 2003-06 Korbinian Strimmer
+### Copyright 2003-13 Korbinian Strimmer
 ###
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -31,7 +31,7 @@ is.positive.definite = function (m, tol, method=c("eigen", "chol"))
 
     if (method=="eigen")
     {
-        eval = eigen(m, only.values = TRUE)$values
+        eval = eigen(m, only.values = TRUE, symmetric=TRUE)$values
         if (is.complex( eval ))
         {
            warning("Input matrix has complex eigenvalues!")
@@ -67,7 +67,7 @@ make.positive.definite = function(m, tol)
   d = dim(m)[1] 
   if ( dim(m)[2] != d ) stop("Input matrix is not square!")
    
-  es = eigen(m)
+  es = eigen(m, symmetric=TRUE)
   esv = es$values
   
   if (missing(tol))

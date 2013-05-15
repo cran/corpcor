@@ -2,6 +2,10 @@
 
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
+Version 1.6.6
+- is.positive.definite() and make.positive.definite() now use eigen()
+  with option symmetric=TRUE, so that it works under R 3.0.0
+  (thanks to Roberto Ugoccioni for reporting this issue)
             
 Version 1.6.5
 - License file removed

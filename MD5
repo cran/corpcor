@@ -1,6 +1,6 @@
-393ad1e135fd9243abbc7f91429aec30 *DESCRIPTION
+f4a343116d8f22c789e70a485448884e *DESCRIPTION
 8823e73c98d649866e2e2a2ff6a2fb63 *NAMESPACE
-302a66fdc940d057aa8155e9e71b50c5 *NEWS
+3a5ca4ba52171999229e19d556db7edd *NEWS
 3fc9e2b797b62e30b44014a7ff6487cd *R/fast.svd.R
 c8c311c28ac6c6e53355ace75dcdcac5 *R/mpower.R
 98829ad88c78430dd2a3341b9e6e3e40 *R/partial.R
@@ -8,7 +8,7 @@ c8c311c28ac6c6e53355ace75dcdcac5 *R/mpower.R
 952cee49546da217dd2b8afe73500e8d *R/pvt.cppowscor.R
 cff6f28e2621468bd35ffeaa8ef56cfa *R/pvt.powscor.R
 e956b4f371c7a719091a86d1790f7459 *R/pvt.svar.R
-edf5cf113d73667e29ee0bd213dd4dde *R/rank.condition.R
+1a6da2dc4bf7029430395b83a310e894 *R/rank.condition.R
 b9b70de6713d3173fe7e2777a6350384 *R/rebuild.cov.R
 9f4f6ab81e92a8899104a8c85e72ae0d *R/shrink.estimates.R
 ef0a0ccea0df38470f7659c2741b304f *R/shrink.intensity.R
@@ -25,7 +25,7 @@ fdac0a2c40b4e3c5497bc097d3f56067 *man/cov.shrink.Rd
 ce47215425f2e72ba4b5bfd020a55a96 *man/pcor.shrink.Rd
 63ccbd3e4e12463fbac8da940ae2ad73 *man/powcor.shrink.Rd
 33df16d0c6829daa7a9843c78565931e *man/pseudoinverse.Rd
-fdddfb6978af2cf30ecb4510bfaa5af6 *man/rank.condition.Rd
+606628fc5ada7407177b65204d2ae7c0 *man/rank.condition.Rd
 a631bbf2ae745bfb86db3ac8465dff65 *man/rebuild.cov.Rd
 bca030a336fc34da6819177069a3e889 *man/shrink.intensity.Rd
 3fbb74750841dac14d1a36bfe701fce9 *man/smtools.Rd
