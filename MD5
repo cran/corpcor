@@ -1,6 +1,6 @@
-38bc3e2aa035d53a983683f71b9ef459 *DESCRIPTION
-8823e73c98d649866e2e2a2ff6a2fb63 *NAMESPACE
-10b7d371d854f5a7f725ced8606d6aa0 *NEWS
+3aeb9ac82f8ddd1410289cffb837e2b5 *DESCRIPTION
+04dd551526f3048fd88714d7ce26b4a1 *NAMESPACE
+77a802fefcc780d65c964fcbe7e9df76 *NEWS
 3fc9e2b797b62e30b44014a7ff6487cd *R/fast.svd.R
 c8c311c28ac6c6e53355ace75dcdcac5 *R/mpower.R
 98829ad88c78430dd2a3341b9e6e3e40 *R/partial.R
@@ -19,7 +19,7 @@ c526455bc26476e592d14da8ef1a9c40 *R/wt.scale.R
 37c000d49e6344d93fafcdb2d1907932 *man/corpcor-internal.Rd
 633e2672d562c3de323b034bb42b48ea *man/corpcor.package.Rd
 fdac0a2c40b4e3c5497bc097d3f56067 *man/cov.shrink.Rd
-640ecc53584faf9d5b2bc43454a8c459 *man/fast.svd.Rd
+936856f0c09ae9e2072c9e4d15c4bc24 *man/fast.svd.Rd
 3f10f406e553e5e897e681f1c9d15d34 *man/invcov.shrink.Rd
 0962aefde12b52c0f5ad5efb3807e868 *man/mpower.Rd
 ce47215425f2e72ba4b5bfd020a55a96 *man/pcor.shrink.Rd

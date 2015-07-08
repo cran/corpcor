@@ -30,4 +30,5 @@ export(
 "wt.var"
 )
 
+import("stats")
 

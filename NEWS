@@ -3,6 +3,9 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.6.8
+- import statements added required by R-devel
+
 
 Version 1.6.7
 - change of maintainer email address
