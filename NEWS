@@ -3,6 +3,12 @@
            RELEASE HISTORY OF THE "corpcor" PACKAGE
 
 
+Version 1.6.9
+- fixed a bug that made it possible that in very rare cases the shrinkage 
+  intensity can become negative
+- DOIs for all references added
+
+
 Version 1.6.8
 - import statements added required by R-devel
 

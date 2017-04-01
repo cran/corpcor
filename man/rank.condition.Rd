@@ -28,9 +28,7 @@ rank.condition(m, tol)
   are positive.  
   
   \code{make.positive.definite} computes the nearest positive definite of a
-  real symmetric matrix, using the algorithm of NJ Higham (1988, Linear Algebra
-  Appl. 103:103-118).
-  
+  real symmetric matrix, using the algorithm of NJ Higham (1988) <DOI:10.1016/0024-3795(88)90223-6>.
 
    \code{rank.condition} estimates the rank and the condition
   of a matrix by 

@@ -64,6 +64,7 @@ crossprod.powcor.shrink(x, y, alpha, lambda, w, verbose=TRUE)
    whereas the Woodbury matrix identity equals
 
     \deqn{Z^{-1} = I_p - V (I_m + M^{-1})^{-1} V^T .}
+
 }
 
 \value{
@@ -81,7 +82,13 @@ crossprod.powcor.shrink(x, y, alpha, lambda, w, verbose=TRUE)
 
   Zuber, V., and K. Strimmer. 2009. Gene ranking and biomarker
   discovery under correlation.  Bioinformatics \bold{25}:2700-2707.
-  (\url{http://arxiv.org/abs/0902.0751})
+  <DOI:10.1093/bioinformatics/btp460>
+
+  Zuber, V.,  A. P. Duarte Silva, and K. Strimmer. 2012. A novel algorithm for 
+  simultaneous SNP selection in high-dimensional genome-wide association studies.
+  BMC Bioinformatics 13: 284
+  <DOI:10.1186/1471-2105-13-284>
+
 }
 
 

@@ -1,9 +1,9 @@
-### shrink.intensity.R  (2012-09-02)
+### shrink.intensity.R  (2017-03-31)
 ###
 ###   Functions for computing the shrinkage intensity
 ###    
 ###
-### Copyright 2005-2012 Juliane Sch\"afer, Rainer Opgen-Rhein, 
+### Copyright 2005-2017 Juliane Sch\"afer, Rainer Opgen-Rhein, 
 ###                     Miika Ahdesm\"aki and Korbinian Strimmer
 ###
 ### This file is part of the `corpcor' library for R and related languages.
@@ -31,6 +31,9 @@
 estimate.lambda.var = function(x, w, verbose=TRUE)
 {
   n = nrow(x) 
+
+  if (n < 3) stop("Sample size too small!") 
+
   w = pvt.check.w(w, n)
   
   # bias correction factors
@@ -60,7 +63,7 @@ estimate.lambda.var = function(x, w, verbose=TRUE)
   if(denominator == 0) 
     lambda.var = 1
   else
-    lambda.var = min(1, numerator/denominator * h1w2)
+    lambda.var = max(0, min(1, numerator/denominator * h1w2))
  
   if (verbose) cat(paste(round(lambda.var, 4), "\n")) 
   
@@ -81,7 +84,8 @@ estimate.lambda = function(x, w, verbose=TRUE)
    n = nrow(x)
    p = ncol(x)
 
-   if (p == 1) return (1) 
+   if (p == 1) return (1)
+   if (n < 3) stop("Sample size too small!") 
 
    w = pvt.check.w(w, n)
    xs = wt.scale(x, w, center=TRUE, scale=TRUE) # standardize data matrix
@@ -119,7 +123,7 @@ estimate.lambda = function(x, w, verbose=TRUE)
    if(denominator == 0)
      lambda = 1
    else
-     lambda = min(1, numerator/denominator * h1w2)
+     lambda = max(0, min(1, numerator/denominator * h1w2))
 
    if (verbose) cat(paste(round(lambda, 4), "\n"))
 

@@ -47,12 +47,10 @@ the matrices - see the example).
   
 }
 \references{
-
   Sch\"afer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
-  (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})
-   
+  <DOI:10.2202/1544-6115.1175>
 }
 \seealso{\code{\link{powcor.shrink}}, \code{\link{cov.shrink}}, \code{\link{pcor.shrink}}, \code{\link{cor2pcor}}}
 

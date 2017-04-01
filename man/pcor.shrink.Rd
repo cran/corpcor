@@ -62,12 +62,12 @@ pvar.shrink(x, lambda, lambda.var, w, verbose=TRUE)
   Opgen-Rhein, R., and K. Strimmer. 2007. Accurate ranking of 
   differentially expressed genes by a distribution-free shrinkage 
   approach.    Statist. Appl. Genet. Mol. Biol. \bold{6}:9.
-  (\url{http://www.bepress.com/sagmb/vol6/iss1/art9/})
+  <DOI:10.2202/1544-6115.1252>
 
   Sch\"afer, J., and K. Strimmer. 2005.  A shrinkage approach to large-scale
   covariance estimation and implications for functional genomics. 
   Statist. Appl. Genet. Mol. Biol. \bold{4}:32.
-  (\url{http://www.bepress.com/sagmb/vol4/iss1/art32/})  
+  <DOI:10.2202/1544-6115.1175>
   
   Whittaker J. 1990.  Graphical Models in Applied Multivariate Statistics.
   John Wiley, Chichester.
