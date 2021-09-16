@@ -70,7 +70,7 @@ fast.svd(m, tol)
 
 
 \author{
-  Korbinian Strimmer (\url{http://strimmerlab.org}).
+  Korbinian Strimmer (\url{https://strimmerlab.github.io}).
 }
 \seealso{\code{\link{svd}}, \code{\link{solve}}.}
 

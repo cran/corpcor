@@ -48,7 +48,7 @@ estimate.lambda.var(x, w, verbose=TRUE)
 \author{
   Juliane Sch\"afer,
   Rainer Opgen-Rhein, Miika Ahdesm\"aki
-  and Korbinian Strimmer (\url{http://strimmerlab.org}).
+  and Korbinian Strimmer (\url{https://strimmerlab.github.io}).
   
 }
 \references{

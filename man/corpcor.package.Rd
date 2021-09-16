@@ -25,9 +25,9 @@ This package implements a James-Stein-type shrinkage estimator for
 }
 
 \author{Juliane Sch\"afer, Rainer Opgen-Rhein, Verena Zuber, Miika Ahdesm\"aki, 
- A. Pedro Duarte Silva, and Korbinian Strimmer (\url{http://strimmerlab.org/})}
+ A. Pedro Duarte Silva, and Korbinian Strimmer (\url{https://strimmerlab.github.io/})}
 \references{
-  See website: \url{http://strimmerlab.org/software/corpcor/}
+  See website: \url{https://strimmerlab.github.io/software/corpcor/}
 }
 \keyword{multivariate}
 \seealso{

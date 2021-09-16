@@ -55,7 +55,7 @@ decompose.invcov(m)
 
 
 \author{
-  Korbinian Strimmer (\url{http://strimmerlab.org}).
+  Korbinian Strimmer (\url{https://strimmerlab.github.io}).
 }
 \seealso{\code{\link{cor}}, \code{\link{cov}}, \code{\link{pcor.shrink}}}
 

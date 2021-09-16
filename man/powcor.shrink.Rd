@@ -74,7 +74,7 @@ crossprod.powcor.shrink(x, y, alpha, lambda, w, verbose=TRUE)
     
 }
 \author{
-  Verena Zuber, A. Pedro Duarte Silva, and Korbinian Strimmer (\url{http://strimmerlab.org}).
+  Verena Zuber, A. Pedro Duarte Silva, and Korbinian Strimmer (\url{https://strimmerlab.github.io}).
   
 }
 

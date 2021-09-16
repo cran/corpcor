@@ -54,7 +54,7 @@ pvar.shrink(x, lambda, lambda.var, w, verbose=TRUE)
 }
 \author{
   Juliane Sch\"afer  
-  and Korbinian Strimmer (\url{http://strimmerlab.org}).
+  and Korbinian Strimmer (\url{https://strimmerlab.github.io}).
   
 }
 \references{
